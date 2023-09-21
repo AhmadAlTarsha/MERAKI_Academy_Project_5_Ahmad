@@ -14,154 +14,192 @@ pool
 
 module.exports = pool;
 
-
-
-
-
-
-
-
 const createAllTables = () => {
   pool
     .query(
       `
    
-
+      CREATE TABLE roles (
+        id SERIAL PRIMARY KEY,
+        role varchar(255)
+      );
+      
+      CREATE TABLE permissions (
+        id SERIAL PRIMARY KEY,
+        role_id integer,
+        permission varchar(255),
+        FOREIGN KEY (role_id) REFERENCES roles(id)
+      );
+      
+      CREATE TABLE regions (
+        id SERIAL PRIMARY KEY,
+        region varchar(255)
+      );
+      
+      CREATE TABLE users (
+        id SERIAL PRIMARY KEY,
+        region_id integer,
+        role_id integer,
+        firt_name varchar(255),
+        last_name varchar(255),
+        nick_name varchar(255),
+        email varchar(255),
+        password varchar(255),
+        active integer,
+        is_deleted integer,
+        longtitude decimal,
+        langtitude decimal,
+        image varchar(255),
+        created_at varchar(255),
+        FOREIGN KEY (region_id) REFERENCES regions(id),
+        FOREIGN KEY (role_id) REFERENCES roles(id)
+      );
+      
+      CREATE TABLE categories (
+        id SERIAL PRIMARY KEY,
+        name varchar(255),
+        image varchar(255),
+        created_at varchar(255),
+      );
+      
+      CREATE TABLE sub_categories (
+        id SERIAL PRIMARY KEY,
+        category_id integer,
+        name varchar(255),
+        image varchar(255),
+        created_at varchar(255),
+        FOREIGN KEY (category_id) REFERENCES categories(id)
+      );
+      
+      CREATE TABLE statuses (
+        id SERIAL PRIMARY KEY,
+        name varchar(255)
+      );
+      
+      CREATE TABLE serverices_images (
+        id SERIAL PRIMARY KEY,
+        image VARCHAR,
+        service_id integer,
+        created_at varchar(255)
+      );
+      
+      CREATE TABLE serverices (
+        id SERIAL PRIMARY KEY,
+        service_provider_id integer,
+        category_id integer,
+        sub_category_id integer,
+        image_service_id integer,
+        title VARCHAR,
+        description TEXT,
+        status_id integer,
+        default_image varchar(255),
+        created_at varchar(255),
+        FOREIGN KEY (service_provider_id) REFERENCES users(id),
+        FOREIGN KEY (category_id) REFERENCES categories(id),
+        FOREIGN KEY (sub_category_id) REFERENCES sub_categories(id)
+      );
+      
+      CREATE TABLE posts (
+        id SERIAL PRIMARY KEY,
+        poster_id integer,
+        category_id integer,
+        sub_category_id integer,
+        title varchar(255),
+        description TEXT,
+        main_image varchar(255),
+        post_images_id integer,
+        created_at varchar(255),
+        FOREIGN KEY (poster_id) REFERENCES users(id),
+        FOREIGN KEY (category_id) REFERENCES categories(id),
+        FOREIGN KEY (sub_category_id) REFERENCES sub_categories(id),
+        FOREIGN KEY (post_images_id) REFERENCES serverices_images(id)
+      );
+      
+      CREATE TABLE comments (
+        id SERIAL PRIMARY KEY,
+        post_id integer,
+        commenter_id integer,
+        comment varchar(255),
+        created_at varchar(255),
+        FOREIGN KEY (post_id) REFERENCES posts(id),
+        FOREIGN KEY (commenter_id) REFERENCES users(id)
+      );
+      
+      CREATE TABLE orders (
+        id SERIAL PRIMARY KEY,
+        customer_id integer,
+        serverices_provider_id integer,
+        status_id integer,
+        sub_category_id integer,
+        review varchar(255),
+        created_at varchar(255),
+        FOREIGN KEY (customer_id) REFERENCES users(id),
+        FOREIGN KEY (serverices_provider_id) REFERENCES users(id),
+        FOREIGN KEY (serverices_provider_id) REFERENCES statuses(id),
+        FOREIGN KEY (sub_category_id) REFERENCES sub_categories(id)
+      );
+      
+      CREATE TABLE customer_provider_rate (
+        id SERIAL PRIMARY KEY,
+        customer_id integer,
+        provider_id integer,
+        rate decimal,
+        created_at varchar(255),
+        FOREIGN KEY (customer_id) REFERENCES users(id),
+        FOREIGN KEY (provider_id) REFERENCES users(id)
+      );
+      
+      CREATE TABLE provider_rate (
+        id SERIAL PRIMARY KEYrs,
+        provider_id integer,
+        total_rate decimal,
+        created_at varchar(255),
+        FOREIGN KEY (provider_id) REFERENCES users(id)
+      );
+      
+      ALTER TABLE users ADD FOREIGN KEY (id) REFERENCES serverices (service_provider_id);
+      
+      ALTER TABLE sub_categories ADD FOREIGN KEY (id) REFERENCES serverices (sub_category_id);
+      
+      ALTER TABLE serverices_images ADD FOREIGN KEY (id) REFERENCES serverices (image_service_id);
+      
+      ALTER TABLE serverices ADD FOREIGN KEY (category_id) REFERENCES categories (id);
+      
+      ALTER TABLE statuses ADD FOREIGN KEY (id) REFERENCES serverices (status_id);
+      
+      ALTER TABLE posts ADD FOREIGN KEY (poster_id) REFERENCES users (id);
+      
+      ALTER TABLE posts ADD FOREIGN KEY (sub_category_id) REFERENCES sub_categories (id);
+      
+      ALTER TABLE serverices_images ADD FOREIGN KEY (id) REFERENCES posts (post_images_id);
+      
+      ALTER TABLE posts ADD FOREIGN KEY (category_id) REFERENCES categories (id);
+      
+      ALTER TABLE comments ADD FOREIGN KEY (post_id) REFERENCES posts (id);
+      
+      ALTER TABLE comments ADD FOREIGN KEY (commenter_id) REFERENCES users (id);
+      
+      ALTER TABLE users ADD FOREIGN KEY (id) REFERENCES orders (customer_id);
+      
+      ALTER TABLE statuses ADD FOREIGN KEY (id) REFERENCES orders (status_id);
+      
+      ALTER TABLE sub_categories ADD FOREIGN KEY (id) REFERENCES orders (sub_category_id);
+      
+      ALTER TABLE users ADD FOREIGN KEY (id) REFERENCES customer_provider_rate (customer_id);
+      
+      ALTER TABLE users ADD FOREIGN KEY (id) REFERENCES provider_rate (provider_id);
+      
+      ALTER TABLE permissions ADD FOREIGN KEY (role_id) REFERENCES roles (id);
+      
+      ALTER TABLE sub_categories ADD FOREIGN KEY (category_id) REFERENCES categories (id);
+      
+      ALTER TABLE users ADD FOREIGN KEY (region_id) REFERENCES regions (id);
+      
+      ALTER TABLE roles ADD FOREIGN KEY (id) REFERENCES users (role_id);
       
 
- CREATE TABLE roles (
-  id SERIAL PRIMARY KEY  NOT NULL,
-  role VARCHAR(255) NOT NULL
- 
-);
-CREATE TABLE permissions (
-  id SERIAL PRIMARY KEY  NOT NULL,
-  role_id INT REFERENCES roles(id),
-  permission VARCHAR(255) NOT NULL
- 
-);
-
-
-
-CREATE TABLE regions (
-id SERIAL PRIMARY KEY  NOT NULL,
-region VARCHAR(255) NOT NULL
-);
-
-
-
-CREATE TABLE users (
-id SERIAL PRIMARY KEY  NOT NULL,
-user_region INT REFERENCES regions(id),
-user_role INT REFERENCES roles(id),
-firstName VARCHAR(255),
-lastName VARCHAR(255),
-nikeName VARCHAR(255),
-email VARCHAR(255) UNIQUE,
-password VARCHAR(255),
-active SMALLINT DEFAULT 0,
-is_deleted SMALLINT DEFAULT 0,
-latitude VARCHAR(255) null,
-longitude VARCHAR(255) null,
-image VARCHAR(255) DEFAULT 0 ,
-created_at TIMESTAMP
-
-
-
-);
-
-CREATE TABLE categories (
-id SERIAL PRIMARY KEY  NOT NULL,
-category VARCHAR(255) NOT NULL,
-created_at TIMESTAMP ,
-image VARCHAR(255) DEFAULT 0
-);
-
-
-
-
-CREATE TABLE sub_categories (
-id SERIAL PRIMARY KEY  NOT NULL,
-category_id INT REFERENCES categories(id),
-sub_category VARCHAR(255),
-image VARCHAR(255) DEFAULT 0
-);
-
-
-CREATE TABLE status (
-id SERIAL PRIMARY KEY  NOT NULL,
-status_name VARCHAR(255) 
-
-
-
-);
-
-CREATE TABLE services (
-id SERIAL PRIMARY KEY  NOT NULL,
-service_provider INT REFERENCES users(id),
-sub_category_id INT REFERENCES users(id),
-service_title VARCHAR(255),
-description  TEXT,
-default_image VARCHAR(255) NOT NULL,
-created_at TIMESTAMP
-);
-
-
-CREATE TABLE services_images (
-id SERIAL PRIMARY KEY  NOT NULL,
-image VARCHAR(255) ,
-service_id INT REFERENCES services(id),
-created_at TIMESTAMP
-);
-
-
-CREATE TABLE posts (
-id SERIAL PRIMARY KEY  NOT NULL,
-poster_id INT REFERENCES users(id),
-sub_category_id INT REFERENCES sub_categories(id),
-title VARCHAR(255) ,
-service_id INT REFERENCES services(id),
-description TEXT,
-image VARCHAR(255)  NOT NULL,
-created_at TIMESTAMP
-
-);
-CREATE TABLE comments (
-id SERIAL PRIMARY KEY  NOT NULL,
-commenter_id INT REFERENCES users(id),
-post_id INT REFERENCES posts(id),
-comment TEXT ,
-created_at TIMESTAMP
-
-);
-CREATE TABLE orders (
-id SERIAL PRIMARY KEY  NOT NULL,
-service_provider_id INT REFERENCES services(id),
-status_id INT REFERENCES status(id),
-sub_category_id INT REFERENCES sub_categories(id),
-review TEXT ,
-created_at TIMESTAMP
-
-);
-CREATE TABLE customer_provider_rate(
-id SERIAL PRIMARY KEY  NOT NULL,
-customer_id INT REFERENCES users(id),
-provider_id INT REFERENCES services(id),
-rate INT ,
-created_at TIMESTAMP
-
-);
-CREATE TABLE provider_rates(
-
-  id SERIAL PRIMARY KEY  NOT NULL,
-  
-  provider_id INT REFERENCES services(id),
-  
-  total_rate INT default 0
-  
-  );
-
-  ` )
+  `
+    )
     .then((result) => {
       console.log("result", result);
     })
@@ -170,7 +208,6 @@ CREATE TABLE provider_rates(
     });
 };
 
+// createAllTables();
 
-
-
-//createAllTables()
+exports.module = pool
