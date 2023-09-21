@@ -10,9 +10,11 @@ app.use(cors());
 
 const rolesRouter = require("./routes/roles");
 const permissionsRouter = require("./routes/permissions");
+const usersRouter = require("./routes/users");
 
 app.use("/roles", rolesRouter);
 app.use("/permissions", permissionsRouter);
+app.use("/users", usersRouter);
 
 app.use("*", (req, res) => res.status(404).json("NO content at this path"));
 
@@ -36,5 +38,5 @@ const PORT = process.env.PORT || 5000;
 
 // will log to the command line when the server starts
 app.listen(PORT, () => {
-  console.log(` project five server connected will....`);
+  console.log(` project five server connected will...`);
 });
