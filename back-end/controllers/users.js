@@ -19,7 +19,7 @@ exports.register = async (req, res) => {
       .then((result) => {
         res.status(200).json({
           success: true,
-          message: "Account created successfully",
+          message: "Account created 111111",
         });
       })
       .catch((err) => {
