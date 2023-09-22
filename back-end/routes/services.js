@@ -5,7 +5,7 @@ const {
   updateService,
   getAllServicesOnCategory,
   getAllServicesOnSubCategory,
-  getAllServicesOnId,
+  getServiceOnId,
 } = require("../controllers/services");
 
 const { authentication } = require("../middlewares/authentication");
@@ -29,7 +29,7 @@ servericesRouter.get(
   "/:id",
   authentication,
   authorization("SERVICE-CONTROL"),
-  getAllServicesOnId
+  getServiceOnId
 );
 
 servericesRouter.get(
