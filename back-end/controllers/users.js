@@ -2,7 +2,7 @@ const { throwError } = require("../middlewares/throwError");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const pool = require("../models/DB");
-const salt = parseInt(process.env.SALT);
+// const salt = parseInt(process.env.SALT);
 exports.register = async (req, res, next) => {
   let {
     region_id,
@@ -16,7 +16,7 @@ exports.register = async (req, res, next) => {
   } = req.body;
 
   try {
-    password = await bcrypt.hash(password, salt);
+    password = await bcrypt.hash(password, 10);
   } catch (error) {
     throw error;
   }
@@ -55,7 +55,7 @@ exports.login = (req, res, next) => {
   let { email, password } = req.body;
 
   const query1 = `SELECT users.id, users.region_id, users.role_id, users.firt_name, users.last_name, users.nick_name, users.email, users.password,
-   users.active, users.is_deleted, users.longtitude, users.longtitude, users.image, users.created_at,
+   users.active, users.is_deleted, users.longtitude, users.langtitude, users.image, users.created_at,
 
   regions.region
   FROM users
@@ -103,8 +103,10 @@ exports.login = (req, res, next) => {
         const options = {
           expiresIn: "7d",
         };
-        const secret = process.env.SECRET;
-        token = jwt.sign(payLoad, secret, options);
+        // const secret = process.env.SECRET;
+        token = jwt.sign(payLoad, "tintin", options);
+
+        console.log("TOKEN ====> ", token);
 
         return res.status(200).json({
           error: false,
@@ -122,21 +124,21 @@ exports.login = (req, res, next) => {
     });
 };
 
-// ------------our team this is the function to get all info for all users to shared with website Admin 
-// if you wanna to remove some info lets discuss about it 
-exports.getAllUsers = async(req, res) => {
-  const query=`SELECT
+// ------------our team this is the function to get all info for all users to shared with website Admin
+// if you wanna to remove some info lets discuss about it
+exports.getAllUsers = async (req, res, next) => {
+  const query = `SELECT
   users.id AS user_id,
   regions.region AS user_region,
   roles.role AS user_role,
-  users.first_name,
+  users.firt_name,
   users.last_name,
   users.nick_name,
   users.email,
   users.active,
   users.is_deleted,
-  users.longitude,
-  users.latitude,
+  users.longtitude,
+  users.langtitude,
   users.image,
   users.created_at
 FROM
@@ -145,34 +147,32 @@ INNER JOIN
   regions ON users.region_id = regions.id
 INNER JOIN
   roles ON users.role_id = roles.id;
-`
- try{
- const response=await pool.query(query)
-console.log(response.rows);
-  res.status(200).json({
-    error: false,
-    message: "All Users",
-    Users: response.rows,
-  });
- 
- }catch(error){ res.status(500).json({
-  success: false,
-  message: "Server Error",
-  error: error.message,
-});}
+`;
+  try {
+    const response = await pool.query(query);
+    console.log(response.rows);
+    res.status(200).json({
+      error: false,
+      message: "All Users",
+      Users: response.rows,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 };
 
-
-
 //--------------------------------------------- This Function To Get User By Id
-exports.getUserById =async (req, res) => {
-  const {id}=req.params
+exports.getUserById = async (req, res, next) => {
+  const { id } = req.params;
   console.log(id);
-  const value=[id]
-  const query=`SELECT
+  const value = [id];
+  const query = `SELECT
   users.id AS user_id,
   regions.region AS user_region,
-  users.first_name,
+  users.firt_name,
   users.last_name,
   users.nick_name,
   users.email,
@@ -187,26 +187,24 @@ INNER JOIN
   roles ON users.role_id = roles.id
 WHERE
   users.id =$1;
-`
-  try{
-   const response=await pool.query(query,value)
-    if (response.rowCount) {
-     
- 
-   res.status(200).json({
-     success: true,
-     message: `This Is The specific User`,
-     User: response.rows,
-   });
+`;
+  try {
+    const response = await pool.query(query, value);
+    if (response.command === "SELECT") {
+      if (response.rows[0]) {
+        return res.status(200).json({
+          error: false,
+          user: response.rows[0],
+        });
+      }
+      return throwError(404, "No user found with this ID");
     }
-
- 
-  
-  }catch(error){ res.status(500).json({
-   success: false,
-   message: "Server Error",
-   error: error.message,
- });}
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 };
 
 // this fun allow the user delete his account from website
@@ -214,55 +212,55 @@ WHERE
 // instead of this the admin can ban or block the user  if he breaks the laws
 // as you can see in the next function
 // i think we need to discuss this !
-exports.deleteUserById = (req, res) => {
-  const {id} = req.token;
-  const query = `UPDATE users SET is_deleted=1 WHERE id=$1;`;
+exports.deleteUserById = (req, res, next) => {
+  const { id } = req.token.user;
+  const query = `UPDATE users SET is_deleted= 1 WHERE id = $1;`;
   const data = [id];
   pool
     .query(query, data)
     .then((result) => {
       if (result.rowCount !== 0) {
-        res.status(200).json({
-          success: true,
+        return res.status(200).json({
+          error: false,
           message: `your account deleted successfully`,
         });
-      } else {
-        throw new Error("Error happened while deleting this account");
       }
+      return throwError(404, "Not found");
     })
     .catch((err) => {
-      res.status(500).json({
-        success: false,
-        message: "Server error",
-        err: err,
-      });
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     });
 };
 
-// This function allows Admin to ban the account 
-exports.BanUserById = (req, res) => {
-  const {id} = req.params;
+// This function allows Admin to ban the account
+exports.BanUserById = (req, res, next) => {
+  const { id } = req.params;
+  const { active } = req.body;
   const query = `UPDATE users
-  SET active = 1
-  WHERE id = id=$1;`;
-  const data = [id];
+  SET active = $1
+  WHERE id=$2;`;
+  const data = [active, id];
   pool
     .query(query, data)
     .then((result) => {
       if (result.rowCount !== 0) {
-        res.status(200).json({
-          success: true,
-          message: `account Blocked successfully`,
+        return res.status(200).json({
+          error: false,
+          message:
+            active === 0
+              ? `Account Blocked successfully`
+              : `Account Un-Blocked successfully`,
         });
-      } else {
-        throw new Error("Error happened while Blocked this account");
       }
+      return throwError(404, "Not found");
     })
     .catch((err) => {
-      res.status(500).json({
-        success: false,
-        message: "Server error",
-        err: err,
-      });
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     });
 };
