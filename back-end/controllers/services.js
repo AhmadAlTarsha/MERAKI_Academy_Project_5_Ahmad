@@ -25,7 +25,7 @@ exports.addService = (req, res, next) => {
   pool
     .query(
       `INSERT INTO serverices (service_provider_id, category_id, sub_category_id, title, description, status_id, default_image)
-    INTO ($1, $2, $3, $4, $5, $6, $7)`,
+    VALUES ($1, $2, $3, $4, $5, $6, $7)`,
       values
     )
     .then((result) => {
@@ -134,14 +134,14 @@ exports.getAllServicesOnSubCategory = (req, res, next) => {
     });
 };
 
-exports.getAllServicesOnId = (req, res, next) => {
+exports.getServiceOnId = (req, res, next) => {
   pool
     .query(`SELECT * FROM serverices WHERE id = $1`, [req.params.id])
     .then((result) => {
       if (result.command === `SELECT`) {
         return res.status(200).json({
           error: false,
-          services: result.rows,
+          services: result.rows[0],
         });
       }
     })
