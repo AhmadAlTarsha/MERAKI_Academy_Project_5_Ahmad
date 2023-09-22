@@ -11,10 +11,12 @@ app.use(cors());
 const rolesRouter = require("./routes/roles");
 const permissionsRouter = require("./routes/permissions");
 const usersRouter = require("./routes/users");
+const servericesRouter = require("./routes/services");
 
 app.use("/roles", rolesRouter);
 app.use("/permissions", permissionsRouter);
 app.use("/users", usersRouter);
+app.use("/services", servericesRouter);
 
 app.use("*", (req, res) => res.status(404).json("NO content at this path"));
 
