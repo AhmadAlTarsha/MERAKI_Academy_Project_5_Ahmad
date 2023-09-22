@@ -8,7 +8,7 @@ exports.addSubCategory = (req, res, next) => {
 
   pool
     .query(
-      `INSERT INTO sub_categories (category_id, name, image) INTO ($1, $2, $3)`,
+      `INSERT INTO sub_categories (category_id, name, image) VALUES ($1, $2, $3)`,
       values
     )
     .then((result) => {
@@ -31,10 +31,13 @@ exports.addSubCategory = (req, res, next) => {
 exports.updateSubCategory = (req, res, next) => {
   let { category_id, name, image } = req.body;
   const { id } = req.params;
-  const values = [category_id, name, image, id];
+  const values = [name, image, category_id, id];
 
   pool
-    .query(`UPDATE sub_categories SET name = $1, image = $2, category_id = $3 WHERE id = $4`, values)
+    .query(
+      `UPDATE sub_categories SET name = $1, image = $2, category_id = $3 WHERE id = $4`,
+      values
+    )
     .then((result) => {
       if (result.command === "UPDATE") {
         return res.status(200).json({
@@ -54,7 +57,9 @@ exports.updateSubCategory = (req, res, next) => {
 
 exports.getAllSubCategoriesOnCategory = (req, res, next) => {
   pool
-    .query(`SELECT * FROM sub_categories WHERE category_id = $1`, [req.params.categoryId])
+    .query(`SELECT * FROM sub_categories WHERE category_id = $1`, [
+      req.params.categoryId,
+    ])
     .then((result) => {
       if (result.command === `SELECT`) {
         return res.status(200).json({
