@@ -7,7 +7,7 @@ exports.addCategory = (req, res, next) => {
   const values = [name, image];
 
   pool
-    .query(`INSERT INTO categories (name, image) INTO ($1, $2)`, values)
+    .query(`INSERT INTO categories (name, image) VALUES ($1, $2)`, values)
     .then((result) => {
       if (result.command === "INSERT") {
         return res.status(200).json({
