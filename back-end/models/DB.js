@@ -88,7 +88,6 @@ const createAllTables = () => {
         service_provider_id integer,
         category_id integer,
         sub_category_id integer,
-        image_service_id integer,
         title VARCHAR,
         description TEXT,
         status_id integer,
