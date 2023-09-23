@@ -42,7 +42,7 @@ usersRouter.put(
   BanUserById
 );
 usersRouter.put(
-  "updateAccount/:id",
+  "/updateAccount/:id",
   authentication,
   authorization("USER-CONTROL"),
   updateUserById
