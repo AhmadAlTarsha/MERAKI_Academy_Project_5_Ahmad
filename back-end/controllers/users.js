@@ -264,14 +264,20 @@ exports.BanUserById = (req, res, next) => {
       next(err);
     });
 };
-// this function allow user to update his account  
-exports.updateUserById =async (req, res,next) => {
-
+// this function allow user to update his account
+exports.updateUserById = async (req, res, next) => {
   try {
-    const { first_name,last_name,nick_name,email,image } = req.body;
+    const { first_name, last_name, nick_name, email, image } = req.body;
     const { id } = req.params;
 
-    const values = [first_name||null,last_name||null, nick_name||null,email||null,image||null,id];
+    const values = [
+      first_name || null,
+      last_name || null,
+      nick_name || null,
+      email || null,
+      image || null,
+      id,
+    ];
 
     const query = `UPDATE users
     SET
@@ -285,9 +291,6 @@ exports.updateUserById =async (req, res,next) => {
         id =$6;
      RETURNING *;`;
 
-
-
- 
     const response = await pool.query(query, values);
 
     if (response.rowCount) {

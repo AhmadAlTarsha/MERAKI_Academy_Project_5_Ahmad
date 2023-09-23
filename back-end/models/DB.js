@@ -106,7 +106,6 @@ const createAllTables = () => {
         title varchar(255),
         description TEXT,
         main_image varchar(255),
-        post_images_id integer,
         created_at varchar(255),
         FOREIGN KEY (poster_id) REFERENCES users(id),
         FOREIGN KEY (category_id) REFERENCES categories(id),
