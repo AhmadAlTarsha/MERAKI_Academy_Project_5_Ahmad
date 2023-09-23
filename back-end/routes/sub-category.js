@@ -26,8 +26,6 @@ subCategoryRouter.put(
 
 subCategoryRouter.get(
   "/:categoryId",
-  authentication,
-  authorization("CATEGORY-CONTROL"),
   getAllSubCategoriesOnCategory
 );
 

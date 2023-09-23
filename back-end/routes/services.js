@@ -32,17 +32,10 @@ servericesRouter.get(
   getServiceOnId
 );
 
-servericesRouter.get(
-  "/category/:categoryId",
-  authentication,
-  authorization("SERVICE-CONTROL"),
-  getAllServicesOnCategory
-);
+servericesRouter.get("/category/:categoryId", getAllServicesOnCategory);
 
 servericesRouter.get(
   "/subcategory/:subCategoryId",
-  authentication,
-  authorization("SERVICE-CONTROL"),
   getAllServicesOnSubCategory
 );
 

@@ -1,30 +1,49 @@
 const pool = require("../models/DB");
+const { throwError } = require("../middlewares/throwError");
 
 // ===================== GET ALL POSTS =====================
 exports.getAllPosts = (req, res, next) => {
-  const query = `SELECT * FROM posts WHERE active = '1';`;
+  const { active } = req.body;
+  const query = `SELECT * FROM posts WHERE active = $1;`;
   pool
-    .query(query)
+    .query(query, [active])
     .then((result) => {
-      if (result.rows.length !== 0) {
+      if (result.command === `SELECT`) {
         return res.status(200).json({
           error: false,
-          message: "All the posts",
-          result: result.rows,
-        });
-      } else {
-        return res.status(200).json({
-          error: true,
-          message: "No posts found",
+          posts: result.rows,
         });
       }
+      return throwError(400, "Something went wrong");
     })
-    .catch((error) => {
-      res.status(500).json({
-        error: true,
-        message: "Server error",
-        error: error,
-      });
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
+exports.getAllPostsByUser = (req, res, next) => {
+  const { active } = req.body;
+  const { posterId } = req.params;
+  const query = `SELECT * FROM posts WHERE active = $1 AND poster_id=$2;`;
+  pool
+    .query(query, [active, posterId])
+    .then((result) => {
+      if (result.command === `SELECT`) {
+        return res.status(200).json({
+          error: false,
+          posts: result.rows,
+        });
+      }
+      return throwError(400, "Something went wrong");
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     });
 };
 
@@ -36,7 +55,7 @@ exports.createPost = async (req, res, next) => {
 
   const query = `INSERT INTO posts (title, description,main_image,
     category_id,
-    sub_category_id,) VALUES ($1, $2, $3,$4,$5)`;
+    sub_category_id,) VALUES ($1, $2, $3, $4, $5)`;
 
   pool
     .query(query, data)
@@ -47,6 +66,7 @@ exports.createPost = async (req, res, next) => {
           message: "New post created",
         });
       }
+      return throwError(400, "Something went wrong");
     })
     .catch((err) => {
       if (!err.statusCode) {
@@ -72,7 +92,7 @@ exports.updatePostById = async (req, res, next) => {
     id,
   ];
 
-  const query = `UPDATE posts SET title = $1, description = $2 WHERE id=$3 AND active = '1' RETURNING *`;
+  const query = `UPDATE posts SET title = $1, description = $2, main_image = $3, category_id = $4, sub_category_id = $5 WHERE id=$6 RETURNING *`;
 
   pool
     .query(query, data)
@@ -83,13 +103,8 @@ exports.updatePostById = async (req, res, next) => {
           error: false,
           message: `Post with id: ${id} updated successfully`,
         });
-      } else {
-        return res.status(500).json({
-          error: true,
-          message: "Failed to update",
-          result: result,
-        });
       }
+      return throwError(400, "Something went wrong");
     })
     .catch((err) => {
       if (!err.statusCode) {
@@ -100,27 +115,29 @@ exports.updatePostById = async (req, res, next) => {
 };
 
 // ===================== DELETE POST =====================
-exports.deletePostById = (req, res, next) => {
+exports.activationPostById = (req, res, next) => {
   const { id } = req.params;
-  const value = [id];
-  const query = `UPDATE posts SET active = 0 WHERE id=$1`;
+  const { active } = req.body;
+  const value = [active, id];
+  const query = `UPDATE posts SET active = $1 WHERE id=$2`;
   pool
     .query(query, value)
     .then((result) => {
       if (result.rowCount !== 0) {
-        res.status(200).json({
+        return res.status(200).json({
           error: false,
-          message: `Article with id: ${id} deleted successfully`,
+          message:
+            active === 0
+              ? `Post with id: ${id} deleted successfully`
+              : `Post with id: ${id} Activated successfully`,
         });
-      } else {
-        throw new Error("Error happened while deleting article");
       }
+      return throwError(400, "Something went wrong");
     })
-    .catch((error) => {
-      res.status(500).json({
-        error: true,
-        message: "Server error",
-        err: error,
-      });
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     });
 };
