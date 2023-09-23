@@ -7,6 +7,7 @@ const {
   getUserById,
   deleteUserById,
   BanUserById,
+  updateUserById
 } = require("../controllers/users");
 const { authentication } = require("../middlewares/authentication");
 const { authorization } = require("../middlewares/authorization");
@@ -39,6 +40,12 @@ usersRouter.put(
   authentication,
   authorization("USER-CONTROL"),
   BanUserById
+);
+usersRouter.put(
+  "updateAccount/:id",
+  authentication,
+  authorization("USER-CONTROL"),
+  updateUserById
 );
 
 module.exports = usersRouter;

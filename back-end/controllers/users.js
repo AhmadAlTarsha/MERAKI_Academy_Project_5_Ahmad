@@ -264,3 +264,44 @@ exports.BanUserById = (req, res, next) => {
       next(err);
     });
 };
+// this function allow user to update his account  
+exports.updateUserById =async (req, res,next) => {
+
+  try {
+    const { first_name,last_name,nick_name,email,image } = req.body;
+    const { id } = req.params;
+
+    const values = [first_name||null,last_name||null, nick_name||null,email||null,image||null,id];
+
+    const query = `UPDATE users
+    SET
+    
+    first_name = COALESCE($1,first_name),
+    last_name = COALESCE($2,last_name),
+    nick_name = COALESCE($3,nick_name),
+    email = COALESCE( $4,email),
+    image = COALESCE($5,image)
+    WHERE
+        id =$6;
+     RETURNING *;`;
+
+
+
+ 
+    const response = await pool.query(query, values);
+
+    if (response.rowCount) {
+      res.status(200).json({
+        success: true,
+        message: "your Account updated successfully",
+        response: response.rows,
+      });
+    }
+    return throwError(404, "Not found");
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
