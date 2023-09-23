@@ -6,7 +6,7 @@ const pool = new Pool({
 pool
   .connect()
   .then((res) => {
-    console.log(`project five DB connected will...`);
+    console.log(`project five DB connected to ${res.database}`);
   })
   .catch((err) => {
     console.log(err);
@@ -100,7 +100,7 @@ const createAllTables = () => {
       
       CREATE TABLE posts (
         id SERIAL PRIMARY KEY,
-        poster_id integer,
+        poster_id integer, 
         category_id integer,
         sub_category_id integer,
         title varchar(255),
