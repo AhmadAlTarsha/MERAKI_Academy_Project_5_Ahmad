@@ -26,8 +26,6 @@ categoryRouter.put(
 
 categoryRouter.get(
   "/",
-  authentication,
-  authorization("CATEGORY-CONTROL"),
   getAllCategories
 );
 

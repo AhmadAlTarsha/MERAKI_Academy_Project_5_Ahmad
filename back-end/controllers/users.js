@@ -111,7 +111,6 @@ exports.login = (req, res, next) => {
         return res.status(200).json({
           error: false,
           token,
-          user,
         });
       }
       return throwError(404, "Something went wrong");
