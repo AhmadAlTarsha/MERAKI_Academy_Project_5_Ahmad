@@ -10,7 +10,6 @@ exports.getAllPosts = (req, res, next) => {
   pool
     .query(query, [active])
     .then((result) => {
-      console.log(active);
       if (result.command === `SELECT`) {
         posts = result.rows;
         const newQuery = `SELECT * FROM serverices_images`;
