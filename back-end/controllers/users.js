@@ -196,7 +196,7 @@ WHERE
           user: response.rows[0],
         });
       }
-      return throwError(404, "No user found with this ID");
+      return throwError(400, "something went rowing");
     }
   } catch (err) {
     if (!err.statusCode) {
@@ -224,7 +224,7 @@ exports.deleteUserById = (req, res, next) => {
           message: `your account deleted successfully`,
         });
       }
-      return throwError(404, "Not found");
+      return throwError(400, "something went rowing");
     })
     .catch((err) => {
       if (!err.statusCode) {
@@ -254,7 +254,7 @@ exports.BanUserById = (req, res, next) => {
               : `Account Un-Blocked successfully`,
         });
       }
-      return throwError(404, "Not found");
+      return throwError(400, "something went rowing");
     })
     .catch((err) => {
       if (!err.statusCode) {
@@ -299,7 +299,7 @@ exports.updateUserById = async (req, res, next) => {
         response: response.rows,
       });
     }
-    return throwError(404, "Not found");
+    return throwError(400, "something went rowing");
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
