@@ -74,22 +74,15 @@ exports.getAllPostsByUser = (req, res, next) => {
 // ===================== CREATE NEW POST =====================
 exports.createPost = async (req, res, next) => {
   const { id } = req.token.user;
-  const {
-    title,
-    description,
-    main_image,
-    images,
-    category_id,
-    sub_category_id,
-  } = req.body;
-  const data = [
-    id,
-    title,
-    description,
-    main_image,
-    category_id,
-    sub_category_id,
-  ];
+  const { title, description, images, category_id, sub_category_id } = req.body;
+
+  if (!req.file) {
+    return throwError(422, "No Image provided");
+  }
+
+  const image = req.file.path.replace("\\", "/");
+
+  const data = [id, title, description, image, category_id, sub_category_id];
 
   const query = `INSERT INTO posts (poster_id, title, description,main_image,
     category_id,
@@ -139,24 +132,25 @@ exports.createPost = async (req, res, next) => {
 exports.updatePostById = async (req, res, next) => {
   const { id } = req.params;
 
-  const { title, description, main_image, category_id, sub_category_id } =
-    req.body;
+  const { title, description, category_id, sub_category_id } = req.body;
 
-  const data = [
-    title,
-    description,
-    main_image,
-    category_id,
-    sub_category_id,
-    id,
-  ];
+  let image;
 
-  const query = `UPDATE posts SET title = $1, description = $2, main_image = $3, category_id = $4, sub_category_id = $5 WHERE id=$6 RETURNING *`;
+  if (req.file) {
+    image = req.file.path.replace("\\", "/");
+  }
+
+  const data = image
+    ? [title, description, image, category_id, sub_category_id, id]
+    : [title, description, category_id, sub_category_id, id];
+
+  const query = image
+    ? `UPDATE posts SET title = $1, description = $2, main_image = $3, category_id = $4, sub_category_id = $5 WHERE id=$6 RETURNING *`
+    : `UPDATE posts SET title = $1, description = $2, category_id = $3, sub_category_id = $4 WHERE id=$5 RETURNING *`;
 
   pool
     .query(query, data)
     .then((result) => {
-      console.log(result);
       if (result.rowCount !== 0) {
         return res.status(200).json({
           error: false,

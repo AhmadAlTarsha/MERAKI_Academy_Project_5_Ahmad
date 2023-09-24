@@ -7,13 +7,18 @@ exports.register = async (req, res, next) => {
   let {
     region_id,
     role_id,
-    firt_name,
+    first_name,
     last_name,
     nick_name,
     email,
     password,
-    image,
   } = req.body;
+
+  if (!req.file) {
+    return throwError(422, "No Image provided");
+  }
+
+  const image = req.file.path.replace("\\", "/");
 
   try {
     password = await bcrypt.hash(password, 10);
@@ -21,11 +26,11 @@ exports.register = async (req, res, next) => {
     throw error;
   }
 
-  const query = `INSERT INTO users (region_id, role_id, firt_name, last_name, nick_name, email, password, image ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`;
+  const query = `INSERT INTO users (region_id, role_id, first_name, last_name, nick_name, email, password, image ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`;
   const data = [
     region_id,
     role_id,
-    firt_name,
+    first_name,
     last_name,
     nick_name,
     email.toLowerCase(),
@@ -54,7 +59,7 @@ exports.register = async (req, res, next) => {
 exports.login = (req, res, next) => {
   let { email, password } = req.body;
 
-  const query1 = `SELECT users.id, users.region_id, users.role_id, users.firt_name, users.last_name, users.nick_name, users.email, users.password,
+  const query1 = `SELECT users.id, users.region_id, users.role_id, users.first_name, users.last_name, users.nick_name, users.email, users.password,
    users.active, users.is_deleted, users.longtitude, users.langtitude, users.image, users.created_at,
 
   regions.region
@@ -266,19 +271,21 @@ exports.BanUserById = (req, res, next) => {
 // this function allow user to update his account
 exports.updateUserById = async (req, res, next) => {
   try {
-    const { first_name, last_name, nick_name, email, image } = req.body;
+    const { first_name, last_name, nick_name, email } = req.body;
     const { id } = req.params;
 
-    const values = [
-      first_name || null,
-      last_name || null,
-      nick_name || null,
-      email || null,
-      image || null,
-      id,
-    ];
+    let image;
 
-    const query = `UPDATE users
+    if (req.file) {
+      image = req.file.path.replace("\\", "/");
+    }
+
+    const values = image
+      ? [first_name, last_name, nick_name, email, image, id]
+      : [first_name, last_name, nick_name, email, id];
+
+    const query = image
+      ? `UPDATE users
     SET
     
     first_name = COALESCE($1,first_name),
@@ -288,6 +295,16 @@ exports.updateUserById = async (req, res, next) => {
     image = COALESCE($5,image)
     WHERE
         id =$6;
+     RETURNING *;`
+      : `UPDATE users
+    SET
+    
+    first_name = COALESCE($1,first_name),
+    last_name = COALESCE($2,last_name),
+    nick_name = COALESCE($3,nick_name),
+    email = COALESCE( $4,email),
+    WHERE
+        id =$5;
      RETURNING *;`;
 
     const response = await pool.query(query, values);
