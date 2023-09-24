@@ -1,6 +1,7 @@
 const pool = require("../models/DB");
 const { throwError } = require("../middlewares/throwError");
 
+// ===================== ADD NEW SERVICE =====================
 exports.addService = (req, res, next) => {
   let {
     service_provider_id,
@@ -8,8 +9,8 @@ exports.addService = (req, res, next) => {
     sub_category_id,
     title,
     description,
-    status_id,
     default_image,
+    images,
   } = req.body;
 
   const values = [
@@ -18,24 +19,46 @@ exports.addService = (req, res, next) => {
     sub_category_id,
     title,
     description,
-    status_id,
     default_image,
   ];
 
   pool
     .query(
-      `INSERT INTO serverices (service_provider_id, category_id, sub_category_id, title, description, status_id, default_image)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      `INSERT INTO serverices (service_provider_id, category_id, sub_category_id, title, description, default_image)
+    VALUES ($1, $2, $3, $4, $5, $6)`,
       values
     )
     .then((result) => {
       if (result.command === "INSERT") {
-        return res.status(200).json({
-          error: false,
-          message: "Service Added succefully",
-        });
+        if (images.length === 0) {
+          return res.status(200).json({
+            error: false,
+            message: "Service Added succefully",
+          });
+        } else {
+          return pool.query(
+            `SELECT id FROM serverices ORDER BY id DESC LIMIT 1`
+          );
+        }
       }
       return throwError(400, "Something went wrong");
+    })
+    .then(async (result2) => {
+      try {
+        const newServiceId = result2.rows[0].id;
+        for (let i = 0; i < images.length; i++) {
+          await pool.query(
+            `INSERT INTO serverices_images (service_id, image) VALUES ($1, $2)`,
+            [newServiceId, images[i]]
+          );
+        }
+        res.json({
+          error: false,
+          message: "New service created",
+        });
+      } catch (err) {
+        throw err;
+      }
     })
     .catch((err) => {
       if (!err.statusCode) {
@@ -45,6 +68,7 @@ exports.addService = (req, res, next) => {
     });
 };
 
+// ===================== UPDATE SERVICE =====================
 exports.updateService = (req, res, next) => {
   let {
     service_provider_id,
@@ -92,11 +116,16 @@ exports.updateService = (req, res, next) => {
     });
 };
 
+// ===================== GET ALL SERVICES ON CATEGORY =====================
 exports.getAllServicesOnCategory = (req, res, next) => {
+  let services = [];
+  let images = [];
+
   pool
-    .query(`SELECT * FROM serverices WHERE category_id = $1`, [
-      req.params.categoryId,
-    ])
+    .query(
+      `SELECT serverices.id, serverices.service_provider_id, serverices.category_id, serverices.sub_category_id, serverices.title, serverices.description, serverices.status_id, serverices.default_image, serverices.created_at, users.first_name, users.last_name, users.image FROM serverices JOIN users ON users.id = serverices.service_provider_id WHERE category_id = $1 AND is_deleted = '0'`,
+      [req.params.categoryId]
+    )
     .then((result) => {
       if (result.command === `SELECT`) {
         return res.status(200).json({
@@ -113,6 +142,7 @@ exports.getAllServicesOnCategory = (req, res, next) => {
     });
 };
 
+// ===================== GET ALL SERVICES ON SUB-CATEGORY =====================
 exports.getAllServicesOnSubCategory = (req, res, next) => {
   pool
     .query(`SELECT * FROM serverices WHERE sub_category_id = $1`, [
@@ -134,6 +164,7 @@ exports.getAllServicesOnSubCategory = (req, res, next) => {
     });
 };
 
+// ===================== GET SERVICE BY ID =====================
 exports.getServiceOnId = (req, res, next) => {
   pool
     .query(`SELECT * FROM serverices WHERE id = $1`, [req.params.id])

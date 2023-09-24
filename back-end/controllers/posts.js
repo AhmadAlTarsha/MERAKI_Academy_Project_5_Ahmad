@@ -10,7 +10,6 @@ exports.getAllPosts = (req, res, next) => {
   pool
     .query(query, [active])
     .then((result) => {
-      console.log(active);
       if (result.command === `SELECT`) {
         posts = result.rows;
         const newQuery = `SELECT * FROM serverices_images`;
@@ -156,7 +155,6 @@ exports.updatePostById = async (req, res, next) => {
   pool
     .query(query, data)
     .then((result) => {
-      console.log(result);
       if (result.rowCount !== 0) {
         return res.status(200).json({
           error: false,
