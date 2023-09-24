@@ -2,7 +2,13 @@ const pool = require("../models/DB");
 const { throwError } = require("../middlewares/throwError");
 
 exports.addSubCategory = (req, res, next) => {
-  let { category_id, name, image } = req.body;
+  let { category_id, name } = req.body;
+
+  if (!req.file) {
+    return throwError(422, "No Image provided");
+  }
+
+  const image = req.file.path.replace("\\", "/");
 
   const values = [category_id, name, image];
 
@@ -29,13 +35,24 @@ exports.addSubCategory = (req, res, next) => {
 };
 
 exports.updateSubCategory = (req, res, next) => {
-  let { category_id, name, image } = req.body;
+  let { category_id, name } = req.body;
   const { id } = req.params;
-  const values = [name, image, category_id, id];
+
+  let image;
+
+  if (req.file) {
+    image = req.file.path.replace("\\", "/");
+  }
+
+  const values = image
+    ? [name, image, category_id, id]
+    : [name, category_id, id];
 
   pool
     .query(
-      `UPDATE sub_categories SET name = $1, image = $2, category_id = $3 WHERE id = $4`,
+      image
+        ? `UPDATE sub_categories SET name = $1, image = $2, category_id = $3 WHERE id = $4`
+        : `UPDATE sub_categories SET name = $1, category_id = $2 WHERE id = $3`,
       values
     )
     .then((result) => {

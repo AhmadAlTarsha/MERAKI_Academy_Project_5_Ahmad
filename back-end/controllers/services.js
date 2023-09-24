@@ -9,9 +9,14 @@ exports.addService = (req, res, next) => {
     sub_category_id,
     title,
     description,
-    default_image,
     images,
   } = req.body;
+
+  if (!req.file) {
+    return throwError(422, "No Image provided");
+  }
+
+  const image = req.file.path.replace("\\", "/");
 
   const values = [
     service_provider_id,
@@ -19,7 +24,7 @@ exports.addService = (req, res, next) => {
     sub_category_id,
     title,
     description,
-    default_image,
+    image,
   ];
 
   pool
@@ -77,26 +82,45 @@ exports.updateService = (req, res, next) => {
     title,
     description,
     status_id,
-    default_image,
   } = req.body;
+
+  let image;
+
+  if (req.file) {
+    image = req.file.path.replace("\\", "/");
+  }
 
   const { id } = req.params;
 
-  const values = [
-    service_provider_id,
-    category_id,
-    sub_category_id,
-    title,
-    description,
-    status_id,
-    default_image,
-    id,
-  ];
+  const values = image
+    ? [
+        service_provider_id,
+        category_id,
+        sub_category_id,
+        title,
+        description,
+        status_id,
+        image,
+        id,
+      ]
+    : [
+        service_provider_id,
+        category_id,
+        sub_category_id,
+        title,
+        description,
+        status_id,
+        id,
+      ];
 
   pool
     .query(
-      `UPDATE serverices SET service_provider_id = $1, category_id = $2, sub_category_id = $3, 
-      title = $4, description = $5, status_id = $6, default_image = $7 WHERE id = $8`,
+      image
+        ? `UPDATE serverices SET service_provider_id = $1, category_id = $2, sub_category_id = $3, 
+      title = $4, description = $5, status_id = $6, default_image = $7 WHERE id = $8`
+      
+        : `UPDATE serverices SET service_provider_id = $1, category_id = $2, sub_category_id = $3, 
+      title = $4, description = $5, status_id = $6 WHERE id = $7`,
       values
     )
     .then((result) => {

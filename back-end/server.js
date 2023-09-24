@@ -1,12 +1,41 @@
 const express = require("express");
+const bodyParser = require("body-parser");
+const path = require("path");
+const multer = require("multer");
 require("dotenv").config();
 const cors = require("cors");
 // require("./models/DB");
 
 const app = express();
 
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().getMilliseconds().toString() + "-" + file.originalname);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
 app.use(express.json());
+app.use(bodyParser.json());
 app.use(cors());
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
+);
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 // ===================== ROUTERS =====================
 const rolesRouter = require("./routes/roles");
@@ -17,7 +46,6 @@ const servericesRouter = require("./routes/services");
 const categoryRouter = require("./routes/categories");
 const subCategoryRouter = require("./routes/sub-category");
 
-
 app.use("/roles", rolesRouter);
 app.use("/permissions", permissionsRouter);
 app.use("/users", usersRouter);
@@ -26,10 +54,11 @@ app.use("/services", servericesRouter);
 app.use("/categories", categoryRouter);
 app.use("/subcategories", subCategoryRouter);
 
-
 app.use("*", (req, res) => res.status(404).json("NO content at this path"));
 
 app.use((err, req, res, next) => {
+  console.log("ERROR ====> ",err);
+
   const { statusCode, message } = err;
   if (statusCode == 500) {
     err.statusCode = 500;

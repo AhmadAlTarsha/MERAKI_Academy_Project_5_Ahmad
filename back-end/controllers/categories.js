@@ -2,7 +2,13 @@ const pool = require("../models/DB");
 const { throwError } = require("../middlewares/throwError");
 
 exports.addCategory = (req, res, next) => {
-  let { name, image } = req.body;
+  let { name } = req.body;
+
+  if (!req.file) {
+    return throwError(422, "No Image provided");
+  }
+
+  const image = req.file.path.replace("\\", "/");
 
   const values = [name, image];
 
@@ -26,12 +32,23 @@ exports.addCategory = (req, res, next) => {
 };
 
 exports.updateCategory = (req, res, next) => {
-  let { name, image } = req.body;
+  let { name } = req.body;
+  let image;
+
+  if (req.file) {
+    image = req.file.path.replace("\\", "/");
+  }
+
   const { id } = req.params;
-  const values = [name, image, id];
+  const values = image ? [name, image, id] : [name, id];
 
   pool
-    .query(`UPDATE categories SET name = $1, image = $2 WHERE id = $3`, values)
+    .query(
+      image
+        ? `UPDATE categories SET name = $1, image = $2 WHERE id = $3`
+        : `UPDATE categories SET name = $1 WHERE id = $2`,
+      values
+    )
     .then((result) => {
       if (result.command === "UPDATE") {
         return res.status(200).json({
