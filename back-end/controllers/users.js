@@ -34,33 +34,33 @@ exports.register = async (req, res, next) => {
       } else {
         try {
           password = await bcrypt.hash(password, 10);
+          const query = image
+            ? `INSERT INTO users (region_id, role_id, first_name, last_name, nick_name, email, password, image ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
+            : `INSERT INTO users (region_id, role_id, first_name, last_name, nick_name, email, password ) VALUES ($1, $2, $3, $4, $5, $6, $7)`;
+          const data = image
+            ? [
+                region_id,
+                role_id,
+                first_name,
+                last_name,
+                nick_name,
+                email.toLowerCase(),
+                password,
+                image,
+              ]
+            : [
+                region_id,
+                role_id,
+                first_name,
+                last_name,
+                nick_name,
+                email.toLowerCase(),
+                password,
+              ];
+          return await pool.query(query, data);
         } catch (error) {
           throw error;
         }
-        const query = image
-          ? `INSERT INTO users (region_id, role_id, first_name, last_name, nick_name, email, password, image ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
-          : `INSERT INTO users (region_id, role_id, first_name, last_name, nick_name, email, password ) VALUES ($1, $2, $3, $4, $5, $6, $7)`;
-        const data = image
-          ? [
-              region_id,
-              role_id,
-              first_name,
-              last_name,
-              nick_name,
-              email.toLowerCase(),
-              password,
-              image,
-            ]
-          : [
-              region_id,
-              role_id,
-              first_name,
-              last_name,
-              nick_name,
-              email.toLowerCase(),
-              password,
-            ];
-        return await pool.query(query, data);
       }
     })
     .then((resultUser) => {
