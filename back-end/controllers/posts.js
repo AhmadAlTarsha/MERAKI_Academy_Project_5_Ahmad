@@ -95,7 +95,7 @@ exports.getAllPostsByUser = (req, res, next) => {
 // ===================== CREATE NEW POST =====================
 exports.createPost = async (req, res, next) => {
   const { id } = req.token.user;
-  const { title, description, images, category_id, sub_category_id } = req.body;
+  const { description, images, category_id, sub_category_id } = req.body;
 
   if (!req.file) {
     return throwError(422, "No Image provided");
