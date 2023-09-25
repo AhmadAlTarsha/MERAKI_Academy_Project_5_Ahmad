@@ -115,11 +115,8 @@ exports.createPost = async (req, res, next) => {
     .query(query, data)
     .then((result) => {
       if (result.rowCount !== 0) {
-        if (images.length === 0) {
-          res.status(201).json({
-            error: false,
-            message: "New post created",
-          });
+        if (!images) {
+          return Promise.resolve({ status: 201, message: "New post created" });
         } else {
           return pool.query(`SELECT id FROM posts ORDER BY id DESC LIMIT 1`);
         }
@@ -127,6 +124,12 @@ exports.createPost = async (req, res, next) => {
       return throwError(400, "Something went wrong");
     })
     .then(async (result2) => {
+      if (result2.status === 201) {
+        return res.status(201).json({
+          error: false,
+          message: result2.message,
+        });
+      }
       try {
         const newPostId = result2.rows[0].id;
         for (let i = 0; i < images.length; i++) {

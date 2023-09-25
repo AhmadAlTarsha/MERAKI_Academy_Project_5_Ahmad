@@ -17,28 +17,28 @@ postsRouter.get("/post/:active", getAllPosts);
 postsRouter.get(
   "/:posterId",
   authentication,
-  authorization("POST-CONTROL"),
+  authorization("POST_CONTROL"),
   getAllPostsByUser
 );
 
 postsRouter.post(
   "/",
   authentication,
-  authorization("POST-CONTROL"),
+  authorization("POST_CONTROL"),
   createPost
 );
 
 postsRouter.put(
   "/:id",
   authentication,
-  authorization("POST-CONTROL"),
+  authorization("POST_CONTROL"),
   updatePostById
 );
 
 postsRouter.delete(
   "/delete/:id",
   authentication,
-  authorization("POST-CONTROL"),
+  authorization("POST_CONTROL"),
   activationPostById
 );
 
