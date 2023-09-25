@@ -6,7 +6,7 @@ exports.getAllPosts = (req, res, next) => {
   let images = [];
   let posts = [];
   const { active } = req.params;
-  const query = `SELECT posts.id, posts.title, posts.description, posts.category_id, posts.sub_category_id, posts.created_at, users.first_name, users.last_name, users.image FROM posts JOIN users ON users.id = posts.poster_id WHERE posts.active = $1`;
+  const query = `SELECT posts.id, posts.description, posts.category_id, posts.sub_category_id, posts.created_at, users.first_name, users.last_name, users.image FROM posts JOIN users ON users.id = posts.poster_id WHERE posts.active = $1`;
   pool
     .query(query, [active])
     .then((result) => {
@@ -50,17 +50,20 @@ exports.getAllPosts = (req, res, next) => {
 exports.getAllPostsByUser = (req, res, next) => {
   const { active } = req.body;
   const { posterId } = req.params;
-  const query = `SELECT * FROM posts WHERE active = $1 AND poster_id=$2;`;
+  let images = [];
+  let posts = [];
+  const query = `SELECT * FROM posts JOIN users ON users.id = posts.poster_id WHERE posts.active = $1 AND posts.poster_id = $2`;
   pool
     .query(query, [active, posterId])
     .then((result) => {
       if (result.command === `SELECT`) {
-        return res.status(200).json({
-          error: false,
-          posts: result.rows,
-        });
+        posts = result.rows;
+        const imageQuery = `SELECT * FROM serverices_images`;
+        return pool.query(imageQuery);
       }
       return throwError(400, "Something went wrong");
+    }).then((result2)=>{
+      images = result2.rows
     })
     .catch((err) => {
       if (!err.statusCode) {
