@@ -25,7 +25,7 @@ exports.getAllPosts = (req, res, next) => {
           fullName: `${post.first_name} ${post.last_name}`,
           userImage: post.image,
         },
-        title: post.title,
+        is_deleted:post.is_deleted,
         description: post.description,
         category_id: post.category_id,
         sub_category_id: post.sub_category_id,
@@ -50,7 +50,7 @@ exports.getAllPosts = (req, res, next) => {
 exports.getAllPostsByUser = (req, res, next) => {
   const { active } = req.body;
   const { posterId } = req.params;
-  const query = `SELECT * FROM posts WHERE active = $1 AND poster_id=$2;`;
+  const query = `SELECT * FROM posts WHERE is_deleted = $1 AND poster_id=$2;`;
   pool
     .query(query, [active, posterId])
     .then((result) => {
@@ -73,7 +73,7 @@ exports.getAllPostsByUser = (req, res, next) => {
 // ===================== CREATE NEW POST =====================
 exports.createPost = async (req, res, next) => {
   const { id } = req.token.user;
-  const { title, description, images, category_id, sub_category_id } = req.body;
+  const {  description, images, category_id, sub_category_id } = req.body;
 
   if (!req.file) {
     return throwError(422, "No Image provided");
@@ -81,11 +81,11 @@ exports.createPost = async (req, res, next) => {
 
   const image = req.file.path.replace("\\", "/");
 
-  const data = [id, title, description, image, category_id, sub_category_id];
+  const data = [id,  description, image, category_id, sub_category_id];
 
-  const query = `INSERT INTO posts (poster_id, title, description,main_image,
+  const query = `INSERT INTO posts (poster_id,  description,main_image,
     category_id,
-    sub_category_id) VALUES ($1, $2, $3, $4, $5, $6)`;
+    sub_category_id) VALUES ($1, $2, $3, $4, $5)`;
 
   pool
     .query(query, data)
@@ -134,7 +134,7 @@ exports.createPost = async (req, res, next) => {
 exports.updatePostById = async (req, res, next) => {
   const { id } = req.params;
 
-  const { title, description, category_id, sub_category_id } = req.body;
+  const {  description, category_id, sub_category_id } = req.body;
 
   let image;
 
@@ -143,12 +143,12 @@ exports.updatePostById = async (req, res, next) => {
   }
 
   const data = image
-    ? [title, description, image, category_id, sub_category_id, id]
-    : [title, description, category_id, sub_category_id, id];
+    ? [ description, image, category_id, sub_category_id, id]
+    : [ description, category_id, sub_category_id, id];
 
   const query = image
-    ? `UPDATE posts SET title = $1, description = $2, main_image = $3, category_id = $4, sub_category_id = $5 WHERE id=$6 RETURNING *`
-    : `UPDATE posts SET title = $1, description = $2, category_id = $3, sub_category_id = $4 WHERE id=$5 RETURNING *`;
+    ? `UPDATE posts SET description = $1, main_image = $2, category_id = $3, sub_category_id = $4 WHERE id=$5 RETURNING *`
+    : `UPDATE posts SET description = $1, category_id = $2, sub_category_id = $3 WHERE id=$4 RETURNING *`;
 
   pool
     .query(query, data)
@@ -174,7 +174,7 @@ exports.activationPostById = (req, res, next) => {
   const { id } = req.params;
   const { active } = req.body;
   const value = [active, id];
-  const query = `UPDATE posts SET active = $1 WHERE id=$2`;
+  const query = `UPDATE posts SET is_deleted = $1 WHERE id=$2`;
   pool
     .query(query, value)
     .then((result) => {
@@ -182,7 +182,7 @@ exports.activationPostById = (req, res, next) => {
         return res.status(200).json({
           error: false,
           message:
-            active === 0
+            active == 1
               ? `Post with id: ${id} deleted successfully`
               : `Post with id: ${id} Activated successfully`,
         });
