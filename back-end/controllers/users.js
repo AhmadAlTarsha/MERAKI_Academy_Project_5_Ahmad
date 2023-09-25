@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const pool = require("../models/DB");
 // const salt = parseInt(process.env.SALT);
-exports.register = async (req, res, next) => {
+exports.register = async (req, res, next) => { 
   let {
     region_id,
     role_id,
