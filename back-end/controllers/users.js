@@ -12,10 +12,14 @@ exports.register = async (req, res, next) => {
     nick_name,
     email,
     password,
+  
   } = req.body;
 
   if (!req.file) {
-    return throwError(422, "No Image provided");
+   return     res.status(422).json({
+    error: true,
+    message: "No Image provided",
+  });
   }
 
   const image = req.file.path.replace("\\", "/");
@@ -118,7 +122,7 @@ exports.login = (req, res, next) => {
           token,
         });
       }
-      return throwError(404, "Something went wrong");
+      return throwError(400, "Something went wrong");
     })
     .catch((err) => {
       if (!err.statusCode) {
@@ -135,7 +139,7 @@ exports.getAllUsers = async (req, res, next) => {
   users.id AS user_id,
   regions.region AS user_region,
   roles.role AS user_role,
-  users.firt_name,
+  users.first_name,
   users.last_name,
   users.nick_name,
   users.email,
@@ -176,7 +180,7 @@ exports.getUserById = async (req, res, next) => {
   const query = `SELECT
   users.id AS user_id,
   regions.region AS user_region,
-  users.firt_name,
+  users.first_name,
   users.last_name,
   users.nick_name,
   users.email,

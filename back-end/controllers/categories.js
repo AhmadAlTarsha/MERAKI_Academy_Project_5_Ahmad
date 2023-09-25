@@ -53,7 +53,7 @@ exports.updateCategory = (req, res, next) => {
       if (result.command === "UPDATE") {
         return res.status(200).json({
           error: false,
-          message: "Category Updated succefully",
+          message: "Category Updated successfully",
         });
       }
       return throwError(400, "Something went wrong");
