@@ -12,21 +12,16 @@ exports.register = async (req, res, next) => {
     nick_name,
     email,
     password,
-  
   } = req.body;
 
-
   if (!req.file) {
-   return     res.status(422).json({
-    error: true,
-    message: "No Image provided",
-  });
+    return res.status(422).json({
+      error: true,
+      message: "No Image provided",
+    });
   }
 
-
-
   let image;
-
 
   if (req.file) {
     image = req.file.path.replace("\\", "/");
