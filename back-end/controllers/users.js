@@ -14,33 +14,57 @@ exports.register = async (req, res, next) => {
     password,
   } = req.body;
 
-  if (!req.file) {
-    return throwError(422, "No Image provided");
+  let image;
+
+  if (req.file) {
+    image = req.file.path.replace("\\", "/");
   }
 
-  const image = req.file.path.replace("\\", "/");
+  const emailQuery = `SELECT id FROM users WHERE email = $1 LIMIT 1`;
+  const emailData = [email];
 
-  try {
-    password = await bcrypt.hash(password, 10);
-  } catch (error) {
-    throw error;
-  }
-
-  const query = `INSERT INTO users (region_id, role_id, first_name, last_name, nick_name, email, password, image ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`;
-  const data = [
-    region_id,
-    role_id,
-    first_name,
-    last_name,
-    nick_name,
-    email.toLowerCase(),
-    password,
-    image,
-  ];
   pool
-    .query(query, data)
-    .then((result) => {
-      if (result.command === "INSERT") {
+    .query(emailQuery, emailData)
+    .then(async (resultEmail) => {
+      if (resultEmail.rowCount > 0) {
+        res.status(400).json({
+          error: true,
+          message: "User already exist",
+        });
+      } else {
+        try {
+          password = await bcrypt.hash(password, 10);
+        } catch (error) {
+          throw error;
+        }
+        const query = image
+          ? `INSERT INTO users (region_id, role_id, first_name, last_name, nick_name, email, password, image ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
+          : `INSERT INTO users (region_id, role_id, first_name, last_name, nick_name, email, password ) VALUES ($1, $2, $3, $4, $5, $6, $7)`;
+        const data = image
+          ? [
+              region_id,
+              role_id,
+              first_name,
+              last_name,
+              nick_name,
+              email.toLowerCase(),
+              password,
+              image,
+            ]
+          : [
+              region_id,
+              role_id,
+              first_name,
+              last_name,
+              nick_name,
+              email.toLowerCase(),
+              password,
+            ];
+        return await pool.query(query, data);
+      }
+    })
+    .then((resultUser) => {
+      if (resultUser.command === "INSERT") {
         return res.status(200).json({
           error: true,
           message: "Account created successfully",

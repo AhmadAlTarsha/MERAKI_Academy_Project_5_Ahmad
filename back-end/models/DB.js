@@ -38,6 +38,8 @@ const createAllTables = () => {
       
       CREATE TABLE users (
         id SERIAL PRIMARY KEY,
+        region_id integer,
+        role_id integer,
         first_name varchar(255),
         last_name varchar(255),
         nick_name varchar(255),
@@ -51,7 +53,6 @@ const createAllTables = () => {
         created_at DEFAULT now(),
         FOREIGN KEY (region_id) REFERENCES regions(id),
         FOREIGN KEY (role_id) REFERENCES roles(id)
-        
       );
       
       CREATE TABLE categories (
@@ -104,7 +105,6 @@ const createAllTables = () => {
         FOREIGN KEY (poster_id) REFERENCES users(id),
         FOREIGN KEY (category_id) REFERENCES categories(id),
         FOREIGN KEY (sub_category_id) REFERENCES sub_categories(id)
-     
       );
       
       CREATE TABLE serverices_images (
