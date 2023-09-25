@@ -13,14 +13,14 @@ const { authorization } = require("../middlewares/authorization");
 subCategoryRouter.post(
   "/",
   authentication,
-  authorization("CATEGORY-CONTROL"),
+  authorization("CATEGORY_CONTROL"),
   addSubCategory
 );
 
 subCategoryRouter.put(
   "/:id",
   authentication,
-  authorization("CATEGORY-CONTROL"),
+  authorization("CATEGORY_CONTROL"),
   updateSubCategory
 );
 
@@ -32,7 +32,7 @@ subCategoryRouter.get(
 subCategoryRouter.get(
   "/category/:id",
   authentication,
-  authorization("CATEGORY-CONTROL"),
+  authorization("CATEGORY_CONTROL"),
   getSubCateogoryById
 );
 
