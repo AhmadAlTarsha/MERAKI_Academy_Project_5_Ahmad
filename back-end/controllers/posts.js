@@ -52,7 +52,7 @@ exports.getAllPostsByUser = (req, res, next) => {
   const { posterId } = req.params;
   let images = [];
   let posts = [];
-  const query = `SELECT * FROM posts JOIN users ON users.id = posts.poster_id WHERE posts.active = $1 AND posts.poster_id = $2`;
+  const query = `SELECT posts.*, users.id AS userId ,users.first_name, users.last_name, users.image FROM posts JOIN users ON users.id = posts.poster_id WHERE posts.active = $1 AND posts.poster_id = $2`;
   pool
     .query(query, [active, posterId])
     .then((result) => {
@@ -62,8 +62,27 @@ exports.getAllPostsByUser = (req, res, next) => {
         return pool.query(imageQuery);
       }
       return throwError(400, "Something went wrong");
-    }).then((result2)=>{
-      images = result2.rows
+    })
+    .then((result2) => {
+      images = result2.rows;
+      posts = posts.map((post) => ({
+        id: post.id,
+        user: {
+          fullName: `${post.first_name} ${post.last_name}`,
+          userImage: post.image,
+        },
+        description: post.description,
+        category_id: post.category_id,
+        sub_category_id: post.sub_category_id,
+        created_at: post.created_at,
+        images: images.filter((image) => {
+          return image.service_id === post.id;
+        }),
+      }));
+      return res.status(200).json({
+        error: false,
+        posts: posts,
+      });
     })
     .catch((err) => {
       if (!err.statusCode) {
