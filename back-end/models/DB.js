@@ -108,6 +108,7 @@ CREATE TABLE posts (
   FOREIGN KEY (sub_category_id) REFERENCES sub_categories(id)
 );
       
+
 CREATE TABLE serverices_images (
   id SERIAL PRIMARY KEY,
   image VARCHAR,
@@ -115,6 +116,28 @@ CREATE TABLE serverices_images (
   created_at timestamp DEFAULT now(),
   FOREIGN KEY (service_id) REFERENCES serverices(id)
 );
+
+      CREATE TABLE posts (
+        id SERIAL PRIMARY KEY,
+        poster_id integer, 
+        category_id integer,
+        sub_category_id integer,
+        description TEXT,
+        main_image varchar(255),
+        created_at DEFAULT now(),
+        FOREIGN KEY (poster_id) REFERENCES users(id),
+        FOREIGN KEY (category_id) REFERENCES categories(id),
+        FOREIGN KEY (sub_category_id) REFERENCES sub_categories(id)
+      );
+      
+      CREATE TABLE serverices_images (
+        id SERIAL PRIMARY KEY,
+        image VARCHAR,
+        service_id integer,
+        created_at varchar(255),
+        FOREIGN KEY (service_id) REFERENCES serverices(id)
+      );
+
 
 CREATE TABLE comments (
   id SERIAL PRIMARY KEY,
