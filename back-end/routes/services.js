@@ -27,8 +27,6 @@ servericesRouter.put(
 
 servericesRouter.get(
   "/:id",
-  authentication,
-  authorization("SERVICE-CONTROL"),
   getServiceOnId
 );
 
