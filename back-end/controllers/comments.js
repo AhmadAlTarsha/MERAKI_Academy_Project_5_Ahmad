@@ -6,7 +6,7 @@ exports.createNewComment = (req, res, next) => {
   const { id } = req.token.user;
 
   const { comment } = req.body;
-  const { post_id } = req.params;
+  const post_id  = req.params.id;
 
   const query = `INSERT INTO comments (comment, commenter_id, post_id) VALUES ($1,$2,$3) RETURNING *`;
   const data = [comment, id, post_id];
@@ -15,8 +15,9 @@ exports.createNewComment = (req, res, next) => {
     .query(query, data)
     .then((result) => {
       if (result.command === "INSERT") {
+        console.log(post_id);
         return res.status(200).json({
-          error: true,
+          error: false,
           message: "comment created successfully",
         });
       }
@@ -26,22 +27,26 @@ exports.createNewComment = (req, res, next) => {
     .catch((err) => {
       if (!err.statusCode) {
         err.statusCode = 500;
+       
       }
       next(err);
     });
 };
 // ===================== This Function To Get  Comment  By Post=====================
 exports.getCommentsByPostId = (req, res, next) => {
-  const { post_id } = req.params;
-  const query = `SELECT c.comment,c.post_id,u.first_name, c.commenter_id FROM comments c JOIN users u ON u.id=c.commenter_id WHERE c.post_id_id=$1 AND c.is_deleted=0;`;
+  const post_id  = req.params.id;
+  const query = `SELECT * FROM comments WHERE post_id = $1 AND is_deleted = 0  
+  `;
   const data = [post_id];
   pool
     .query(query, data)
     .then((result) => {
+      console.log(post_id);
       if (result.command === "SELECT") {
         return res.status(200).json({
-          error: true,
-          message: "All comment From This Post",
+          error: false,
+          message: "All comment From This id",
+          comment:result.rows
         });
       }
       return throwError(400, "Something went wrong");
@@ -60,15 +65,16 @@ exports.updateCommentById = (req, res, next) => {
   const id = req.params.id;
   let { comment } = req.body;
 
-  const query = `UPDATE comments SET comment = COALESCE($1,comment), WHERE id=$2 AND is_deleted = 0  RETURNING *;`;
+  const query = `UPDATE comments SET comment = COALESCE($1,comment) WHERE id=$2 AND is_deleted = 0  RETURNING *;`;
   const data = [comment || null, id];
   pool
     .query(query, data)
     .then((result) => {
       if (result.rows.length !== 0) {
         return res.status(200).json({
-          error: true,
-          message: "comment created successfully",
+          error: false,
+          message: "comment updated successfully",
+          newComment:result.rows
         });
       }
       return throwError(400, "Something went wrong");

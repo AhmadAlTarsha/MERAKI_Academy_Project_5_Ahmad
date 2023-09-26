@@ -12,11 +12,11 @@ const {
 const { authentication } = require("../middlewares/authentication");
 const { authorization } = require("../middlewares/authorization");
 
-commentsRouter.get("/:id",authentication,authorization("COMMENT-CONTROL"),getCommentsByPostId)
+commentsRouter.get("/:id",authentication,authorization("COMMENT_CONTROL"),getCommentsByPostId)
 
-commentsRouter.post("/",authentication,authorization("COMMENT-CONTROL"),createNewComment)
+commentsRouter.post("/:id",authentication,authorization("COMMENT_CONTROL"),createNewComment)
 
-commentsRouter.put("/:id",authentication,authorization("COMMENT-CONTROL"),updateCommentById)
+commentsRouter.put("/:id",authentication,authorization("COMMENT_CONTROL"),updateCommentById)
 
-commentsRouter.delete("/:id",authentication,authorization("COMMENT-CONTROL"),deleteCommentById)
+commentsRouter.delete("/:id",authentication,authorization("COMMENT_CONTROL"),deleteCommentById)
 module.exports = commentsRouter;
