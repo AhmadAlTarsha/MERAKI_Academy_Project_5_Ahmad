@@ -91,9 +91,9 @@ exports.updateCommentById = (req, res, next) => {
 
 exports.deleteCommentById = (req, res, next) => {
   const { id } = req.params;
-  const { commenter_id } = req.token;
-  const query = `UPDATE comments SET is_deleted= 1 WHERE id = $1 AND commenter_id=$2;`;
-  const data = [id, commenter_id];
+  //const { commenter_id } = req.token.user;
+  const query = `UPDATE comments SET is_deleted= 1 WHERE id = $1 ;`;
+  const data = [id];
   pool
     .query(query, data)
     .then((result) => {

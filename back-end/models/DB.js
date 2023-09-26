@@ -59,6 +59,7 @@ const createAllTables = () => {
         id SERIAL PRIMARY KEY,
         name varchar(255),
         image varchar(255),
+        is_deleted integer  DEFAULT 0,
         created_at timestamp DEFAULT now()
       );
       
@@ -67,6 +68,7 @@ const createAllTables = () => {
         category_id integer,
         name varchar(255),
         image varchar(255),
+        is_deleted integer  DEFAULT 0,
         created_at timestamp DEFAULT now(),
         FOREIGN KEY (category_id) REFERENCES categories(id)
       );
