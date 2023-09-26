@@ -13,7 +13,10 @@ exports.addService = (req, res, next) => {
   } = req.body;
 
   if (!req.file) {
-    return throwError(422, "No Image provided");
+    return res.status(400).json({
+      error: false,
+      message: "No Image provided",
+    });
   }
 
   const image = req.file.path.replace("\\", "/");
@@ -35,9 +38,9 @@ exports.addService = (req, res, next) => {
     )
     .then((result) => {
       if (result.command === "INSERT") {
-        if (images.length === 0) {
-          return res.status(200).json({
-            error: false,
+        if (!images) {
+          return Promise.resolve({
+            status: 201,
             message: "Service Added succefully",
           });
         } else {
@@ -49,6 +52,13 @@ exports.addService = (req, res, next) => {
       return throwError(400, "Something went wrong");
     })
     .then(async (result2) => {
+      if (result2.status === 201) {
+        return res.status(201).json({
+          error: false,
+          message: result2.message,
+        });
+      }
+
       try {
         const newServiceId = result2.rows[0].id;
         for (let i = 0; i < images.length; i++) {
@@ -147,14 +157,36 @@ exports.getAllServicesOnCategory = (req, res, next) => {
 
   pool
     .query(
-      `SELECT serverices.id, serverices.service_provider_id, serverices.category_id, serverices.sub_category_id, serverices.title, serverices.description, serverices.status_id, serverices.default_image, serverices.created_at, users.first_name, users.last_name, users.image FROM serverices JOIN users ON users.id = serverices.service_provider_id WHERE category_id = $1 AND is_deleted = '0'`,
+      `SELECT serverices.id, serverices.service_provider_id, serverices.category_id, serverices.sub_category_id, serverices.title, serverices.description, serverices.status_id, 
+      serverices.default_image, serverices.created_at,
+      users.first_name, users.last_name, users.image,
+      statuses.name
+      FROM serverices 
+      JOIN users ON users.id = serverices.service_provider_id
+      JOIN statuses ON statuses.id = serverices.status_id
+      WHERE serverices.category_id = $1 AND serverices.is_deleted = 0`,
       [req.params.categoryId]
     )
     .then((result) => {
+      const serverices = result.rows.map((service) => ({
+        id: service.id,
+        status_id: service.status_id,
+        status_name: service.name,
+        provider: {
+          full_name: `${service.first_name} ${service.last_name}`,
+          image: service.image,
+        },
+        category_id: service.category_id,
+        sub_category_id: service.sub_category_id,
+        title: service.title,
+        description: service.description,
+        default_image: service.default_image,
+        created_at: service.created_at,
+      }));
       if (result.command === `SELECT`) {
         return res.status(200).json({
           error: false,
-          services: result.rows,
+          serverices,
         });
       }
     })
@@ -173,10 +205,24 @@ exports.getAllServicesOnSubCategory = (req, res, next) => {
       req.params.subCategoryId,
     ])
     .then((result) => {
+      const serverices = result.rows.map((service) => ({
+        id: service.id,
+        status_id: service.status_id,
+        provider: {
+          full_name: `${service.first_name} ${service.last_name}`,
+          image: service.image,
+        },
+        category_id: service.category_id,
+        sub_category_id: service.sub_category_id,
+        title: service.title,
+        description: service.description,
+        default_image: service.default_image,
+        created_at: service.created_at,
+      }));
       if (result.command === `SELECT`) {
         return res.status(200).json({
           error: false,
-          services: result.rows,
+          serverices,
         });
       }
     })
@@ -191,16 +237,42 @@ exports.getAllServicesOnSubCategory = (req, res, next) => {
 // ===================== GET SERVICE BY ID =====================
 exports.getServiceOnId = (req, res, next) => {
   pool
-    .query(`SELECT * FROM serverices WHERE id = $1`, [req.params.id])
+    .query(
+      `SELECT serverices.id, serverices.service_provider_id, serverices.category_id, serverices.sub_category_id, serverices.title, serverices.description, serverices.status_id, 
+    serverices.default_image, serverices.created_at,
+    users.first_name, users.last_name, users.image,
+    statuses.name
+    FROM serverices 
+    JOIN users ON users.id = serverices.service_provider_id
+    JOIN statuses ON statuses.id = serverices.status_id
+    WHERE serverices.id = $1`,
+      [req.params.id]
+    )
     .then((result) => {
       if (result.command === `SELECT`) {
+        const serverices = result.rows.map((service) => ({
+          id: service.id,
+          status_id: service.status_id,
+          status_name: service.name,
+          provider: {
+            full_name: `${service.first_name} ${service.last_name}`,
+            image: service.image,
+          },
+          category_id: service.category_id,
+          sub_category_id: service.sub_category_id,
+          title: service.title,
+          description: service.description,
+          default_image: service.default_image,
+          created_at: service.created_at,
+        }));
         return res.status(200).json({
           error: false,
-          services: result.rows[0],
+          serverices: serverices[0],
         });
       }
     })
     .catch((err) => {
+      console.log(err);
       if (!err.statusCode) {
         err.statusCode = 500;
       }

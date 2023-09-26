@@ -14,13 +14,6 @@ exports.register = async (req, res, next) => {
     password,
   } = req.body;
 
-  if (!req.file) {
-    return res.status(422).json({
-      error: true,
-      message: "No Image provided",
-    });
-  }
-
   let image;
 
   if (req.file) {

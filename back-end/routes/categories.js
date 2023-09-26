@@ -5,7 +5,7 @@ const {
   updateCategory,
   getAllCategories,
   getCateogoryById,
-  deleteCategoryById
+  activateOrDeActivateCategoryById
 } = require("../controllers/categories");
 
 const { authentication } = require("../middlewares/authentication");
@@ -38,10 +38,10 @@ categoryRouter.get(
 );
 
 categoryRouter.delete(
-  "/delete/:id",
+  "/active/:id",
   authentication,
   authorization("CATEGORY_CONTROL"),
-  deleteCategoryById
+  activateOrDeActivateCategoryById
 );
 
 module.exports = categoryRouter;

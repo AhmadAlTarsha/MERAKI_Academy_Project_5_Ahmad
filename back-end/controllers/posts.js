@@ -4,11 +4,78 @@ const { throwError } = require("../middlewares/throwError");
 // ===================== GET ALL POSTS =====================
 exports.getAllPosts = (req, res, next) => {
   let images = [];
+  let comments = [];
   let posts = [];
   const { active } = req.params;
-  const query = `SELECT posts.id, posts.description, posts.category_id, posts.sub_category_id, posts.created_at, users.first_name, users.last_name, users.image FROM posts JOIN users ON users.id = posts.poster_id WHERE posts.is_deleted = $1`;
+  const query = `SELECT posts.id, posts.description, posts.category_id, posts.sub_category_id, posts.created_at, 
+  users.first_name, users.last_name, users.image FROM posts JOIN users ON users.id = posts.poster_id WHERE posts.is_deleted = $1`;
   pool
     .query(query, [active])
+    .then(async (result) => {
+      if (result.command === `SELECT`) {
+        posts = result.rows;
+        const newQuery = `SELECT * FROM serverices_images`;
+        try {
+          return await pool.query(newQuery);
+        } catch (error) {
+          throw error;
+        }
+      }
+      return throwError(400, "Something went wrong");
+    })
+    .then(async (result2) => {
+      if (result2.command === "SELECT") {
+        images = result2.rows;
+        const newQuery = `SELECT * FROM comments`;
+        try {
+          return await pool.query(newQuery);
+        } catch (error) {
+          throw error;
+        }
+      }
+    })
+    .then((result3) => {
+      comments = result3.rows;
+      posts = posts.map((post) => ({
+        id: post.id,
+        user: {
+          fullName: `${post.first_name} ${post.last_name}`,
+          userImage: post.image,
+        },
+        is_deleted: post.is_deleted,
+        description: post.description,
+        category_id: post.category_id,
+        sub_category_id: post.sub_category_id,
+        created_at: post.created_at,
+        images: images.filter((image) => {
+          return image.service_id === post.id;
+        }),
+        comments: comments.filter((comment) => {
+          return comment.post_id === post.id;
+        }),
+      }));
+      return res.status(200).json({
+        error: false,
+        posts,
+      });
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
+exports.getAllPostsByUser = (req, res, next) => {
+  let images = [];
+  let posts = [];
+
+  const { active } = req.body;
+  const { posterId } = req.params;
+  const query = `SELECT * FROM posts WHERE is_deleted = $1 AND poster_id=$2;`;
+  pool
+    .query(query, [active, posterId])
     .then((result) => {
       if (result.command === `SELECT`) {
         posts = result.rows;
@@ -25,7 +92,7 @@ exports.getAllPosts = (req, res, next) => {
           fullName: `${post.first_name} ${post.last_name}`,
           userImage: post.image,
         },
-        is_deleted:post.is_deleted,
+        is_deleted: post.is_deleted,
         description: post.description,
         category_id: post.category_id,
         sub_category_id: post.sub_category_id,
@@ -36,31 +103,8 @@ exports.getAllPosts = (req, res, next) => {
       }));
       return res.status(200).json({
         error: false,
-        posts: posts, // each post has images key
+        posts: posts,
       });
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
-    });
-};
-
-exports.getAllPostsByUser = (req, res, next) => {
-  const { active } = req.body;
-  const { posterId } = req.params;
-  const query = `SELECT * FROM posts WHERE is_deleted = $1 AND poster_id=$2;`;
-  pool
-    .query(query, [active, posterId])
-    .then((result) => {
-      if (result.command === `SELECT`) {
-        return res.status(200).json({
-          error: false,
-          posts: result.rows,
-        });
-      }
-      return throwError(400, "Something went wrong");
     })
     .catch((err) => {
       if (!err.statusCode) {
@@ -73,15 +117,18 @@ exports.getAllPostsByUser = (req, res, next) => {
 // ===================== CREATE NEW POST =====================
 exports.createPost = async (req, res, next) => {
   const { id } = req.token.user;
-  const {  description, images, category_id, sub_category_id } = req.body;
+  const { description, images, category_id, sub_category_id } = req.body;
 
   if (!req.file) {
-    return throwError(422, "No Image provided");
+    return res.status(400).json({
+      error: false,
+      message: "No Image provided",
+    });
   }
 
   const image = req.file.path.replace("\\", "/");
 
-  const data = [id,  description, image, category_id, sub_category_id];
+  const data = [id, description, image, category_id, sub_category_id];
 
   const query = `INSERT INTO posts (poster_id,  description,main_image,
     category_id,
@@ -134,7 +181,7 @@ exports.createPost = async (req, res, next) => {
 exports.updatePostById = async (req, res, next) => {
   const { id } = req.params;
 
-  const {  description, category_id, sub_category_id } = req.body;
+  const { description, category_id, sub_category_id } = req.body;
 
   let image;
 
@@ -143,8 +190,8 @@ exports.updatePostById = async (req, res, next) => {
   }
 
   const data = image
-    ? [ description, image, category_id, sub_category_id, id]
-    : [ description, category_id, sub_category_id, id];
+    ? [description, image, category_id, sub_category_id, id]
+    : [description, category_id, sub_category_id, id];
 
   const query = image
     ? `UPDATE posts SET description = $1, main_image = $2, category_id = $3, sub_category_id = $4 WHERE id=$5 RETURNING *`

@@ -5,7 +5,10 @@ exports.addCategory = (req, res, next) => {
   let { name } = req.body;
 
   if (!req.file) {
-    return throwError(422, "No Image provided");
+    return res.status(400).json({
+      error: false,
+      message: "No Image provided",
+    });
   }
 
   const image = req.file.path.replace("\\", "/");
@@ -104,18 +107,22 @@ exports.getCateogoryById = (req, res, next) => {
     });
 };
 
-exports.deleteCategoryById = (req, res, next) => {
+exports.activateOrDeActivateCategoryById = (req, res, next) => {
   const { id } = req.params;
+  const { active } = req.body;
 
-  const query = `UPDATE categories SET is_deleted= 1 WHERE id = $1 ;`;
-  const data = [id, ];
+  const query = `UPDATE categories SET is_deleted = $1 WHERE id = $2 ;`;
+  const data = [active, id];
   pool
     .query(query, data)
     .then((result) => {
       if (result.rowCount !== 0) {
         return res.status(200).json({
           error: false,
-          message: `category deleted successfully`,
+          message:
+            active == 0
+              ? `Category deleted successfully`
+              : `Category activated successfully`,
         });
       }
       return throwError(400, "something went rowing");
