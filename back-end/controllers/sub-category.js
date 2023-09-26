@@ -111,3 +111,27 @@ exports.getSubCateogoryById = (req, res, next) => {
       next(err);
     });
 };
+
+exports.deleteSub_CategoryById = (req, res, next) => {
+  const { id } = req.params;
+
+  const query = `UPDATE sub_categories SET is_deleted= 1 WHERE id = $1 ;`;
+  const data = [id, ];
+  pool
+    .query(query, data)
+    .then((result) => {
+      if (result.rowCount !== 0) {
+        return res.status(200).json({
+          error: false,
+          message: `sub_categories deleted successfully`,
+        });
+      }
+      return throwError(400, "something went rowing");
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};

@@ -5,6 +5,7 @@ const {
   updateSubCategory,
   getAllSubCategoriesOnCategory,
   getSubCateogoryById,
+  deleteSub_CategoryById
 } = require("../controllers/sub-category");
 
 const { authentication } = require("../middlewares/authentication");
@@ -36,4 +37,10 @@ subCategoryRouter.get(
   getSubCateogoryById
 );
 
+subCategoryRouter.delete(
+  "/delete/:id",
+  authentication,
+  authorization("CATEGORY_CONTROL"),
+  deleteSub_CategoryById
+);
 module.exports = subCategoryRouter;
