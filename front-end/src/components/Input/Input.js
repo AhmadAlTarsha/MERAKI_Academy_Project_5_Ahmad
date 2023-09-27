@@ -10,18 +10,25 @@ function Input({
   onChange,
   inputClassName,
   value,
+  labelDivClassname,
+  inputDiv,
 }) {
   return (
     <div className={divClassName}>
-      <label className={labelClassName}>{labelName}</label>
-      <input
-        type={type}
-        name={name}
-        placeholder={placeHolder}
-        onChange={onChange}
-        className={inputClassName}
-        value={value}
-      />
+      <div className={labelDivClassname}>
+        <label className={labelClassName}>{labelName}</label>
+      </div>
+      <div className={inputDiv}>
+        {" "}
+        <input
+          type={type}
+          name={name}
+          placeholder={placeHolder}
+          onChange={onChange}
+          className={inputClassName}
+          value={value}
+        />
+      </div>
     </div>
   );
 }
