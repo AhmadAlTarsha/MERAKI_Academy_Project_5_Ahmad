@@ -8,6 +8,8 @@ import { Register } from "../pages/register/register";
 
 import Adminindex from "../pages/Admin/Layout";
 import AdminHome from "../pages/Admin/Home/Home";
+import AdminPosts from "../pages/Admin/Posts/Posts";
+import AdminServices from "../pages/Admin/Services/Services";
 
 
 export const router = createBrowserRouter([
@@ -37,6 +39,14 @@ export const router = createBrowserRouter([
       {
         path: "",
         element: <AdminHome />,
+      },
+      {
+        path: "posts",
+        element: <AdminPosts />,
+      },
+      {
+        path: "services",
+        element: <AdminServices />,
       },
       {
         path: "login",
