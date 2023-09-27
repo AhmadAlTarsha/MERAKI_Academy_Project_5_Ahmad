@@ -1,3 +1,16 @@
+
+import React from 'react'
+import { Outlet,NavLink } from 'react-router-dom'
+import { Register } from '../register/register'
+
+const Login = () => {
+  return (
+    <div>Login <NavLink to={"/register"}>register</NavLink> <main>
+   
+  </main> </div>
+  )
+}
+
 import React from "react";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
@@ -11,6 +24,7 @@ const Login = () => {
             Sign in to your account
           </h2>
         </div>
+
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" action="#" method="POST">
