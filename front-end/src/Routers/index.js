@@ -28,7 +28,7 @@ export const router = createBrowserRouter([
     element: <Adminindex />,
     children: [
       {
-        path: "",
+        path: "a",
         element: <AdminHome />,
       },
       {
