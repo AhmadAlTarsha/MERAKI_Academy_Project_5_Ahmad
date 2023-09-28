@@ -1,17 +1,5 @@
-
-import React from 'react'
-import { Outlet,NavLink } from 'react-router-dom'
-import { Register } from '../register/register'
-
-const Login = () => {
-  return (
-    <div>Login <NavLink to={"/register"}>register</NavLink> <main>
-   
-  </main> </div>
-  )
-}
-
 import React from "react";
+import { NavLink } from "react-router-dom";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 
@@ -24,7 +12,6 @@ const Login = () => {
             Sign in to your account
           </h2>
         </div>
-
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" action="#" method="POST">
@@ -60,7 +47,16 @@ const Login = () => {
               />
             </div>
 
-            <Button buttonClassName={"flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"} buttonName={"Sign in"} />
+            <Button
+              buttonClassName={
+                "flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              }
+              buttonName={"Sign in"}
+            />
+            <div>
+              Don't have an account?{" "}
+              <NavLink to={"/register"} className={"text-blue-600"}>register</NavLink>
+            </div>
           </form>
         </div>
       </div>
