@@ -4,9 +4,7 @@ import { router } from "./Routers";
 import { Register } from "./pages/register/register";
 
 function App() {
-  return<><RouterProvider router={router} />
-  <Register></Register>
-  </> ;
+  return <RouterProvider router={router} />;
 }
 
 export default App;
