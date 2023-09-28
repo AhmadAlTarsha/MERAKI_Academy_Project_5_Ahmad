@@ -139,6 +139,7 @@ exports.login = (req, res, next) => {
 
         return res.status(200).json({
           error: false,
+          id : user.id,
           token,
         });
       }
@@ -178,7 +179,6 @@ INNER JOIN
 `;
   try {
     const response = await pool.query(query);
-    console.log(response.rows);
     res.status(200).json({
       error: false,
       message: "All Users",
@@ -195,10 +195,10 @@ INNER JOIN
 //--------------------------------------------- This Function To Get User By Id
 exports.getUserById = async (req, res, next) => {
   const { id } = req.params;
-  console.log(id);
   const value = [id];
   const query = `SELECT
   users.id AS user_id,
+  users.role_id,
   regions.region AS user_region,
   users.first_name,
   users.last_name,
