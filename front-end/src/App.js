@@ -1,9 +1,12 @@
 import "./App.css";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./Routers";
+import { Register } from "./pages/register/register";
 
 function App() {
-  return <RouterProvider router={router} />;
+  return<><RouterProvider router={router} />
+  <Register></Register>
+  </> ;
 }
 
 export default App;

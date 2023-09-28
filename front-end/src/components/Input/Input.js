@@ -12,11 +12,12 @@ function Input({
   value,
   labelDivClassname,
   inputDiv,
+
 }) {
   return (
     <div className={divClassName}>
       <div className={labelDivClassname}>
-        <label className={labelClassName}>{labelName}</label>
+        <label className={labelClassName} >{labelName}  </label>
       </div>
       <div className={inputDiv}>
         {" "}

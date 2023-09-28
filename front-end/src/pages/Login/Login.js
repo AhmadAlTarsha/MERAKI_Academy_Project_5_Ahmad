@@ -3,15 +3,8 @@ import React from 'react'
 import { Outlet,NavLink } from 'react-router-dom'
 import { Register } from '../register/register'
 
-const Login = () => {
-  return (
-    <div>Login <NavLink to={"/register"}>register</NavLink> <main>
-   
-  </main> </div>
-  )
-}
 
-import React from "react";
+
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 
