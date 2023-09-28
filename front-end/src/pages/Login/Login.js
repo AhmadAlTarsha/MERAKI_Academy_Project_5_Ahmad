@@ -1,5 +1,6 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React from 'react'
+import { Outlet,NavLink } from 'react-router-dom'
+import { Register } from '../register/register'
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 
