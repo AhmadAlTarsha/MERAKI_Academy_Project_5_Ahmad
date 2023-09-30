@@ -1,5 +1,6 @@
 import React from "react";
 import { FcBullish } from "react-icons/fc";
+import { HiOutlineLogout } from "react-icons/hi";
 import { NavLink } from "react-router-dom";
 
 // const items = [
@@ -28,7 +29,6 @@ const SideBar = () => {
         <span className="text-neutral-100 text-lg">Open Shop</span>
       </div>
       <div className="flex-1 py-8 flex flex-col gap-0.5">
-
         {/* {items.map((item) => {
           return (
             <NavLink
@@ -53,7 +53,7 @@ const SideBar = () => {
             isPending
               ? "flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
               : isActive
-              ? "text-white flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
+              ? "bg-neutral-700 text-white flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
               : "text-neutral-400 flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
           }
         >
@@ -64,14 +64,30 @@ const SideBar = () => {
         </NavLink>
 
         <NavLink
+          to={"categories"}
+          className={({ isActive, isPending }) =>
+            isPending
+              ? "flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
+              : isActive
+              ? "bg-neutral-700 text-white flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
+              : "text-neutral-400 flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
+          }
+        >
+          <span className="text-xl">
+            <FcBullish />
+          </span>
+          Categories
+        </NavLink>
+
+        <NavLink
           to={"posts"}
           className={({ isActive, isPending }) =>
-          isPending
-            ? "flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
-            : isActive
-            ? "text-white flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
-            : "text-neutral-400 flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
-        }
+            isPending
+              ? "flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
+              : isActive
+              ? "text-white flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
+              : "text-neutral-400 flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
+          }
         >
           <span className="text-xl">
             <FcBullish />
@@ -82,40 +98,33 @@ const SideBar = () => {
         <NavLink
           to={"services"}
           className={({ isActive, isPending }) =>
-          isPending
-            ? "flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
-            : isActive
-            ? "text-white flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
-            : "text-neutral-400 flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
-        }
+            isPending
+              ? "flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
+              : isActive
+              ? "text-white flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
+              : "text-neutral-400 flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
+          }
         >
           <span className="text-xl">
             <FcBullish />
           </span>
           Services
         </NavLink>
-
       </div>
-      <div>Bottom Part</div>
+      <div className="flex flex-col gap-0.5 pt-2 border-t border-neutral-700">
+        <div
+          className={
+            "text-red-500 cursor-pointer flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
+          }
+        >
+          <span className="text-xl">
+            <HiOutlineLogout />
+          </span>
+          Logout
+        </div>
+      </div>
     </aside>
   );
 };
 
 export default SideBar;
-
-{
-  /* <div className="side-bar">
-        <div className="nav-item">
-          <NavLink to={"/admin"}>Home</NavLink>
-        </div>
-        <div className="nav-item">
-          <NavLink>Posts</NavLink>
-        </div>
-        <div className="nav-item">
-          <NavLink>Services</NavLink>
-        </div>
-        <div className="nav-item">
-          <NavLink>Orders</NavLink>
-        </div>
-      </div> */
-}

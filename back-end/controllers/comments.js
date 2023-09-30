@@ -15,7 +15,6 @@ exports.createNewComment = (req, res, next) => {
     .query(query, data)
     .then((result) => {
       if (result.command === "INSERT") {
-        console.log(post_id);
         return res.status(200).json({
           error: false,
           message: "comment created successfully",
