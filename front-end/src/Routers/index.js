@@ -11,7 +11,7 @@ import AdminHome from "../pages/Admin/Home/Home";
 import AdminPosts from "../pages/Admin/Posts/Posts";
 import AdminServices from "../pages/Admin/Services/Services";
 import AdminCategories from "../pages/Admin/Categories/Categories";
-
+import AdminCategory from "../pages/Admin/Categories/Category";
 
 export const router = createBrowserRouter([
   {
@@ -25,12 +25,11 @@ export const router = createBrowserRouter([
       {
         path: "login",
         element: <Login />,
-
       },
-     {
-      path:"register",
-      element:<Register/>
-     }
+      {
+        path: "register",
+        element: <Register />,
+      },
     ],
   },
   {
@@ -44,6 +43,10 @@ export const router = createBrowserRouter([
       {
         path: "categories",
         element: <AdminCategories />,
+      },
+      {
+        path: "categories/:id",
+        element: <AdminCategory />,
       },
       {
         path: "posts",

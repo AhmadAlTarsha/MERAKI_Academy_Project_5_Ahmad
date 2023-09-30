@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { AddCategory } from "../../APIS/Category/Add_Category";
+// import { AddCategory } from "../../APIS/Category/Add_Category";
 
 export const categorySlice = createSlice({
   name: "categories",
@@ -15,7 +15,7 @@ export const categorySlice = createSlice({
       console.log("Category PAYLOAD ===> ", action.payload);
       state.category = action.payload;
     },
-    addCategory: (state, action) => {
+    // addCategory: (state, action) => {
     //   console.log("Category PAYLOAD ===> ", action.payload);
     //   AddCategory(action.payload)
     //     .then((result) => {
@@ -24,7 +24,7 @@ export const categorySlice = createSlice({
     //     .catch((err) => {
     //       console.log("CATEGORY ERROR ====> ", err);
     //     });
-    },
+    // },
   },
 });
 
