@@ -70,13 +70,26 @@ exports.updateCategory = (req, res, next) => {
 };
 
 exports.getAllCategories = (req, res, next) => {
+  const perPage = Number(req.query.limit);
+  const currentPage = Number(req.query.offset);
+  let totalItems;
+
   pool
-    .query(`SELECT * FROM categories`)
+    .query(`SELECT * FROM categories LIMIT $1 OFFSET $2`, [
+      perPage,
+      (currentPage - 1) * perPage,
+    ])
     .then((result) => {
       if (result.command === `SELECT`) {
+        const categories = result.rows.map((category) => ({
+          id: category.id,
+          image: `http://localhost:5000/${category.image}`,
+          name: category.name,
+          is_deleted: category.is_deleted,
+        }));
         return res.status(200).json({
           error: false,
-          categories: result.rows,
+          categories,
         });
       }
     })
@@ -121,8 +134,8 @@ exports.activateOrDeActivateCategoryById = (req, res, next) => {
           error: false,
           message:
             active == 0
-              ? `Category deleted successfully`
-              : `Category activated successfully`,
+              ? `Category activated successfully`
+              : `Category deleted successfully`,
         });
       }
       return throwError(400, "something went rowing");

@@ -1,10 +1,12 @@
 import axios from "axios";
 
-export const AddCategory = async (payload) => {
-  console.log(payload);
+export const UpdateCategory = async (id, payload) => {
+//   if (payload.image.includes("http://localhost:5000/")) {
+//     console.log("UPLOAD ===> ", payload);
+//   }
   try {
-    const result = await axios.post(
-      "http://localhost:5000/categories",
+    const result = await axios.put(
+      `http://localhost:5000/categories/${id}`,
       payload,
       {
         headers: {
@@ -14,8 +16,9 @@ export const AddCategory = async (payload) => {
       }
     );
 
-    if (!result.data?.error) {
-      return result.data?.message;
+    console.log(result.data);
+    if (!result?.data?.error) {
+      return result.data.message;
     }
   } catch (err) {
     throw err;

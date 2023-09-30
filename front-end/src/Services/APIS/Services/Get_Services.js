@@ -2,10 +2,12 @@ import axios from "axios";
 
 let url = "http://localhost:5000/services";
 
-export const getAllServices = async (isDeleted) => {
+export const getAllServices = async (isDeleted, limit, offset) => {
   if (isDeleted === 0) {
-    url += `?is_deleted=0`;
+    url += `?is_deleted=0&limit=${limit}&offset=${offset}`;
   }
+
+  url += `?limit=${limit}&offset=${offset}`;
 
   try {
     const result = await axios.get(url, {
@@ -22,10 +24,13 @@ export const getAllServices = async (isDeleted) => {
   }
 };
 
-export const getAllServicesOnCategory = async (isDeleted) => {
+export const getAllServicesOnCategory = async (isDeleted, limit, offset) => {
   if (isDeleted === 0) {
-    url += `?is_deleted=0`;
+    url += `?is_deleted=0&limit=${limit}&offset=${offset}`;
   }
+
+  url += `?limit=${limit}&offset=${offset}`;
+
   try {
     const result = await axios.get(url, {
       headers: {
@@ -41,10 +46,13 @@ export const getAllServicesOnCategory = async (isDeleted) => {
   }
 };
 
-export const getAllServicesOnSubCategory = async (isDeleted) => {
+export const getAllServicesOnSubCategory = async (isDeleted, limit, offset) => {
   if (isDeleted === 0) {
-    url += `?is_deleted=0`;
+    url += `?is_deleted=0&limit=${limit}&offset=${offset}`;
   }
+
+  url += `?limit=${limit}&offset=${offset}`;
+  
   try {
     const result = await axios.get(url, {
       headers: {

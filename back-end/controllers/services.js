@@ -150,8 +150,10 @@ exports.updateService = (req, res, next) => {
 };
 
 exports.getAllServices = (req, res, next) => {
+  const perPage = Number(req.query.limit);
+  const currentPage = Number(req.query.offset);
+  let totalItems;
   const { is_deleted } = req.query;
-  console.log(is_deleted);
   let query = `SELECT serverices.id, serverices.service_provider_id, serverices.category_id, serverices.sub_category_id, serverices.title, serverices.description, serverices.status_id, 
   serverices.default_image, serverices.created_at,
   users.first_name, users.last_name, users.image,
@@ -162,10 +164,12 @@ exports.getAllServices = (req, res, next) => {
   JOIN categories ON categories.id = serverices.category_id
   JOIN sub_categories ON sub_categories.id = serverices.sub_category_id`;
 
-  is_deleted ? (query += ` WHERE serverices.is_deleted = 0`) : "";
+  is_deleted
+    ? (query += ` WHERE serverices.is_deleted = 0 LIMIT $1 OFFSET $2`)
+    : (query += ` LIMIT $1 OFFSET $2`);
 
   pool
-    .query(query)
+    .query(query, [perPage, (currentPage - 1) * perPage])
     .then((result) => {
       const serverices = result.rows.map((service) => ({
         id: service.id,

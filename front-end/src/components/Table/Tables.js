@@ -3,7 +3,7 @@ import CategoryTr from "./CategoryTr";
 import PostsTs from "./PostsTs";
 import ServicesTr from "./ServicesTr";
 
-const Tables = ({ rows, cols }) => {
+const Tables = ({ rows, cols, dispatch, setCategories, limit, offset, handleSelectCategory }) => {
   return (
     <div className="w-full relative overflow-x-auto">
       <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -19,7 +19,14 @@ const Tables = ({ rows, cols }) => {
         </thead>
         <tbody>
           {cols?.categories ? (
-            <CategoryTr categoriesArray={cols?.categories} />
+            <CategoryTr
+              categoriesArray={cols?.categories}
+              dispatch={dispatch}
+              setCategories={setCategories}
+              limit={limit}
+              offset={offset}
+              handleSelectCategory={handleSelectCategory}
+            />
           ) : cols?.posts ? (
             <PostsTs postsArray={cols?.posts} />
           ) : cols?.services ? (
