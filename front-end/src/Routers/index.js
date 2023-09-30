@@ -10,6 +10,7 @@ import Adminindex from "../pages/Admin/Layout";
 import AdminHome from "../pages/Admin/Home/Home";
 import AdminPosts from "../pages/Admin/Posts/Posts";
 import AdminServices from "../pages/Admin/Services/Services";
+import AdminCategories from "../pages/Admin/Categories/Categories";
 
 
 export const router = createBrowserRouter([
@@ -39,6 +40,10 @@ export const router = createBrowserRouter([
       {
         path: "a",
         element: <AdminHome />,
+      },
+      {
+        path: "categories",
+        element: <AdminCategories />,
       },
       {
         path: "posts",

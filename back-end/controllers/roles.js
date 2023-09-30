@@ -3,9 +3,7 @@ const pool = require("../models/DB");
 exports.createRoles = (req, res, next) => {
   const { role } = req.body;
   pool
-    .query(`INSERT INTO roles (role) VALUES ($1)`, [
-        role,
-    ])
+    .query(`INSERT INTO roles (role) VALUES ($1)`, [role])
     .then((result) => {
       if (result.command === "INSERT") {
         res.status(201).json({
