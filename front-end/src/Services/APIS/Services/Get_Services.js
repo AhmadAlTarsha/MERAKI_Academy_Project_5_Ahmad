@@ -1,8 +1,7 @@
 import axios from "axios";
 
-let url = "http://localhost:5000/services";
-
 export const getAllServices = async (isDeleted, limit, offset) => {
+  let url = "http://localhost:5000/services";
   if (isDeleted === 0) {
     url += `?is_deleted=0&limit=${limit}&offset=${offset}`;
   }
@@ -25,6 +24,7 @@ export const getAllServices = async (isDeleted, limit, offset) => {
 };
 
 export const getAllServicesOnCategory = async (isDeleted, limit, offset) => {
+  let url = "http://localhost:5000/services";
   if (isDeleted === 0) {
     url += `?is_deleted=0&limit=${limit}&offset=${offset}`;
   }
@@ -47,12 +47,13 @@ export const getAllServicesOnCategory = async (isDeleted, limit, offset) => {
 };
 
 export const getAllServicesOnSubCategory = async (isDeleted, limit, offset) => {
+  let url = "http://localhost:5000/services";
   if (isDeleted === 0) {
     url += `?is_deleted=0&limit=${limit}&offset=${offset}`;
   }
 
   url += `?limit=${limit}&offset=${offset}`;
-  
+
   try {
     const result = await axios.get(url, {
       headers: {

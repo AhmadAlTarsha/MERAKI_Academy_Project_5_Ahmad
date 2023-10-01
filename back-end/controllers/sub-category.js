@@ -5,7 +5,10 @@ exports.addSubCategory = (req, res, next) => {
   let { category_id, name } = req.body;
 
   if (!req.file) {
-    return throwError(422, "No Image provided");
+    return res.status(400).json({
+      error: false,
+      message: "No Image provided",
+    });
   }
 
   const image = req.file.path.replace("\\", "/");
@@ -72,6 +75,44 @@ exports.updateSubCategory = (req, res, next) => {
     });
 };
 
+exports.getAllSubCategories = (req, res, next) => {
+  const perPage = Number(req.query.limit);
+  const currentPage = Number(req.query.offset);
+  let totalItems;
+  pool
+    .query(
+      `SELECT sub_categories.id, sub_categories.name, sub_categories.image, sub_categories.is_deleted, sub_categories.created_at,
+      categories.name AS categoryName
+      FROM sub_categories
+      INNER JOIN categories ON categories.id = sub_categories.category_id
+      LIMIT $1 OFFSET $2`,
+      [perPage, (currentPage - 1) * perPage]
+    )
+    .then((result) => {
+      if (result.command === `SELECT`) {
+        const subCategories = result.rows.map((subCategory) => ({
+          id: subCategory?.id,
+          name: subCategory?.name,
+          image: `http://localhost:5000/${subCategory?.image}`,
+          category_id: subCategory?.category_id,
+          category_name: subCategory?.categoryname,
+          is_deleted: subCategory?.is_deleted,
+          created_at: subCategory?.created_at,
+        }));
+        return res.status(200).json({
+          error: false,
+          subCategories,
+        });
+      }
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
 exports.getAllSubCategoriesOnCategory = (req, res, next) => {
   pool
     .query(`SELECT * FROM sub_categories WHERE category_id = $1`, [
@@ -116,7 +157,7 @@ exports.deleteSub_CategoryById = (req, res, next) => {
   const { id } = req.params;
 
   const query = `UPDATE sub_categories SET is_deleted= 1 WHERE id = $1 ;`;
-  const data = [id, ];
+  const data = [id];
   pool
     .query(query, data)
     .then((result) => {

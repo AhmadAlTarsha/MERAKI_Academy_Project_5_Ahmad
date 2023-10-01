@@ -1,32 +1,31 @@
-import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import Tables from "../../../components/Table/Tables";
-import Button from "../../../components/Button/Button";
-import Dialog_Modal from "../../../components/Dialog_Modal/Dialog_Modal";
-import { GetCategories } from "../../../Services/APIS/Category/Get_Categories";
-import { setCategories } from "../../../Services/Redux/Category";
-import Pagination from "../../../components/Pagination/Pagination";
+import React, { useEffect, useState } from "react";
 import Loader from "../../../components/Loader/Loader";
+import Dialog_Modal from "../../../components/Dialog_Modal/Dialog_Modal";
+import Button from "../../../components/Button/Button";
+import Tables from "../../../components/Table/Tables";
+import { useDispatch, useSelector } from "react-redux";
+import { GetSubCategories } from "../../../Services/APIS/Category/Get_Categories";
+import { setSubCategories } from "../../../Services/Redux/Sub_Categories";
+import Pagination from "../../../components/Pagination/Pagination";
 
-const AdminCategories = () => {
+const AdminSub_Categories = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [limit, setLimit] = useState(3);
   const [offset, setOffset] = useState(1);
-  const [selectedCategory, setSelectCategory] = useState(null);
-  const selectCategories = useSelector((state) => {
+
+  const selectSubCategories = useSelector((state) => {
     return {
-      categories: state.categories.categories,
+      subCategories: state.subCategories.subCategories,
     };
   });
   const dispatch = useDispatch();
-  const rows = ["ID", "Image", "Name", "Is deleted", "Action"];
 
   const handlePage = (li, off) => {
-    GetCategories(li, off)
+    GetSubCategories(li, off)
       .then((result) => {
         if (!result.error) {
-          dispatch(setCategories(result));
+          dispatch(setSubCategories(result));
           setIsLoading(false);
         }
       })
@@ -35,17 +34,20 @@ const AdminCategories = () => {
       });
   };
 
+
+  const rows = ["ID", "Image", "Name", "Category Name", "Is deleted", "Action"];
+
   useEffect(() => {
     return () => {
-      GetCategories(limit, offset)
+      GetSubCategories(limit, offset)
         .then((result) => {
-          if (!result.error) {
-            dispatch(setCategories(result));
+          if (!result?.error) {
+            dispatch(setSubCategories(result));
             setIsLoading(false);
           }
         })
         .catch((err) => {
-          console.log("CATEGORY ERROR ==> ", err?.response?.data);
+          console.log("SUB CATEGORIES ERROR ===> ", err);
         });
     };
   }, []);
@@ -68,14 +70,14 @@ const AdminCategories = () => {
                 "rounded h-1/2 w-1/2 flex flex-col bg-gray-800 text-white py-8 px-4 text-center"
               }
               title={""}
-              isCategory={true}
+              isSubCategory={true}
               limit={limit}
               offset={offset}
             />
           )}
           <Button
             divClassName={"self-start mb-2"}
-            buttonName={"Add Category"}
+            buttonName={"Add Sub Category"}
             buttonClassName={
               "items-start focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2  dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
             }
@@ -83,13 +85,13 @@ const AdminCategories = () => {
           />
           <Tables
             rows={rows}
-            cols={selectCategories.categories}
+            cols={selectSubCategories.subCategories}
             dispatch={dispatch}
-            setCategories={setCategories}
+            setSubCategories={setSubCategories}
             limit={limit}
             offset={offset}
           />
-          {selectCategories.categories.length !== 0 && (
+          {selectSubCategories.subCategories.subCategories.length !== 0 && (
             <Pagination
               handlePage={handlePage}
               limit={limit}
@@ -103,4 +105,4 @@ const AdminCategories = () => {
   );
 };
 
-export default AdminCategories;
+export default AdminSub_Categories;
