@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Post from "../../components/Post/Post";
 import { GetAllPosts } from "../../Services/APIS/Posts/GetAllPosts";
-import { setPosts } from "../../Services/Redux/posts/index";
+import { setPosts } from "../../Services/Redux/Posts/index";
 import { useEffect } from "react";
 
 const Home = () => {

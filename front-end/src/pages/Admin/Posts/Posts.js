@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Tables from "../../../components/Table/Tables";
 
 const AdminPosts = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const rows = ["ID", "Author", "Post", "Comments", "Actions"];
   const columns = {
     posts: [
