@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const pool = require("../models/DB");
 // const salt = parseInt(process.env.SALT);
-exports.register = async (req, res, next) => { 
+exports.register = async (req, res, next) => {
   let {
     region_id,
     role_id,
@@ -135,11 +135,9 @@ exports.login = (req, res, next) => {
         // const secret = process.env.SECRET;
         token = jwt.sign(payLoad, "tintin", options);
 
-        console.log("TOKEN ====> ", token);
-
         return res.status(200).json({
           error: false,
-          id : user.id,
+          id: user.id,
           token,
         });
       }

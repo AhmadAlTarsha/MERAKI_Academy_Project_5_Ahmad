@@ -6,6 +6,7 @@ const {
   getAllServicesOnCategory,
   getAllServicesOnSubCategory,
   getServiceOnId,
+  getAllServices,
 } = require("../controllers/services");
 
 const { authentication } = require("../middlewares/authentication");
@@ -23,6 +24,11 @@ servericesRouter.put(
   authentication,
   authorization("SERVICE-CONTROL"),
   updateService
+);
+
+servericesRouter.get(
+  "/",
+  getAllServices
 );
 
 servericesRouter.get(
