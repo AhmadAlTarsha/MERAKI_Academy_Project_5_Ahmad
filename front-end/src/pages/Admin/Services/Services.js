@@ -4,11 +4,13 @@ import Tables from "../../../components/Table/Tables";
 import { getAllServices } from "../../../Services/APIS/Services/Get_Services";
 import { setServices } from "../../../Services/Redux/Services";
 import Pagination from "../../../components/Pagination/Pagination";
+import Loader from "../../../components/Loader/Loader";
 
 const AdminServices = () => {
   const [limit, setLimit] = useState(3);
   const [offset, setOffset] = useState(1);
   const servicesDispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(true);
   const servicessSelector = useSelector((state) => {
     return {
       services: state.services.services,
@@ -41,6 +43,7 @@ const AdminServices = () => {
       getAllServices(1, limit, offset)
         .then((services) => {
           servicesDispatch(setServices(services));
+          setIsLoading(false);
         })
         .catch((err) => {
           console.error("SERVICE ERROR ====> ", err);
@@ -50,14 +53,23 @@ const AdminServices = () => {
 
   return (
     <div className="flex flex-col justify-center items-center w-full h-full">
-      <Tables rows={rows} cols={{ services: servicessSelector?.services }} />
-      {servicessSelector?.services.length !== 0 && (
-        <Pagination
-          handlePage={handlePage}
-          limit={limit}
-          offset={offset}
-          setOffset={setOffset}
-        />
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <>
+          <Tables
+            rows={rows}
+            cols={{ services: servicessSelector?.services }}
+          />
+          {servicessSelector?.services.length !== 0 && (
+            <Pagination
+              handlePage={handlePage}
+              limit={limit}
+              offset={offset}
+              setOffset={setOffset}
+            />
+          )}
+        </>
       )}
     </div>
   );
