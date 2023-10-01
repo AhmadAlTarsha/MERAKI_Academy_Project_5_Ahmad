@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { Registration } from "../../APIS/User/register";
 
 export const authSlice = createSlice({
   name: "auth",
@@ -18,6 +19,9 @@ export const authSlice = createSlice({
       token: "",
       isLoggedIn: false,
     },
+
+
+   
   },
   reducers: {
     setLogin: (state, action) => {
@@ -57,8 +61,24 @@ export const authSlice = createSlice({
       };
       localStorage.removeItem("localUser");
     },
+
+    register: (state, action) => {
+      console.log(action.payload);
+      Registration(action.payload)
+      .then((res) => {
+      console.log("from redux",  res);
+        
+     
+      
+      })
+    
+      .catch((err) => {
+        console.error("ERROR Register ==> ", err?.response?.data);
+      });
+    }
   },
 });
 
-export const { setLogin, setUser, setLogout, setPosts } = authSlice.actions;
+
+export const { setLogin, setUser, setLogout, register } = authSlice.actions;
 export default authSlice.reducer;
