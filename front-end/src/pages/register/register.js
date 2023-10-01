@@ -4,16 +4,39 @@ import { useDispatch, useSelector } from "react-redux";
 //import { setLogin, setLogout, setUserId,  } from "../redux/reducers/auth/index";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
+import { Registration } from '../../Services/APIS/User/register';
+import { register } from '../../Services/Redux/auth';
 
 
 export const Register = () => {
-    const [test,settest]=useState("")
-    console.log(test);
-
-    const reginArr = ["khalda", "abu-nseer", "aljbehha"]
-    const roles = ["user", "service-provider"]
-
     const className = "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+    const [registration, setRegistration] = useState({
+        first_name: "",
+        last_name: "",
+        nick_name:"",
+        email:"",
+        password:"",
+
+      });
+    // const [test,settest]=useState("")
+    // console.log(test);
+    const dispatch = useDispatch();
+    const select = useSelector((state) => {
+      return {
+        register: state.auth,
+      };
+    });
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+      
+    dispatch(register(registration))
+      
+          
+      };
+    // const reginArr = ["khalda", "abu-nseer", "aljbehha"]
+    // const roles = ["user", "service-provider"]
+
     return (
         <section class="bg-gray-50 dark:bg-gray-900">
             <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
@@ -23,18 +46,45 @@ export const Register = () => {
                         <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                             Sign up
                         </h1>
-                        <form class="space-y-4 md:space-y-6" action="#">
+                        <form onSubmit={handleSubmit} class="space-y-4 md:space-y-6" action="#">
                             <div>
 
-                                <Input labelName={"First Name"} labelClassName={"block mb-2 text-sm font-medium text-gray-900 dark:text-white"} divClassName={""} name={"First Name"} type={"name"} inputClassName={className} placeHolder={"Your Name"} />
+                                <Input labelName={"First Name"} labelClassName={"block mb-2 text-sm font-medium text-gray-900 dark:text-white"} divClassName={""} name={"First Name"} type={"name"} inputClassName={className} placeHolder={"Your Name"} onChange={(e)=>{
+                                    setRegistration({
+                                        first_name:e.target.value,
+                                        last_name:registration.last_name,
+                                        nick_name:registration.nick_name,
+                                        email:registration.email,
+                                        password:registration.password,
+                    
+                                    })
+                                }} />
                             </div>
                             <div>
 
-                                <Input labelName={"Last Name"} labelClassName={"block mb-2 text-sm font-medium text-gray-900 dark:text-white"} divClassName={""} name={"Last Name"} type={"name"} inputClassName={className} placeHolder={"Your Family Name"} />
+                                <Input labelName={"Last Name"} labelClassName={"block mb-2 text-sm font-medium text-gray-900 dark:text-white"} divClassName={""} name={"Last Name"} type={"name"} inputClassName={className} placeHolder={"Your Family Name"} onChange={(e)=>{
+                                    setRegistration({
+                                        first_name:registration.first_name,
+                                        last_name:e.target.value,
+                                        nick_name:registration.nick_name,
+                                        email:registration.email,
+                                        password:registration.password,
+                    
+                                    })
+                                }}   />
                             </div>
                             <div>
 
-                                <Input labelName={"Nick Name"} labelClassName={"block mb-2 text-sm font-medium text-gray-900 dark:text-white"} divClassName={""} name={"Nick Name"} type={"name"} inputClassName={className} placeHolder={"Your Name In Website"} />
+                                <Input labelName={"Nick Name"} labelClassName={"block mb-2 text-sm font-medium text-gray-900 dark:text-white"} divClassName={""} name={"Nick Name"} type={"name"} inputClassName={className} placeHolder={"Your Name In Website"} onChange={(e)=>{
+                                    setRegistration({
+                                        first_name:registration.first_name,
+                                        last_name:registration.last_name,
+                                        nick_name:e.target.value,
+                                        email:registration.email,
+                                        password:registration.password,
+                    
+                                    })
+                                }}   />
                             </div>
                             <div>
                                 <label for="region" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Region</label>
@@ -42,19 +92,37 @@ export const Register = () => {
                                     console.log(e.target.value);
                                 }} name="region" id="region" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="">
                                     <option value="" disabled selected>Select Region</option>
-                                    {reginArr.map(((regin, i) => {
+                                    {/* {reginArr.map(((regin, i) => {
                                         return < option value={(i+1)}>{regin}</option>
-                                    }))}
+                                    }))} */}
 
                                 </select>
                             </div>
                             <div>
 
-                                <Input labelName={"Your email"} labelClassName={"block mb-2 text-sm font-medium text-gray-900 dark:text-white"} divClassName={""} name={"email"} type={"email"} inputClassName={className} placeHolder={"name@company.com"} />
+                                <Input labelName={"Your email"} labelClassName={"block mb-2 text-sm font-medium text-gray-900 dark:text-white"} divClassName={""} name={"email"} type={"email"} inputClassName={className} placeHolder={"name@company.com"} onChange={(e)=>{
+                                    setRegistration({
+                                        first_name:registration.first_name,
+                                        last_name:registration.last_name,
+                                        nick_name:registration.nick_name,
+                                        email:e.target.value,
+                                        password:registration.password,
+                    
+                                    })
+                                }}   />
                             </div>
                             <div>
 
-                                <Input divClassName={""} name={"password"} type={"password"} inputClassName={className} placeHolder={"••••••••"} labelName={"Password"} labelClassName={"block mb-2 text-sm font-medium text-gray-900 dark:text-white"} />
+                                <Input divClassName={""} name={"password"} type={"password"} inputClassName={className} placeHolder={"••••••••"} labelName={"Password"} labelClassName={"block mb-2 text-sm font-medium text-gray-900 dark:text-white"}  onChange={(e)=>{
+                                    setRegistration({
+                                        first_name:registration.first_name,
+                                        last_name:registration.last_name,
+                                        nick_name:registration.nick_name,
+                                        email:registration.email,
+                                        password:e.target.value,
+                    
+                                    })
+                                }}  />
                             </div>
                             <div>
 
@@ -65,9 +133,9 @@ export const Register = () => {
                                 <label>user or service provider ?</label>
                                 <select name="user-type" id="user-type" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="">
                                  <option value="" disabled selected>Select role</option>    
-                                       { roles.map(((role, i) => {
+                                       {/* { roles.map(((role, i) => {
                                             return < option value={(i+ 1)}>{role}</option>
-                                        }))}
+                                        }))} */}
                                 </select></div>
                             <div>
                                 <label
