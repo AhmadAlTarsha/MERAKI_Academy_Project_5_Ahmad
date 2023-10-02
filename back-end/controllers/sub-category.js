@@ -85,6 +85,7 @@ exports.getAllSubCategories = (req, res, next) => {
       categories.name AS categoryName
       FROM sub_categories
       INNER JOIN categories ON categories.id = sub_categories.category_id
+      ORDER BY id ASC
       LIMIT $1 OFFSET $2`,
       [perPage, (currentPage - 1) * perPage]
     )
@@ -181,7 +182,7 @@ exports.deleteSub_CategoryById = (req, res, next) => {
         return res.status(200).json({
           error: false,
           message:
-            active === 0
+            active == 1
               ? `sub_categories deleted successfully`
               : `sub_categories activated successfully`,
         });

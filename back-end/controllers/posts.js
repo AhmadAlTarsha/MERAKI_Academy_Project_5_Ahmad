@@ -14,12 +14,12 @@ exports.getAllPosts = (req, res, next) => {
   users.first_name, users.last_name, users.image FROM posts JOIN users ON users.id = posts.poster_id`;
 
   if (perPage && currentPage && isDeleted) {
-    query += ` WHERE posts.is_deleted = $1 LIMIT $2 OFFSET $3`;
+    query += ` WHERE posts.is_deleted = $1 ORDER BY id ASC LIMIT $2 OFFSET $3`;
     data = [isDeleted, perPage, (currentPage - 1) * perPage];
   }
 
   if (perPage && currentPage) {
-    query += ` LIMIT $1 OFFSET $2`;
+    query += ` ORDER BY id ASC LIMIT $1 OFFSET $2`;
     data = [perPage, (currentPage - 1) * perPage];
   }
   console.log(query);
