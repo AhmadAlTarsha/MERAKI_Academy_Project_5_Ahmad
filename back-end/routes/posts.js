@@ -13,7 +13,7 @@ const { authorization } = require("../middlewares/authorization");
 const postsRouter = express.Router();
 
 // Crud methods
-postsRouter.get("/post/:active", getAllPosts);
+postsRouter.get("/post/", getAllPosts);
 postsRouter.post(
   "/:posterId",
   authentication,

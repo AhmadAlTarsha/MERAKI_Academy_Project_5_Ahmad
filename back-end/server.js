@@ -62,6 +62,7 @@ app.use("*", (req, res) => res.status(404).json("NO content at this path"));
 
 app.use((err, req, res, next) => {
   const { statusCode, message } = err;
+  console.log(err);
   if (statusCode == 500) {
     err.statusCode = 500;
     return res.status(statusCode).json({
