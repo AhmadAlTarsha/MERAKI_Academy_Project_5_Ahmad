@@ -8,7 +8,6 @@ import regionsReducer from "./regions/regions";
 
 
 import subCategoriesReducer from "./Sub_Categories/index";
- 
 
 export default configureStore({
   reducer: {
@@ -17,9 +16,7 @@ export default configureStore({
     services: serviceReducer,
     categories: categoriesReducer,
     roles:roleReducer,
-    regions:regionsReducer,
-    roles:roleReducer,
+    regions: regionsReducer,
     subCategories: subCategoriesReducer,
-
   },
 });

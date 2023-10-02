@@ -1,11 +1,14 @@
 const express = require("express");
-const {getAllRegions} =require("../controllers/regions")
+const {
+  getAllRegions,
+  addNewRegions,
+  deleteRegionsById,
+} = require("../controllers/regions");
 
 const regionsRout = express.Router();
 
+regionsRout.get("/", getAllRegions);
+regionsRout.post("/", addNewRegions);
+regionsRout.delete("/:id", deleteRegionsById);
 
-regionsRout.get("/",getAllRegions)
-
-
-
-module.exports=regionsRout
+module.exports = regionsRout;

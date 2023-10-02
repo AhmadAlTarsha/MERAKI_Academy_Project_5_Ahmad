@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../Button/Button";
+import { DeleteSubCategories } from "../../Services/APIS/Category/Delete_Category";
+import { GetSubCategories } from "../../Services/APIS/Category/Get_Categories";
 
 const Sub_CategoryTr = ({
   subCategoriesArray,
@@ -9,7 +11,7 @@ const Sub_CategoryTr = ({
   limit,
   offset,
 }) => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   return subCategoriesArray?.map((subcategory) => (
     <tr
       key={subcategory.id}
@@ -68,26 +70,32 @@ const Sub_CategoryTr = ({
             subcategory?.is_deleted === 0 ? "red" : "green"
           }-900`}
           onClick={() => {
-            // DeleteCategories(subcategory?.id, subcategory?.is_deleted === 0 ? 1 : 0)
-            //   .then((result) => {
-            //     return GetCategories(limit, offset);
-            //   })
-            //   .then((result2) => {
-            //     dispatch(setCategories(result2));
-            //   })
-            //   .catch((err) => {
-            //     console.log("ERROR DELETE Category ===> ", err.response.data);
-            //   });
+            DeleteSubCategories(
+              subcategory?.id,
+              subcategory?.is_deleted === 0 ? 1 : 0
+            )
+              .then((result) => {
+                return GetSubCategories(limit, offset);
+              })
+              .then((result2) => {
+                dispatch(setSubCategories(result2));
+              })
+              .catch((err) => {
+                console.log(
+                  "ERROR DELETE Sub Category ===> ",
+                  err.response.data
+                );
+              });
           }}
         />
 
         <Button
           divClassName={""}
-          buttonClassName={
-            "focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-          }
+          buttonClassName={`focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800
+            ${subcategory.is_deleted !== 0 && "cursor-not-allowed"}`}
           buttonName={"Edit"}
-          onClick={() => navigate(`/Admin/categories/${subcategory?.id}`)}
+          onClick={() => navigate(`/Admin/sub-categories/${subcategory?.id}`)}
+          is_disabled={subcategory?.is_deleted === 0 ? false : true}
         />
       </td>
     </tr>

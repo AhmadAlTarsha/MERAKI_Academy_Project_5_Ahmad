@@ -13,6 +13,8 @@ import AdminServices from "../pages/Admin/Services/Services";
 import AdminCategories from "../pages/Admin/Categories/Categories";
 import AdminCategory from "../pages/Admin/Categories/Category";
 import AdminSub_Categories from "../pages/Admin/Sub_Categories/Sub_Categories";
+import AdminSub_Category from "../pages/Admin/Sub_Categories/Sub_Category";
+import AdminRegions from "../pages/Admin/Regions/Regions";
 
 export const router = createBrowserRouter([
   {
@@ -54,6 +56,10 @@ export const router = createBrowserRouter([
         element: <AdminCategory />,
       },
       {
+        path: "sub-categories/:id",
+        element: <AdminSub_Category />,
+      },
+      {
         path: "posts",
         element: <AdminPosts />,
       },
@@ -64,6 +70,10 @@ export const router = createBrowserRouter([
       {
         path: "login",
         element: <Login />,
+      },
+      {
+        path: "regions",
+        element: <AdminRegions />,
       },
     ],
   },

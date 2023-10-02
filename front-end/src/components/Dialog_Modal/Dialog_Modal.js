@@ -15,6 +15,10 @@ import { setCategories } from "../../Services/Redux/Category";
 import { setSubCategories } from "../../Services/Redux/Sub_Categories";
 import CategoryForm from "./CategoryForm";
 import Sub_CategoryForm from "./Sub_CategoryForm";
+import RegionForm from "./RegionForm";
+import { AddRegion } from "../../Services/APIS/Regions/AddRegion";
+import { GetAllRegions } from "../../Services/APIS/Regions/GetRegions";
+import { setRegions } from "../../Services/Redux/regions/regions";
 // import { addCategory } from "../../Services/Redux/Category";
 
 const Dialog_Modal = ({
@@ -27,8 +31,10 @@ const Dialog_Modal = ({
   buttonDivClassName,
   navigate,
   isUpdateCategory,
+  isUpdateSubCategory,
   isSubCategory,
   isCategory,
+  isRegions,
   limit,
   offset,
 }) => {
@@ -42,6 +48,10 @@ const Dialog_Modal = ({
     name: "",
     category_id: 0,
     image: "",
+  });
+
+  const [region, setRegion] = useState({
+    region: "",
   });
 
   const [isAdded, setIsAdded] = useState(false);
@@ -58,7 +68,7 @@ const Dialog_Modal = ({
         .catch((err) => {
           console.log("CATEGORY ERROR ====> ", err?.response?.data);
         });
-    } else {
+    } else if (isSubCategory) {
       // console.log("SUB CATEGORY ===> ", subCategory);
       AddSubCategory(subCategory)
         .then((result) => {
@@ -68,6 +78,16 @@ const Dialog_Modal = ({
         })
         .catch((err) => {
           console.log("SUB CATEGORY ERROR ====> ", err?.response?.data);
+        });
+    } else if (isRegions) {
+      AddRegion(region)
+        .then((result) => {
+          if (result?.includes("Region Added")) {
+            setIsAdded(true);
+          }
+        })
+        .catch((err) => {
+          console.log("REGION ERROR ====> ", err?.response?.data);
         });
     }
   };
@@ -107,6 +127,12 @@ const Dialog_Modal = ({
               handleSubmit={handleSubmit}
               setSubCategory={setSubCategory}
             />
+          ) : isRegions ? (
+            <RegionForm
+              handleSubmit={handleSubmit}
+              region={region}
+              setRegion={setRegion}
+            />
           ) : (
             <></>
           ))}
@@ -136,20 +162,31 @@ const Dialog_Modal = ({
                     );
                   });
               } else if (isSubCategory) {
-                GetSubCategories(limit,offset)
-                .then(result => {
-                  dispatch(setSubCategories(result));
-                  setIsOpen(!isOpen);
-                })
-                .catch(err => {
-                  console.log(
-                    "MODEL SUB CATEGORY ERROR ===> ",
-                    err?.response?.data
-                  );
-                })
+                GetSubCategories(limit, offset)
+                  .then((result) => {
+                    dispatch(setSubCategories(result));
+                    setIsOpen(!isOpen);
+                  })
+                  .catch((err) => {
+                    console.log(
+                      "MODEL SUB CATEGORY ERROR ===> ",
+                      err?.response?.data
+                    );
+                  });
+              } else if (isRegions) {
+                GetAllRegions(limit, offset)
+                  .then((result) => {
+                    dispatch(setRegions(result));
+                    setIsOpen(!isOpen);
+                  })
+                  .catch((err) => {
+                    console.log("REGION ADD ERROR ===> ", err?.response?.data);
+                  });
               }
             } else if (isUpdateCategory) {
               navigate("/Admin/categories");
+            } else if (isUpdateSubCategory) {
+              navigate("/Admin/sub-categories");
             }
           }}
         />
