@@ -2,10 +2,12 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Post from "../../components/Post/Post";
 import { GetAllPosts } from "../../Services/APIS/Posts/GetAllPosts";
-import { setPosts } from "../../Services/Redux/posts/index";
-import { useEffect } from "react";
+import { setPosts } from "../../Services/Redux/Posts/index";
+import { useEffect, useState } from "react";
 
 const Home = () => {
+  const [categories, setCategories] = useState([]);
+  const limit = 3;
   const dispatch = useDispatch();
   const select = useSelector((state) => {
     return {
