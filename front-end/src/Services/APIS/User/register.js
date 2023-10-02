@@ -19,3 +19,15 @@ export const Registration = async (payload) => {
     throw err;
   }
 };
+export const GetAllRoles = async () => {
+  try {
+    const result = await axios.get(`http://localhost:5000/roles`);
+    if (!result?.data?.error) {
+        console.log(result);
+      return result?.data;
+    } 
+    
+  } catch (err) {
+    throw err;
+  }
+};

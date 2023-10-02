@@ -19,3 +19,21 @@ exports.createRoles = (req, res, next) => {
       next(err);
     });
 };
+
+exports.getAllRole=async(req,res,next)=>{
+  const query=`SELECT * FROM roles`
+  try {
+    const response= await pool.query(query)
+    res.status(201).json({
+      error: false,
+      message: "all roles",
+      roles:response.rows
+    });
+
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+}
