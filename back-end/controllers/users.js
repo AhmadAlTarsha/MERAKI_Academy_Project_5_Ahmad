@@ -27,7 +27,7 @@ exports.register = async (req, res, next) => {
     .query(emailQuery, emailData)
     .then(async (resultEmail) => {
       if (resultEmail.rowCount > 0) {
-        console.log(resultEmail.rowCount);
+        
         res.status(400).json({
           error: true,
           message: "User already exist",
@@ -66,7 +66,7 @@ exports.register = async (req, res, next) => {
     })
     .then((resultUser) => {
       if (resultUser.command === "INSERT") {
-        console.log(resultUser.rowCount);
+     
         return res.status(200).json({
           error: false,
           message: "Account created successfully",

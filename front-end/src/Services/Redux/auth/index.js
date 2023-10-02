@@ -63,6 +63,7 @@ export const authSlice = createSlice({
     },
 
     register: (state, action) => {
+     
       console.log(action.payload);
       Registration(action.payload)
       .then((res) => {
