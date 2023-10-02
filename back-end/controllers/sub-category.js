@@ -136,12 +136,26 @@ exports.getAllSubCategoriesOnCategory = (req, res, next) => {
 
 exports.getSubCateogoryById = (req, res, next) => {
   pool
-    .query(`SELECT * FROM sub_categories WHERE id = $1`, [req.params.id])
+    .query(
+      `SELECT sub_categories.id, sub_categories.name, sub_categories.image, 
+    categories.name AS categoryName, categories.id AS categoryId
+    FROM sub_categories 
+    INNER JOIN categories ON categories.id = sub_categories.category_id
+    WHERE sub_categories.id = $1`,
+      [req.params.id]
+    )
     .then((result) => {
       if (result.command === `SELECT`) {
+        const subCategory = result?.rows?.map((sub) => ({
+          id: sub.id,
+          name: sub.name,
+          category_id: sub.categoryid,
+          category_name: sub.categoryname,
+          image: sub.image,
+        }));
         return res.status(200).json({
           error: false,
-          category: result.rows[0],
+          subCategory: subCategory[0],
         });
       }
     })
@@ -155,16 +169,21 @@ exports.getSubCateogoryById = (req, res, next) => {
 
 exports.deleteSub_CategoryById = (req, res, next) => {
   const { id } = req.params;
+  const { active } = req.body;
 
-  const query = `UPDATE sub_categories SET is_deleted= 1 WHERE id = $1 ;`;
-  const data = [id];
+  const query = `UPDATE sub_categories SET is_deleted= $1 WHERE id = $2;`;
+  const data = [active, id];
   pool
     .query(query, data)
     .then((result) => {
+      console.log(result);
       if (result.rowCount !== 0) {
         return res.status(200).json({
           error: false,
-          message: `sub_categories deleted successfully`,
+          message:
+            active === 0
+              ? `sub_categories deleted successfully`
+              : `sub_categories activated successfully`,
         });
       }
       return throwError(400, "something went rowing");

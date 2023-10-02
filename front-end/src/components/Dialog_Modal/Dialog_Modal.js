@@ -27,6 +27,7 @@ const Dialog_Modal = ({
   buttonDivClassName,
   navigate,
   isUpdateCategory,
+  isUpdateSubCategory,
   isSubCategory,
   isCategory,
   limit,
@@ -136,20 +137,22 @@ const Dialog_Modal = ({
                     );
                   });
               } else if (isSubCategory) {
-                GetSubCategories(limit,offset)
-                .then(result => {
-                  dispatch(setSubCategories(result));
-                  setIsOpen(!isOpen);
-                })
-                .catch(err => {
-                  console.log(
-                    "MODEL SUB CATEGORY ERROR ===> ",
-                    err?.response?.data
-                  );
-                })
+                GetSubCategories(limit, offset)
+                  .then((result) => {
+                    dispatch(setSubCategories(result));
+                    setIsOpen(!isOpen);
+                  })
+                  .catch((err) => {
+                    console.log(
+                      "MODEL SUB CATEGORY ERROR ===> ",
+                      err?.response?.data
+                    );
+                  });
               }
             } else if (isUpdateCategory) {
               navigate("/Admin/categories");
+            } else if (isUpdateSubCategory) {
+              navigate("/Admin/sub-categories");
             }
           }}
         />

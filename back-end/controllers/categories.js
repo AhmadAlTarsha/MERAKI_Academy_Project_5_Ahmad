@@ -72,13 +72,26 @@ exports.updateCategory = (req, res, next) => {
 exports.getAllCategories = (req, res, next) => {
   const perPage = Number(req.query.limit);
   const currentPage = Number(req.query.offset);
-  let totalItems;
+  const isDeleted = Number(req.query.is_deleted);
+  let query = `SELECT * FROM categories`;
+  let data = [];
+
+  if (perPage && currentPage && isDeleted) {
+    query += ` WHERE is_deleted = $1 LIMIT $2 OFFSET $3`;
+    data = [isDeleted, perPage, (currentPage - 1) * perPage];
+  }
+
+  if (perPage && currentPage) {
+    query += ` LIMIT $1 OFFSET $2`;
+    data = [perPage, (currentPage - 1) * perPage];
+  }
+
+  if (!perPage && !currentPage) {
+    query += ` WHERE is_deleted = 0`;
+  }
 
   pool
-    .query(`SELECT * FROM categories LIMIT $1 OFFSET $2`, [
-      perPage,
-      (currentPage - 1) * perPage,
-    ])
+    .query(query, data)
     .then((result) => {
       if (result.command === `SELECT`) {
         const categories = result.rows.map((category) => ({

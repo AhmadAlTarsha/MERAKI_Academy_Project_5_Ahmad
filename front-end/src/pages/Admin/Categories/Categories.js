@@ -23,7 +23,7 @@ const AdminCategories = () => {
   const rows = ["ID", "Image", "Name", "Is deleted", "Action"];
 
   const handlePage = (li, off) => {
-    GetCategories(li, off)
+    GetCategories(li, off, 0)
       .then((result) => {
         if (!result.error) {
           dispatch(setCategories(result));
@@ -37,7 +37,7 @@ const AdminCategories = () => {
 
   useEffect(() => {
     return () => {
-      GetCategories(limit, offset)
+      GetCategories(limit, offset, 0)
         .then((result) => {
           if (!result.error) {
             dispatch(setCategories(result));
