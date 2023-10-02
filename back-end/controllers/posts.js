@@ -8,7 +8,7 @@ exports.getAllPosts = (req, res, next) => {
   let posts = [];
   const { active } = req.params;
   const query = `SELECT posts.id, posts.description, posts.category_id, posts.sub_category_id, posts.created_at, 
-  users.first_name, users.last_name, users.image FROM posts JOIN users ON users.id = posts.poster_id WHERE posts.is_deleted = $1`;
+  users.first_name, users.last_name, users.image FROM posts JOIN users ON users.id = posts.poster_id WHERE posts.is_deleted = $1 LIMIT $2 OFFSET $3`;
   pool
     .query(query, [active])
     .then(async (result) => {
