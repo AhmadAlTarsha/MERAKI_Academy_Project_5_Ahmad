@@ -85,6 +85,7 @@ exports.getAllSubCategories = (req, res, next) => {
       categories.name AS categoryName
       FROM sub_categories
       INNER JOIN categories ON categories.id = sub_categories.category_id
+      ORDER BY id ASC
       LIMIT $1 OFFSET $2`,
       [perPage, (currentPage - 1) * perPage]
     )
