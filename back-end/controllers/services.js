@@ -152,6 +152,7 @@ exports.updateService = (req, res, next) => {
 exports.getAllServices = (req, res, next) => {
   const perPage = Number(req.query.limit);
   const currentPage = Number(req.query.offset);
+  console.log(perPage, currentPage);
   let totalItems;
   const { is_deleted } = req.query;
   let query = `SELECT serverices.id, serverices.service_provider_id, serverices.category_id, serverices.sub_category_id, serverices.title, serverices.description, serverices.status_id, 

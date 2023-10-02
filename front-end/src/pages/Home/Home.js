@@ -5,6 +5,8 @@ import { GetAllPosts } from "../../Services/APIS/Posts/GetAllPosts";
 import { setPosts } from "../../Services/Redux/Posts/index";
 import { useEffect, useState } from "react";
 
+
+
 const Home = () => {
   const [categories, setCategories] = useState([]);
   const limit = 3;

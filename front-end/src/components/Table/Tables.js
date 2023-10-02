@@ -2,8 +2,17 @@ import React from "react";
 import CategoryTr from "./CategoryTr";
 import PostsTs from "./PostsTs";
 import ServicesTr from "./ServicesTr";
+import Sub_CategoryTr from "./Sub_CategoryTr";
 
-const Tables = ({ rows, cols, dispatch, setCategories, limit, offset, handleSelectCategory }) => {
+const Tables = ({
+  rows,
+  cols,
+  dispatch,
+  setCategories,
+  setSubCategories,
+  limit,
+  offset,
+}) => {
   return (
     <div className="w-full relative overflow-x-auto">
       <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -25,12 +34,19 @@ const Tables = ({ rows, cols, dispatch, setCategories, limit, offset, handleSele
               setCategories={setCategories}
               limit={limit}
               offset={offset}
-              handleSelectCategory={handleSelectCategory}
             />
           ) : cols?.posts ? (
             <PostsTs postsArray={cols?.posts} />
           ) : cols?.services ? (
             <ServicesTr servicesArray={cols?.services} />
+          ) : cols?.subCategories ? (
+            <Sub_CategoryTr
+              subCategoriesArray={cols?.subCategories}
+              dispatch={dispatch}
+              setSubCategories={setSubCategories}
+              limit={limit}
+              offset={offset}
+            />
           ) : (
             <></>
           )}
