@@ -10,17 +10,17 @@ exports.getAllRegions = async (req, res, next) => {
   let data = [];
 
   if (perPage && currentPage && isDeleted) {
-    query += ` WHERE is_deleted = $1 LIMIT $2 OFFSET $3`;
+    query += ` WHERE is_deleted = $1 ORDER BY id ASC LIMIT $2 OFFSET $3`;
     data = [isDeleted, perPage, (currentPage - 1) * perPage];
   }
 
   if (perPage && currentPage) {
-    query += ` LIMIT $1 OFFSET $2`;
+    query += ` ORDER BY id ASC LIMIT $1 OFFSET $2`;
     data = [perPage, (currentPage - 1) * perPage];
   }
 
   if (!perPage && !currentPage) {
-    query += ` WHERE is_deleted = 0`;
+    query += ` WHERE is_deleted = 0 ORDER BY id ASC`;
   }
 
   try {
@@ -30,7 +30,7 @@ exports.getAllRegions = async (req, res, next) => {
       error: false,
       regions: response.rows,
     });
-  } catch (error) {
+  } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
@@ -46,8 +46,7 @@ exports.addNewRegions = async (req, res, next) => {
     const response = await pool.query(query, value);
     res.status(200).json({
       error: false,
-      message: "regions added ",
-      regions: response.rows,
+      message: "Region Added",
     });
   } catch (err) {
     if (!err.statusCode) {
@@ -59,15 +58,18 @@ exports.addNewRegions = async (req, res, next) => {
 
 exports.deleteRegionsById = async (req, res, next) => {
   const { id } = req.params;
-  const value = [id];
-  const query = `UPDATE regions SET is_deleted = 1 WHERE id=$1`;
+  const { active } = req.body;
+  const query = `UPDATE regions SET is_deleted = $1 WHERE id = $2`;
+  const value = [active, id];
 
   try {
     const response = await pool.query(query, value);
-    res.status(200).json({
-      error: false,
-      message: "regions deleted ",
-    });
+    if (response.rowCount !== 0) {
+      res.status(200).json({
+        error: false,
+        message: active == 1 ? `Region Deleted` : `Region Activated`,
+      });
+    }
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

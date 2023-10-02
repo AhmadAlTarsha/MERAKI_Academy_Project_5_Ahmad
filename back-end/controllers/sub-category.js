@@ -181,7 +181,7 @@ exports.deleteSub_CategoryById = (req, res, next) => {
         return res.status(200).json({
           error: false,
           message:
-            active === 0
+            active == 1
               ? `sub_categories deleted successfully`
               : `sub_categories activated successfully`,
         });

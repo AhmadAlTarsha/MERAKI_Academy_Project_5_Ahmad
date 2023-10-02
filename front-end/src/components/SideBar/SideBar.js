@@ -64,6 +64,22 @@ const SideBar = () => {
         </NavLink>
 
         <NavLink
+          to={"regions"}
+          className={({ isActive, isPending }) =>
+            isPending
+              ? "flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
+              : isActive
+              ? "bg-neutral-700 text-white flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
+              : "text-neutral-400 flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base"
+          }
+        >
+          <span className="text-xl">
+            <FcBullish />
+          </span>
+          Regions
+        </NavLink>
+
+        <NavLink
           to={"categories"}
           className={({ isActive, isPending }) =>
             isPending

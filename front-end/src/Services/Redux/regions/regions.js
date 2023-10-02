@@ -6,12 +6,11 @@ export const regionsSlice = createSlice({
     regions: [],
   },
   reducers: {
-    setregions: (state, action) => {
-        console.log(action.payload);
+    setRegions: (state, action) => {
       state.regions = action.payload;
     },
   },
 });
 
-export const { setregions } = regionsSlice.actions;
+export const { setRegions } = regionsSlice.actions;
 export default regionsSlice.reducer;

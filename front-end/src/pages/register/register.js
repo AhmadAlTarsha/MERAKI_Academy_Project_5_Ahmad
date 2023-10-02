@@ -4,16 +4,16 @@ import { useDispatch, useSelector } from "react-redux";
 //import { setLogin, setLogout, setUserId,  } from "../redux/reducers/auth/index";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
-import { GetAllRegions, Registration } from '../../Services/APIS/User/register';
+import { GetAllRegions } from '../../Services/APIS/Regions/GetRegions';
 import { register, } from '../../Services/Redux/auth';
-import { setregions } from '../../Services/Redux/regions/regions'; 
+import { setRegions } from '../../Services/Redux/regions/regions'; 
 
 export const Register = () => {
     useEffect(() => {
         GetAllRegions()
           .then((res) => {
             console.log(res);
-            dispatch(setregions(res.regions));
+            dispatch(setRegions(res.regions));
           })
           .catch((err) => {
             console.log(err);

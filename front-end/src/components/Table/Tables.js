@@ -3,6 +3,7 @@ import CategoryTr from "./CategoryTr";
 import PostsTs from "./PostsTs";
 import ServicesTr from "./ServicesTr";
 import Sub_CategoryTr from "./Sub_CategoryTr";
+import RegionsTr from "./RegionsTr";
 
 const Tables = ({
   rows,
@@ -10,6 +11,7 @@ const Tables = ({
   dispatch,
   setCategories,
   setSubCategories,
+  setRegions,
   limit,
   offset,
 }) => {
@@ -46,6 +48,14 @@ const Tables = ({
               setSubCategories={setSubCategories}
               limit={limit}
               offset={offset}
+            />
+          ) : cols?.regions ? (
+            <RegionsTr
+              dispatch={dispatch}
+              limit={limit}
+              offset={offset}
+              regionsArray={cols?.regions}
+              setRegions={setRegions}
             />
           ) : (
             <></>

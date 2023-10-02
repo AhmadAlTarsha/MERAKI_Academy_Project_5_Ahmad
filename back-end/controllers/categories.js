@@ -77,17 +77,17 @@ exports.getAllCategories = (req, res, next) => {
   let data = [];
 
   if (perPage && currentPage && isDeleted) {
-    query += ` WHERE is_deleted = $1 LIMIT $2 OFFSET $3`;
+    query += ` ORDER BY id ASC WHERE is_deleted = $1 LIMIT $2 OFFSET $3`;
     data = [isDeleted, perPage, (currentPage - 1) * perPage];
   }
 
   if (perPage && currentPage) {
-    query += ` LIMIT $1 OFFSET $2`;
+    query += ` ORDER BY id ASC LIMIT $1 OFFSET $2`;
     data = [perPage, (currentPage - 1) * perPage];
   }
 
   if (!perPage && !currentPage) {
-    query += ` WHERE is_deleted = 0`;
+    query += ` WHERE is_deleted = 0 ORDER BY id ASC`;
   }
 
   pool
