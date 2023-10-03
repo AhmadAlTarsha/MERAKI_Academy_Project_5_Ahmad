@@ -20,31 +20,31 @@ usersRouter.post("/login", login);
 usersRouter.get(
   "/",
   authentication,
-  authorization("USER-CONTROL"),
+  authorization("USER_CONTROL"),
   getAllUsers
 );
 usersRouter.get(
   "/:id",
   authentication,
-  authorization("USER-CONTROL"),
+  authorization("USER_CONTROL"),
   getUserById
 );
 usersRouter.delete(
   "/:id",
   authentication,
-  authorization("USER-CONTROL"),
+  authorization("USER_CONTROL"),
   deleteUserById
 );
 usersRouter.put(
   "/:id",
   authentication,
-  authorization("USER-CONTROL"),
+  authorization("USER_CONTROL"),
   BanUserById
 );
 usersRouter.put(
   "/updateAccount/:id",
   authentication,
-  authorization("USER-CONTROL"),
+  authorization("USER_CONTROL"),
   updateUserById
 );
 
