@@ -13,7 +13,6 @@ const AdminCategories = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [limit, setLimit] = useState(3);
   const [offset, setOffset] = useState(1);
-  const [selectedCategory, setSelectCategory] = useState(null);
   const selectCategories = useSelector((state) => {
     return {
       categories: state.categories.categories,

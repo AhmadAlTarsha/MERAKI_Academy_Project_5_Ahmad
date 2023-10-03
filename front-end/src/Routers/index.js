@@ -3,9 +3,7 @@ import Main from "../layouts";
 import Login from "../pages/Login/Login";
 import Home from "../pages/Home/Home";
 import Not_Found from "../pages/Not_Found/Not_Found";
-
 import { Register } from "../pages/register/register";
-
 import Adminindex from "../pages/Admin/Layout";
 import AdminHome from "../pages/Admin/Home/Home";
 import AdminPosts from "../pages/Admin/Posts/Posts";
@@ -15,6 +13,7 @@ import AdminCategory from "../pages/Admin/Categories/Category";
 import AdminSub_Categories from "../pages/Admin/Sub_Categories/Sub_Categories";
 import AdminSub_Category from "../pages/Admin/Sub_Categories/Sub_Category";
 import AdminRegions from "../pages/Admin/Regions/Regions";
+import Orders from "../pages/Orders/Orders";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +31,10 @@ export const router = createBrowserRouter([
       {
         path: "register",
         element: <Register />,
+      },
+      {
+        path: "orders",
+        element: <Orders />,
       },
     ],
   },

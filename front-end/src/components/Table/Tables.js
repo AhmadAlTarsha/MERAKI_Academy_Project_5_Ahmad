@@ -12,6 +12,8 @@ const Tables = ({
   setCategories,
   setSubCategories,
   setRegions,
+  setPosts,
+  setServices,
   limit,
   offset,
 }) => {
@@ -38,9 +40,21 @@ const Tables = ({
               offset={offset}
             />
           ) : cols?.posts ? (
-            <PostsTs postsArray={cols?.posts} />
+            <PostsTs
+              postsArray={cols?.posts}
+              dispatch={dispatch}
+              limit={limit}
+              offset={offset}
+              setPosts={setPosts}
+            />
           ) : cols?.services ? (
-            <ServicesTr servicesArray={cols?.services} />
+            <ServicesTr
+              servicesArray={cols?.services}
+              dispatch={dispatch}
+              limit={limit}
+              offset={offset}
+              setServices={setServices}
+            />
           ) : cols?.subCategories ? (
             <Sub_CategoryTr
               subCategoriesArray={cols?.subCategories}

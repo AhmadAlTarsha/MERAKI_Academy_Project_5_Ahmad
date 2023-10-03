@@ -10,19 +10,16 @@ exports.getAllPosts = (req, res, next) => {
   let images = [];
   let comments = [];
   let posts = [];
-  let query = `SELECT posts.id, posts.description, posts.category_id, posts.sub_category_id, posts.created_at, 
+  let query = `SELECT posts.id, posts.description, posts.category_id, posts.sub_category_id, posts.created_at, posts.is_deleted,
   users.first_name, users.last_name, users.image FROM posts JOIN users ON users.id = posts.poster_id`;
 
   if (perPage && currentPage && isDeleted) {
     query += ` WHERE posts.is_deleted = $1 ORDER BY id ASC LIMIT $2 OFFSET $3`;
     data = [isDeleted, perPage, (currentPage - 1) * perPage];
-  }
-
-  if (perPage && currentPage) {
+  } else if (perPage && currentPage) {
     query += ` ORDER BY id ASC LIMIT $1 OFFSET $2`;
     data = [perPage, (currentPage - 1) * perPage];
   }
-  console.log(query);
 
   pool
     .query(query, data)

@@ -35,6 +35,7 @@ const Dialog_Modal = ({
   isSubCategory,
   isCategory,
   isRegions,
+  isPosts,
   limit,
   offset,
 }) => {
