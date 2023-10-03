@@ -41,7 +41,7 @@ exports.getAllPosts = (req, res, next) => {
     .then(async (result2) => {
       if (result2.command === "SELECT") {
         images = result2.rows;
-        const newQuery = `SELECT * FROM comments`;
+        const newQuery = `SELECT comments.id, comments.post_id, comments.comment, comments.created_at, users.first_name, users.last_name, users.image FROM comments JOIN users ON users.id = comments.commenter_id`;
         try {
           return await pool.query(newQuery);
         } catch (error) {
@@ -50,7 +50,13 @@ exports.getAllPosts = (req, res, next) => {
       }
     })
     .then((result3) => {
-      comments = result3.rows;
+      comments = result3.rows.map((comment) => ({
+        id: comment.id,
+        comment: comment.comment,
+        commenterFullName: `${comment.first_name} ${comment.last_name}`,
+        postId: comment.post_id,
+        createdAt: comment.created_at
+      }));
       posts = posts.map((post) => ({
         id: post.id,
         user: {
@@ -66,7 +72,7 @@ exports.getAllPosts = (req, res, next) => {
           return image.service_id === post.id;
         }),
         comments: comments.filter((comment) => {
-          return comment.post_id === post.id;
+          return comment.postId === post.id;
         }),
       }));
       return res.status(200).json({
