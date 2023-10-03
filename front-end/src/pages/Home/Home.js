@@ -6,12 +6,11 @@ import { GetAllPosts } from "../../Services/APIS/Posts/GetAllPosts";
 import { setPosts } from "../../Services/Redux/Posts/index";
 import { useEffect, useState } from "react";
 import Loader from "../../components/Loader/Loader";
+import Comment from "../../components/Comment/Comment";
 
 const Home = () => {
-  const [categories, setCategories] = useState([]);
   const limit = 10;
   const [offset, setOffset] = useState(1);
-  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const select = useSelector((state) => {
@@ -35,6 +34,7 @@ const Home = () => {
       .then((result) => {
         dispatch(setPosts(result));
         setLoading(false);
+        window.scrollTo({ top: 0 });
       })
       .catch((err) => {
         console.log("POST ERROR ==> ", err);
@@ -49,10 +49,32 @@ const Home = () => {
         <>
           {select?.post.map((newPost) => {
             return (
-              <Post
-                userName={newPost.user.fullName}
-                body={newPost.description}
-              />
+              <>
+                <Post
+                  userName={newPost.user.fullName}
+                  body={newPost.description}
+                  postDivClassName={
+                    "border-slate-900 border-4 mx-4 my-6 px-2 py-4"
+                  }
+                  commentDivClassName={"border-slate-900 border-2 mx-4 my-6 px-2 py-4"}
+                  numberOfComments={newPost.comments.length}
+                  comments={newPost.comments.map((comment) => {
+                    return (
+                      <>
+                        <Comment
+                          fullCommentDivClassName={
+                            "border-slate-900 border-2 mx-4 my-6 px-2 py-4"
+                          }
+                          commenterImage={comment.image}
+                          commenterFullName={comment.commenterFullName}
+                          createdAt={comment.createdAt}
+                          comment={comment.comment}
+                        />
+                      </>
+                    );
+                  })}
+                />
+              </>
             );
           })}
           <Pagination
