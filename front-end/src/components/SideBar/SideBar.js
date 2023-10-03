@@ -1,6 +1,9 @@
 import React from "react";
 import { FcBullish } from "react-icons/fc";
 import { HiOutlineLogout } from "react-icons/hi";
+import { BiSolidCategoryAlt, BiSolidCity } from "react-icons/bi";
+import { BsFileEarmarkPostFill } from "react-icons/bs";
+import { FcServices } from "react-icons/fc";
 import { NavLink } from "react-router-dom";
 
 // const items = [
@@ -74,7 +77,7 @@ const SideBar = () => {
           }
         >
           <span className="text-xl">
-            <FcBullish />
+            <BiSolidCity />
           </span>
           Regions
         </NavLink>
@@ -90,7 +93,7 @@ const SideBar = () => {
           }
         >
           <span className="text-xl">
-            <FcBullish />
+            <BiSolidCategoryAlt />
           </span>
           Categories
         </NavLink>
@@ -106,7 +109,7 @@ const SideBar = () => {
           }
         >
           <span className="text-xl">
-            <FcBullish />
+            <BiSolidCategoryAlt />
           </span>
           Sub Categories
         </NavLink>
@@ -122,7 +125,7 @@ const SideBar = () => {
           }
         >
           <span className="text-xl">
-            <FcBullish />
+            <BsFileEarmarkPostFill />
           </span>
           Posts
         </NavLink>
@@ -138,7 +141,7 @@ const SideBar = () => {
           }
         >
           <span className="text-xl">
-            <FcBullish />
+            <FcServices />
           </span>
           Services
         </NavLink>

@@ -149,13 +149,46 @@ exports.updateService = (req, res, next) => {
     });
 };
 
+exports.updateServiceStatus = (req, res, next) => {
+  const { status } = req.body;
+  const { id } = req.params;
+
+  pool
+    .query(`UPDATE serverices SET status_id = $1 WHERE id = $2`, [status, id])
+    .then((result) => {
+      if (result.rowCount !== 0) {
+        let message = ``;
+        console.log(typeof status);
+        if (status == 2) {
+          message = `Service Accepted`;
+        } else if (status == 3) {
+          message = `Service Rejected`;
+        } else if (status == 4) {
+          message = `Service Canceled`;
+        }
+
+        return res.status(200).json({
+          error: false,
+          message,
+        });
+      }
+      return throwError(400, "Something went wrong");
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
 exports.getAllServices = (req, res, next) => {
   const perPage = Number(req.query.limit);
   const currentPage = Number(req.query.offset);
   let totalItems;
   const { is_deleted } = req.query;
   let query = `SELECT serverices.id, serverices.service_provider_id, serverices.category_id, serverices.sub_category_id, serverices.title, serverices.description, serverices.status_id, 
-  serverices.default_image, serverices.created_at,
+  serverices.default_image, serverices.created_at, serverices.is_deleted,
   users.first_name, users.last_name, users.image,
   statuses.name, categories.name AS categoryName, sub_categories.name AS subCategoryName
   FROM serverices 
@@ -185,6 +218,7 @@ exports.getAllServices = (req, res, next) => {
         sub_categories_name: service.subcategoryname,
         title: service.title,
         description: service.description,
+        is_deleted: service.is_deleted,
         default_image: `http://localhost:5000/${service.default_image}`,
         created_at: service.created_at,
       }));
@@ -344,6 +378,34 @@ exports.getServiceOnId = (req, res, next) => {
           serverices: serverices[0],
         });
       }
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
+exports.deleteService = (req, res, next) => {
+  const { id } = req.params;
+  const { active } = req.body;
+  const value = [active, id];
+  const query = `UPDATE serverices SET is_deleted = $1 WHERE id=$2`;
+
+  pool
+    .query(query, value)
+    .then((result) => {
+      if (result.rowCount !== 0) {
+        return res.status(200).json({
+          error: false,
+          message:
+            active == 1
+              ? `Service with id: ${id} deleted successfully`
+              : `Service with id: ${id} Activated successfully`,
+        });
+      }
+      return throwError(400, "Something went wrong");
     })
     .catch((err) => {
       if (!err.statusCode) {

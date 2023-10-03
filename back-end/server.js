@@ -47,6 +47,7 @@ const categoryRouter = require("./routes/categories");
 const subCategoryRouter = require("./routes/sub-category");
 const commentsRoute = require("./routes/comments");
 const regionsRoure = require("./routes/regions");
+const ordersRouter = require("./routes/Orders");
 
 app.use("/roles", rolesRouter);
 app.use("/permissions", permissionsRouter);
@@ -57,6 +58,7 @@ app.use("/categories", categoryRouter);
 app.use("/subcategories", subCategoryRouter);
 app.use("/comment", commentsRoute);
 app.use("/regions", regionsRoure);
+app.use("/orders", ordersRouter);
 
 app.use("*", (req, res) => res.status(404).json("NO content at this path"));
 

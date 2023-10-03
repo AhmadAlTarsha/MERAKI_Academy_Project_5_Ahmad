@@ -1,34 +1,75 @@
 import React, { useEffect, useState } from "react";
 import Tables from "../../../components/Table/Tables";
+import { useDispatch, useSelector } from "react-redux";
+import { GetAllPosts } from "../../../Services/APIS/Posts/GetAllPosts";
+import { setPosts } from "../../../Services/Redux/Posts";
+import Loader from "../../../components/Loader/Loader";
+import Pagination from "../../../components/Pagination/Pagination";
 
 const AdminPosts = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const rows = ["ID", "Author", "Post", "Comments", "Actions"];
-  const columns = {
-    posts: [
-      {
-        id: 1,
-        author: "Lambert",
-        post: "Post 1",
-        comments: 3,
-      },
-      { id: 2, author: "Arel", post: "Post 2", comments: 9 },
-      { id: 3, author: "Tracey", post: "Post 3", comments: 12 },
-      { id: 4, author: "Audry", post: "Post 4", comments: 7 },
-      {
-        id: 5,
-        author: "Serena",
-        post: "Post 5",
-        comments: 8,
-      },
-    ],
+  const [limit, setLimit] = useState(3);
+  const [offset, setOffset] = useState(1);
+
+  const selectPosts = useSelector((state) => {
+    return {
+      posts: state.post.post,
+    };
+  });
+  const dispatch = useDispatch();
+
+  const rows = ["ID", "Author", "Post", "Comments", "Is Deleted", "Actions"];
+
+  const handlePage = (li, off) => {
+    GetAllPosts(li, off)
+      .then((result) => {
+        if (!result.error) {
+          dispatch(setPosts(result));
+          setIsLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.log("CATEGORY ERROR ==> ", err?.response?.data);
+      });
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    return () => {
+      GetAllPosts(limit, offset, 0)
+        .then((result) => {
+          dispatch(setPosts(result));
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          console.log("CATEGORY ERROR ==> ", err?.response?.data);
+        });
+    };
+  }, []);
 
   return (
-    <div className="flex flex-col justify-center items-center w-full h-full">
-      <Tables rows={rows} cols={columns} />
+    <div className="overflow-auto flex flex-col justify-center items-center w-full h-full">
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <>
+          <Tables
+            rows={rows}
+            cols={selectPosts}
+            dispatch={dispatch}
+            setPosts={setPosts}
+            limit={limit}
+            offset={offset}
+          />
+          {selectPosts.posts.length !== 0 && (
+            <Pagination
+              handlePage={handlePage}
+              limit={limit}
+              offset={offset}
+              setOffset={setOffset}
+            />
+          )}
+        </>
+      )}
     </div>
   );
 };

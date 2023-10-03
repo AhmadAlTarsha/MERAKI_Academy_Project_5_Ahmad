@@ -195,7 +195,6 @@ CREATE TABLE customer_provider_rate (
 
 INSERT INTO statuses (name) VALUES ('PENDING'), ('ACCEPTED'),('REJECTED'),('CANCELED')
   `
-  
     )
     .then((result) => {
       console.log("result", result);
@@ -207,4 +206,4 @@ INSERT INTO statuses (name) VALUES ('PENDING'), ('ACCEPTED'),('REJECTED'),('CANC
 
 // createAllTables();
 
-exports.module = pool
+exports.module = pool;

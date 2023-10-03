@@ -3,10 +3,9 @@ import authReducer from "./auth/index";
 import postReducer from "./Posts/index";
 import serviceReducer from "./Services/index";
 import categoriesReducer from "./Category/index";
-import roleReducer from "./roles/roles"
+import roleReducer from "./roles/roles";
 import regionsReducer from "./regions/regions";
-
-
+import ordersReducer from "./Orders/index";
 import subCategoriesReducer from "./Sub_Categories/index";
 
 export default configureStore({
@@ -15,8 +14,9 @@ export default configureStore({
     post: postReducer,
     services: serviceReducer,
     categories: categoriesReducer,
-    roles:roleReducer,
+    roles: roleReducer,
     regions: regionsReducer,
     subCategories: subCategoriesReducer,
+    orders: ordersReducer,
   },
 });

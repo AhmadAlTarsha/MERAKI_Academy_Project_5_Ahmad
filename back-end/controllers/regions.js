@@ -12,14 +12,10 @@ exports.getAllRegions = async (req, res, next) => {
   if (perPage && currentPage && isDeleted) {
     query += ` WHERE is_deleted = $1 ORDER BY id ASC LIMIT $2 OFFSET $3`;
     data = [isDeleted, perPage, (currentPage - 1) * perPage];
-  }
-
-  if (perPage && currentPage) {
+  } else if (perPage && currentPage) {
     query += ` ORDER BY id ASC LIMIT $1 OFFSET $2`;
     data = [perPage, (currentPage - 1) * perPage];
-  }
-
-  if (!perPage && !currentPage) {
+  } else if (!perPage && !currentPage) {
     query += ` WHERE is_deleted = 0 ORDER BY id ASC`;
   }
 

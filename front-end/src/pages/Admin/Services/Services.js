@@ -9,7 +9,7 @@ import Loader from "../../../components/Loader/Loader";
 const AdminServices = () => {
   const [limit, setLimit] = useState(3);
   const [offset, setOffset] = useState(1);
-  const servicesDispatch = useDispatch();
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
   const servicessSelector = useSelector((state) => {
     return {
@@ -20,7 +20,7 @@ const AdminServices = () => {
   const handlePage = (li, off) => {
     getAllServices(1, li, off)
       .then((services) => {
-        servicesDispatch(setServices(services));
+        dispatch(setServices(services));
       })
       .catch((err) => {
         console.error("SERVICE ERROR ====> ", err);
@@ -35,14 +35,15 @@ const AdminServices = () => {
     "Provider",
     "Title",
     "Status",
+    "Is Deleted",
     "Actions",
   ];
 
   useEffect(() => {
     return () => {
-      getAllServices(1, limit, offset)
+      getAllServices(limit, offset)
         .then((services) => {
-          servicesDispatch(setServices(services));
+          dispatch(setServices(services));
           setIsLoading(false);
         })
         .catch((err) => {
@@ -60,6 +61,11 @@ const AdminServices = () => {
           <Tables
             rows={rows}
             cols={{ services: servicessSelector?.services }}
+            dispatch={dispatch}
+            limit={limit}
+            offset={offset}
+            setServices={setServices}
+
           />
           {servicessSelector?.services.length !== 0 && (
             <Pagination
