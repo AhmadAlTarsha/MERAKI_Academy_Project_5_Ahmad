@@ -22,10 +22,12 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    let user = {}
     UserLogin(credentials)
       .then((res) => {
-        dispatch(setLogin(res));
+        user = res
+       console.log("xx",res);
+        dispatch(setLogin(user));
         return GetUser(res.id);
       })
       .then((res2) => {
@@ -41,6 +43,8 @@ const Login = () => {
             region: `${res2?.user?.user_region}`,
           })
         );
+        user.role=res2.user.role_id
+        dispatch(setLogin(user));
       })
       .catch((err) => {
         console.error("ERROR LOGIN ==> ", err);

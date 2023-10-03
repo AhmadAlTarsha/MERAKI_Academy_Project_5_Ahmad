@@ -18,6 +18,7 @@ export const authSlice = createSlice({
       id: 0,
       token: "",
       isLoggedIn: false,
+      role:0
     },
 
 
@@ -25,10 +26,13 @@ export const authSlice = createSlice({
   },
   reducers: {
     setLogin: (state, action) => {
+      
+      console.log(action.payload);
       state.localUser = {
         id: action.payload.id,
         token: action.payload.token,
         isLoggedIn: true,
+      
       };
       console.log("LOCAL USER ===> ", state.localUser);
       localStorage.setItem(
@@ -37,6 +41,10 @@ export const authSlice = createSlice({
           id: action.payload.id,
           token: action.payload.token,
           isLoggedIn: true,
+          role:action.payload.role
+          
+          
+       
         })
       );
     },
@@ -58,6 +66,7 @@ export const authSlice = createSlice({
         token: "",
         id: 0,
         isLoggedIn: false,
+        role:0
       };
       localStorage.removeItem("localUser");
     },
