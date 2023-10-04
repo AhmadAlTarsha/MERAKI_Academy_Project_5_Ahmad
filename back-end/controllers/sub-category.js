@@ -78,17 +78,26 @@ exports.updateSubCategory = (req, res, next) => {
 exports.getAllSubCategories = (req, res, next) => {
   const perPage = Number(req.query.limit);
   const currentPage = Number(req.query.offset);
-  let totalItems;
+  const isDeleted = req.query.is_deleted;
+  let query = `SELECT sub_categories.id, sub_categories.name, sub_categories.image, sub_categories.is_deleted, sub_categories.created_at,
+  categories.name AS categoryName
+  FROM sub_categories
+  INNER JOIN categories ON categories.id = sub_categories.category_id`;
+  let data = [];
+
+  if (isDeleted == 0 && perPage > 0 && currentPage > 0) {
+    query += ` WHERE sub_categories.is_deleted = $1 ORDER BY sub_categories.id ASC LIMIT $2 OFFSET $3`;
+    data = [isDeleted, perPage, (currentPage - 1) * perPage];
+  } else if (isDeleted == 0 && perPage === 0 && currentPage === 0) {
+    query += ` WHERE sub_categories.is_deleted = $1 ORDER BY sub_categories.id ASC`;
+    data = [isDeleted];
+  } else {
+    query += ` ORDER BY sub_categories.id ASC LIMIT $1 OFFSET $2`;
+    data = [perPage, (currentPage - 1) * perPage];
+  }
+
   pool
-    .query(
-      `SELECT sub_categories.id, sub_categories.name, sub_categories.image, sub_categories.is_deleted, sub_categories.created_at,
-      categories.name AS categoryName
-      FROM sub_categories
-      INNER JOIN categories ON categories.id = sub_categories.category_id
-      ORDER BY id ASC
-      LIMIT $1 OFFSET $2`,
-      [perPage, (currentPage - 1) * perPage]
-    )
+    .query(query, data)
     .then((result) => {
       if (result.command === `SELECT`) {
         const subCategories = result.rows.map((subCategory) => ({
@@ -116,9 +125,10 @@ exports.getAllSubCategories = (req, res, next) => {
 
 exports.getAllSubCategoriesOnCategory = (req, res, next) => {
   pool
-    .query(`SELECT * FROM sub_categories WHERE category_id = $1`, [
-      req.params.categoryId,
-    ])
+    .query(
+      `SELECT * FROM sub_categories WHERE category_id = $1 AND is_deleted = $2`,
+      [req.params.categoryId, 0]
+    )
     .then((result) => {
       if (result.command === `SELECT`) {
         return res.status(200).json({

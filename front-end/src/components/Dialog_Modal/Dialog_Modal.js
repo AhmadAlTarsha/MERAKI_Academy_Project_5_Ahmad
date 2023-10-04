@@ -151,7 +151,7 @@ const Dialog_Modal = ({
           onClick={() => {
             if (isForm) {
               if (isCategory) {
-                GetCategories(limit, offset)
+                GetCategories(limit, offset, 1)
                   .then((result) => {
                     dispatch(setCategories(result));
                     setIsOpen(!isOpen);
@@ -163,7 +163,7 @@ const Dialog_Modal = ({
                     );
                   });
               } else if (isSubCategory) {
-                GetSubCategories(limit, offset)
+                GetSubCategories(limit, offset, 1)
                   .then((result) => {
                     dispatch(setSubCategories(result));
                     setIsOpen(!isOpen);

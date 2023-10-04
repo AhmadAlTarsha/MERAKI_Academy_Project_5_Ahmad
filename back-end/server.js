@@ -81,5 +81,13 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 
 // will log to the command line when the server starts
-app.listen(PORT, () => {
+const server = app.listen(PORT);
+const io = require("./socket").init(server, {
+  cors: {
+    origin: "http://localhost:5000",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  },
+});
+io.on("connection", (socket) => {
+  console.log("Client connected");
 });

@@ -36,7 +36,7 @@ const AdminCategories = () => {
 
   useEffect(() => {
     return () => {
-      GetCategories(limit, offset, 0)
+      GetCategories(limit, offset, 1)
         .then((result) => {
           if (!result.error) {
             dispatch(setCategories(result));

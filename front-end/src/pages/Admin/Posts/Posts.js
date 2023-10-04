@@ -21,7 +21,7 @@ const AdminPosts = () => {
   const rows = ["ID", "Author", "Post", "Comments", "Is Deleted", "Actions"];
 
   const handlePage = (li, off) => {
-    GetAllPosts(li, off)
+    GetAllPosts(li, off, 0, 0, 1)
       .then((result) => {
         if (!result.error) {
           dispatch(setPosts(result));
@@ -35,7 +35,7 @@ const AdminPosts = () => {
 
   useEffect(() => {
     return () => {
-      GetAllPosts(limit, offset, 0)
+      GetAllPosts(limit, offset, 0, 0, 1)
         .then((result) => {
           dispatch(setPosts(result));
           setIsLoading(false);
