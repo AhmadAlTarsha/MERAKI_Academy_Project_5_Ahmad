@@ -158,7 +158,6 @@ exports.updateServiceStatus = (req, res, next) => {
     .then((result) => {
       if (result.rowCount !== 0) {
         let message = ``;
-        console.log(typeof status);
         if (status == 2) {
           message = `Service Accepted`;
         } else if (status == 3) {

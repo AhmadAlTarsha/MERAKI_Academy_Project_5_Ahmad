@@ -64,7 +64,6 @@ app.use("*", (req, res) => res.status(404).json("NO content at this path"));
 
 app.use((err, req, res, next) => {
   const { statusCode, message } = err;
-  console.log(err);
   if (statusCode == 500) {
     err.statusCode = 500;
     return res.status(statusCode).json({
@@ -83,5 +82,4 @@ const PORT = process.env.PORT || 5000;
 
 // will log to the command line when the server starts
 app.listen(PORT, () => {
-  console.log(` project five server connected will...`);
 });

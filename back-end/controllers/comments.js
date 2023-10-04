@@ -33,18 +33,18 @@ exports.createNewComment = (req, res, next) => {
 // ===================== This Function To Get  Comment  By Post=====================
 exports.getCommentsByPostId = (req, res, next) => {
   const post_id = req.params.id;
-  const query = `SELECT comments.id, comments.comment, comments.commenter_id, comments.created_at,
+  const query = `SELECT comments.id, comments.comment, comments.commenter_id, comments.created_at, comments.post_id,
   users.first_name, users.last_name, users.image 
   FROM comments 
   INNER JOIN users ON users.id = comments.commenter_id
-  WHERE comments.post_id = $1 AND comments.is_deleted = 0  
-  `;
+  WHERE comments.post_id = $1`;
   const data = [post_id];
   pool
     .query(query, data)
     .then((result) => {
       const comments = result.rows.map((comment) => ({
         id: comment.id,
+        post_id: comment.post_id,
         comment: comment.comment,
         commenter: {
           fullName: `${comment.first_name} ${comment.last_name}`,
@@ -55,7 +55,6 @@ exports.getCommentsByPostId = (req, res, next) => {
       if (result.command === "SELECT") {
         return res.status(200).json({
           error: false,
-          message: "All comment From This id",
           comments,
         });
       }
