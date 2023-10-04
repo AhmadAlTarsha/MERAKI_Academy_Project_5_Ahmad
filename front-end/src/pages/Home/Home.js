@@ -102,11 +102,12 @@ const Home = () => {
                             fullCommentDivClassName={
                               "border-slate-900 border-2 mx-4 my-6 px-2 py-4"
                             }
-                            commenterImage={comment?.image}
-                            commenterFullName={comment.commenterFullName}
-                            createdAt={comment.createdAt}
+                            commenterImage={comment?.commenter.userImage}
+                            commenterFullName={comment.commenter.fullName}
+                            createdAt={comment.created_at}
                             comment={comment.comment}
                           />
+                          
                         </>
                       );
                     }
