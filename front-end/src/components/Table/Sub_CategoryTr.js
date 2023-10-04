@@ -75,7 +75,7 @@ const Sub_CategoryTr = ({
               subcategory?.is_deleted === 0 ? 1 : 0
             )
               .then((result) => {
-                return GetSubCategories(limit, offset);
+                return GetSubCategories(limit, offset, 1);
               })
               .then((result2) => {
                 dispatch(setSubCategories(result2));

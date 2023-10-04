@@ -22,7 +22,7 @@ const AdminSub_Categories = () => {
   const dispatch = useDispatch();
 
   const handlePage = (li, off) => {
-    GetSubCategories(li, off)
+    GetSubCategories(li, off, 1)
       .then((result) => {
         if (!result.error) {
           dispatch(setSubCategories(result));
@@ -34,12 +34,11 @@ const AdminSub_Categories = () => {
       });
   };
 
-
   const rows = ["ID", "Image", "Name", "Category Name", "Is deleted", "Action"];
 
   useEffect(() => {
     return () => {
-      GetSubCategories(limit, offset)
+      GetSubCategories(limit, offset, 1)
         .then((result) => {
           if (!result?.error) {
             dispatch(setSubCategories(result));

@@ -65,6 +65,7 @@ function Post({
           </Disclosure>
         </div>
       </div>
+      
     </div>
   );
 }

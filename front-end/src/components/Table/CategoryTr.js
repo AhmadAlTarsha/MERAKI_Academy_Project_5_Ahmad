@@ -65,7 +65,7 @@ const CategoryTr = ({
           onClick={() => {
             DeleteCategories(category?.id, category?.is_deleted === 0 ? 1 : 0)
               .then((result) => {
-                return GetCategories(limit, offset);
+                return GetCategories(limit, offset, 1);
               })
               .then((result2) => {
                 dispatch(setCategories(result2));

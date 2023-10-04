@@ -3,13 +3,19 @@ import axios from "axios";
 /*  CATEGORIES */
 export const GetCategories = async (limit, offset, is_deleted) => {
   let url = ``;
-  if (limit === 0 && offset === 0 && is_deleted === 0) {
-    url = `http://localhost:5000/categories`;
-  } else if (limit !== 0 && offset !== 0 && is_deleted === 0) {
-    url = `http://localhost:5000/categories?limit=${limit}&offset=${offset}`;
-  } else if (limit !== 0 && offset !== 0 && is_deleted !== 0) {
+
+  //Admin
+
+  //Admin
+
+  //Website
+  if (is_deleted === 0) {
     url = `http://localhost:5000/categories?limit=${limit}&offset=${offset}&is_deleted=${is_deleted}`;
+  } else {
+    url = `http://localhost:5000/categories?limit=${limit}&offset=${offset}`;
   }
+  //Website
+
   try {
     const result = await axios.get(url);
 
@@ -41,11 +47,16 @@ export const getCategory = async (id) => {
 
 /*  SUB CATEGORIES */
 
-export const GetSubCategories = async (limit, offset) => {
+export const GetSubCategories = async (limit, offset, is_deleted) => {
+  let url = ``;
+  if (is_deleted === 0) {
+    url = `http://localhost:5000/subcategories?limit=${limit}&offset=${offset}&is_deleted=${is_deleted}`;
+  } else {
+    url = `http://localhost:5000/subcategories?limit=${limit}&offset=${offset}`;
+  }
+  //Website
   try {
-    const result = await axios.get(
-      `http://localhost:5000/subcategories?limit=${limit}&offset=${offset}`
-    );
+    const result = await axios.get(url);
 
     if (!result.data?.error) {
       return result.data;
@@ -62,7 +73,6 @@ export const GetSubCategoriesOnCategory = async (id) => {
     if (!result?.data?.error) {
       return result.data;
     }
-    
   } catch (err) {
     throw err;
   }
