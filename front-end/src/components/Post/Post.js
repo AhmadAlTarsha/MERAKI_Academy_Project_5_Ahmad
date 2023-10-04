@@ -1,6 +1,7 @@
 import React from "react";
 import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/20/solid";
+import Button from "../Button/Button";
 
 function Post({
   imageSrc,
@@ -14,7 +15,6 @@ function Post({
   body,
   userDivClassName,
   postImage,
-  images,
   comments,
   numberOfComments,
   commentDivClassName,
@@ -47,6 +47,18 @@ function Post({
                 </Disclosure.Button>
                 <Disclosure.Panel className={commentDivClassName}>
                   {comments}
+                  <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                    <textarea
+                      className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+                      placeholder="Write comment"
+                    ></textarea>
+                  </div>
+                  <Button
+                    buttonClassName={
+                      "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                    }
+                    buttonName={"Post"}
+                  />
                 </Disclosure.Panel>
               </>
             )}
