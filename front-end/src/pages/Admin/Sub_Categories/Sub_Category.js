@@ -121,6 +121,7 @@ const AdminSub_Category = () => {
                   image: e.target.files[0],
                   name: subCategoryData.name,
                   category_name: subCategoryData.category_name,
+                  category_id: subCategoryData?.category_id,
                 });
               }}
             />
@@ -146,6 +147,7 @@ const AdminSub_Category = () => {
                   image: subCategoryData.image,
                   name: e.target.value,
                   category_name: subCategoryData.category_name,
+                  category_id: subCategoryData?.category_id,
                 });
               }}
             />

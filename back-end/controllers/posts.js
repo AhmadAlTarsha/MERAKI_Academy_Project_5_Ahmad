@@ -1,34 +1,42 @@
 const pool = require("../models/DB");
+const io = require("../socket");
 const { throwError } = require("../middlewares/throwError");
 
 // ===================== GET ALL POSTS =====================
 exports.getAllPosts = (req, res, next) => {
   const perPage = Number(req.query.limit);
   const currentPage = Number(req.query.offset);
-  const isDeleted = Number(req.query.is_deleted);
+  const isDeleted = req.query.is_deleted;
   const categoryId = Number(req.query.category);
+  const subCategoryId = Number(req.query.sub_category);
   let data = [];
   let images = [];
   let posts = [];
   let query = `SELECT posts.id, posts.description, posts.category_id, posts.sub_category_id, posts.created_at, posts.is_deleted, posts.main_image,
   users.first_name, users.last_name, users.image FROM posts JOIN users ON users.id = posts.poster_id`;
 
-  if (perPage && currentPage && isDeleted && categoryId) {
+  //website
 
-    query += ` WHERE posts.is_deleted = $1 AND posts.category_id = $2 ORDER BY id ASC LIMIT $3 OFFSET $4`;
+  if (categoryId) {
+    query += ` WHERE posts.is_deleted = $1 AND posts.category_id = $2 ORDER BY posts.id DESC LIMIT $3 OFFSET $4`;
     data = [isDeleted, categoryId, perPage, (currentPage - 1) * perPage];
-
-  } else if (perPage && currentPage && isDeleted) {
-
-    query += ` WHERE posts.is_deleted = $1 ORDER BY id ASC LIMIT $3 OFFSET $4`;
+  } else if (subCategoryId) {
+    query += ` WHERE posts.is_deleted = $1 AND posts.sub_category_id = $2 ORDER BY posts.id DESC LIMIT $3 OFFSET $4`;
+    data = [isDeleted, subCategoryId, perPage, (currentPage - 1) * perPage];
+  } else if (isDeleted == 0) {
+    query += ` WHERE posts.is_deleted = $1 ORDER BY posts.id DESC LIMIT $2 OFFSET $3`;
     data = [isDeleted, perPage, (currentPage - 1) * perPage];
+  } else {
+    //Admin
 
-  } else if (perPage && currentPage) {
-
-    query += ` ORDER BY id ASC LIMIT $1 OFFSET $2`;
+    query += ` ORDER BY posts.id DESC LIMIT $1 OFFSET $2`;
     data = [perPage, (currentPage - 1) * perPage];
-    
+
+    //Admin
   }
+  //website
+
+  console.log(query);
 
   pool
     .query(query, data)
@@ -160,6 +168,7 @@ exports.createPost = async (req, res, next) => {
     })
     .then(async (result2) => {
       if (result2.status === 201) {
+        io.getIo().emit("posts", { action: "create" });
         return res.status(201).json({
           error: false,
           message: result2.message,

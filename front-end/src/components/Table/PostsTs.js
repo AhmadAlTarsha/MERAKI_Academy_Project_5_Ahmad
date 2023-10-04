@@ -39,7 +39,7 @@ const PostsTs = ({ postsArray, limit, offset, dispatch, setPosts }) => {
           onClick={() => {
             DeletePost(post?.id, post?.is_deleted === 0 ? 1 : 0)
               .then((result) => {
-                return GetAllPosts(limit, offset, 0);
+                return GetAllPosts(limit, offset, 0, 0, 1);
               })
               .then((result2) => {
                 dispatch(setPosts(result2));

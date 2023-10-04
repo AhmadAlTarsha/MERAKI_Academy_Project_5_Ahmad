@@ -72,20 +72,25 @@ exports.updateCategory = (req, res, next) => {
 exports.getAllCategories = (req, res, next) => {
   const perPage = Number(req.query.limit);
   const currentPage = Number(req.query.offset);
-  const isDeleted = Number(req.query.is_deleted);
+  const isDeleted = req.query.is_deleted;
   let query = `SELECT * FROM categories`;
   let data = [];
 
-  if (perPage && currentPage && isDeleted) {
-    query += ` ORDER BY id ASC WHERE is_deleted = $1 LIMIT $2 OFFSET $3`;
+  if (isDeleted == 0 && perPage > 0 && currentPage > 0) {
+
+    query += ` WHERE is_deleted = $1 ORDER BY id ASC LIMIT $2 OFFSET $3`;
     data = [isDeleted, perPage, (currentPage - 1) * perPage];
-  } else if (perPage && currentPage) {
+
+  } else if (isDeleted == 0 && perPage === 0 && currentPage === 0) {
+
+    query += ` WHERE is_deleted = $1 ORDER BY id ASC`;
+    data = [isDeleted];
+
+  } else {
+
     query += ` ORDER BY id ASC LIMIT $1 OFFSET $2`;
     data = [perPage, (currentPage - 1) * perPage];
-  } else if (!perPage && !currentPage) {
-    query += ` WHERE is_deleted = 0 ORDER BY id ASC`;
-  } else {
-    query = query
+
   }
 
   pool

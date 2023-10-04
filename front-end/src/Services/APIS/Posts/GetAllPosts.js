@@ -1,21 +1,29 @@
 import axios from "axios";
 
-export const GetAllPosts = async (limit, offset, isDeleted, categoryId) => {
+export const GetAllPosts = async (
+  limit,
+  offset,
+  categoryId,
+  subCategoryId,
+  isDeleted
+) => {
+  //Admin
   let url = ``;
-  if (limit === 0 && offset === 0 && isDeleted === 0) {
-    url = `http://localhost:5000/posts/post/`;
-  } else if (limit !== 0 && offset !== 0 && isDeleted === 0) {
+  //Admin
+
+  // Webiste
+  if (categoryId > 0) {
+    url = `http://localhost:5000/posts/post/?limit=${limit}&offset=${offset}&is_deleted=0&category=${categoryId}`;
+  } else if (subCategoryId > 0) {
+    url = `http://localhost:5000/posts/post/?limit=${limit}&offset=${offset}&is_deleted=0&sub_category=${subCategoryId}`;
+  } else if (isDeleted === 0) {
+    url = `http://localhost:5000/posts/post/?limit=${limit}&offset=${offset}&is_deleted=0`;
+  } else {
     url = `http://localhost:5000/posts/post/?limit=${limit}&offset=${offset}`;
-  } else if (
-    limit !== 0 &&
-    offset !== 0 &&
-    isDeleted !== 0 &&
-    categoryId !== 0
-  ) {
-    url = `http://localhost:5000/posts/post/?limit=${limit}&offset=${offset}&is_deleted=${isDeleted}&category=${categoryId}`;
-  } else if (limit !== 0 && offset !== 0 && isDeleted !== 0) {
-    url = `http://localhost:5000/posts/post/?limit=${limit}&offset=${offset}&is_deleted=${isDeleted}`;
   }
+
+  console.log("URL ===> ",url);
+  // Webiste
 
   try {
     const result = await axios.get(url);
