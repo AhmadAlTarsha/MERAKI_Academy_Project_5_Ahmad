@@ -196,7 +196,15 @@ const Navbar = () => {
               <div className="py-6">
                 <NavLink to={"login"}>Login</NavLink>
               </div>
+
+              <NavLink to={"login"}>Login</NavLink>
+              <br ></br>
+              <NavLink to={"logout"}>Logout</NavLink>
+              <br ></br>
+              <NavLink to={"/"}>Home</NavLink>
+             
             </div>
+           
           </div>
         </div>
       </div>
