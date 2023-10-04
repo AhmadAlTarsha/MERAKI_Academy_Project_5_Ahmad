@@ -177,7 +177,6 @@ exports.deleteSub_CategoryById = (req, res, next) => {
   pool
     .query(query, data)
     .then((result) => {
-      console.log(result);
       if (result.rowCount !== 0) {
         return res.status(200).json({
           error: false,
