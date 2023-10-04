@@ -8,9 +8,8 @@ exports.getAllPosts = (req, res, next) => {
   const isDeleted = Number(req.query.is_deleted);
   let data = [];
   let images = [];
-  let comments = [];
   let posts = [];
-  let query = `SELECT posts.id, posts.description, posts.category_id, posts.sub_category_id, posts.created_at, posts.is_deleted,
+  let query = `SELECT posts.id, posts.description, posts.category_id, posts.sub_category_id, posts.created_at, posts.is_deleted, posts.main_image,
   users.first_name, users.last_name, users.image FROM posts JOIN users ON users.id = posts.poster_id`;
 
   if (perPage && currentPage && isDeleted) {
@@ -38,44 +37,29 @@ exports.getAllPosts = (req, res, next) => {
     .then(async (result2) => {
       if (result2.command === "SELECT") {
         images = result2.rows;
-        const newQuery = `SELECT comments.id, comments.post_id, comments.comment, comments.created_at, users.first_name, users.last_name, users.image FROM comments JOIN users ON users.id = comments.commenter_id`;
-        try {
-          return await pool.query(newQuery);
-        } catch (error) {
-          throw error;
-        }
+
+        posts = posts.map((post) => ({
+          id: post.id,
+          user: {
+            fullName: `${post.first_name} ${post.last_name}`,
+            userImage: `http://localhost:5000/images/${post.image}`,
+          },
+          is_deleted: post.is_deleted,
+          description: post.description,
+          main_image: `http://localhost:5000/${post.main_image}`,
+          category_id: post.category_id,
+          sub_category_id: post.sub_category_id,
+          created_at: post.created_at,
+          images: images.filter((image) => {
+            return image.service_id === post.id;
+          }),
+        }));
+
+        return res.status(200).json({
+          error: false,
+          posts,
+        });
       }
-    })
-    .then((result3) => {
-      comments = result3.rows.map((comment) => ({
-        id: comment.id,
-        comment: comment.comment,
-        commenterFullName: `${comment.first_name} ${comment.last_name}`,
-        postId: comment.post_id,
-        createdAt: comment.created_at
-      }));
-      posts = posts.map((post) => ({
-        id: post.id,
-        user: {
-          fullName: `${post.first_name} ${post.last_name}`,
-          userImage: post.image,
-        },
-        is_deleted: post.is_deleted,
-        description: post.description,
-        category_id: post.category_id,
-        sub_category_id: post.sub_category_id,
-        created_at: post.created_at,
-        images: images.filter((image) => {
-          return image.service_id === post.id;
-        }),
-        comments: comments.filter((comment) => {
-          return comment.postId === post.id;
-        }),
-      }));
-      return res.status(200).json({
-        error: false,
-        posts,
-      });
     })
     .catch((err) => {
       if (!err.statusCode) {

@@ -66,7 +66,6 @@ exports.getAllOrders = (req, res, next) => {
   pool
     .query(query, data)
     .then((result) => {
-      console.log(result.rows);
       if (result.command === `SELECT`) {
         const orders = result?.rows.map((order) => ({
           id: order.id,

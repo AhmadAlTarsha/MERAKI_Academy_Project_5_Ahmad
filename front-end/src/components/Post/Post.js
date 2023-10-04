@@ -13,6 +13,7 @@ function Post({
   bodyClassName,
   body,
   userDivClassName,
+  postImage,
   images,
   comments,
   numberOfComments,
@@ -20,14 +21,17 @@ function Post({
 }) {
   return (
     <div className={postDivClassName}>
-      <div className={userDivClassName}>
-        <img src={imageSrc} alt={altName} width={width} height={height} />
+      <div className={`${userDivClassName}`}>
+        <div className="bg-green-500 w-1/4">
+          <img src={imageSrc} alt={altName} width={width} height={height} />
+        </div>
         <h3>{userName}</h3>
       </div>
       <div className={bodyDivClassName}>
         <p className={bodyClassName}>{body}</p>
-        <img src={images} />
+        <img src={postImage} />
       </div>
+
       <div className="w-full px-4 pt-16">
         <div className="mx-auto w-full max-w-md rounded-2xl bg-white p-2">
           <Disclosure>
