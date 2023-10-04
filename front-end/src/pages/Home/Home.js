@@ -10,16 +10,28 @@ import { setComments, setPosts } from "../../Services/Redux/Posts/index";
 import { useEffect, useState } from "react";
 import Loader from "../../components/Loader/Loader";
 import Comment from "../../components/Comment/Comment";
+import Card from "../../components/Card/Card";
+import {
+  GetCategories,
+  GetSubCategoriesOnCategory,
+} from "../../Services/APIS/Category/Get_Categories";
+import { setCategories } from "../../Services/Redux/Category";
+import { setSubCategories } from "../../Services/Redux/Sub_Categories";
+import Categories from "../../components/Home_Categories/Categories";
+import Sub_Categories from "../../components/Home_Categories/Sub_Categories";
 
 const Home = () => {
   const limit = 10;
   const [offset, setOffset] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [isCategoryClicked, setIsCategoryClicked] = useState(false);
   const dispatch = useDispatch();
   const select = useSelector((state) => {
     return {
       post: state.post.post,
       comments: state.post.comments,
+      categories: state.categories.categories,
+      subCategories: state.subCategories.subCategories,
     };
   });
 
@@ -43,7 +55,17 @@ const Home = () => {
       .catch((err) => {
         console.log(err);
       });
+
+    GetCategories(0, 0, 0)
+      .then((result) => {
+        dispatch(setCategories(result));
+      })
+      .catch((err) => {
+        console.error("ERROR GETING CATEGORIES ===> ".err);
+      });
   }, []);
+
+  // console.log("SUB == >",select.subCategories);
 
   const handlePage = (li, off) => {
     GetAllPosts(li, off, 0)
@@ -75,6 +97,16 @@ const Home = () => {
         </div>
       ) : (
         <>
+          <Categories
+            categories={select?.categories?.categories}
+            dispatch={dispatch}
+            setIsCategoryClicked={setIsCategoryClicked}
+            setSubCategories={setSubCategories}
+          />
+
+          {isCategoryClicked && (
+            <Sub_Categories subCategories={select?.subCategories} />
+          )}
           {select?.post.map((newPost) => {
             return (
               <>

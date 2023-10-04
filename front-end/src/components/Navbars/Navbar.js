@@ -8,6 +8,7 @@ import { setLogout } from "../../Services/Redux/auth";
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const localUser = JSON?.parse(localStorage?.getItem("localUser")) ?? {};
   return (
     <header className="bg-white">
       <nav
@@ -48,42 +49,73 @@ const Navbar = () => {
           </button>
         </div> */}
 
-        <div className="hidden lg:flex lg:gap-x-12">
-          <div className="relative">
-            <NavLink
-              to={"/"}
-              className={
-                "flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900"
-              }
-            >
-              Home
-            </NavLink>
-            <div className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5"></div>
-          </div>
+        {!localUser?.isLoggedIn ? (
+          <>
+            <div className="hidden lg:flex lg:gap-x-12">
+              <div className="relative">
+                <NavLink
+                  to={"/"}
+                  className={
+                    "flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900"
+                  }
+                >
+                  Home
+                </NavLink>
+                <div className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5"></div>
+              </div>
 
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-            Features
-          </a>
-          <NavLink
-            to={"login"}
-            className={
-              "flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900"
-            }
-          >
-            Login
-          </NavLink>
-        </div>
+              {/* <a
+                href="#"
+                className="text-sm font-semibold leading-6 text-gray-900"
+              >
+                Posts
+              </a> */}
 
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Button
-            onClick={() => {
-              dispatch(setLogout());
-              navigate("/");
-            }}
-            buttonName={"logout"}
-          />
-          <span aria-hidden="true">&rarr;</span>
-        </div>
+              <NavLink
+                to={"posts"}
+                className={
+                  "flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900"
+                }
+              >
+                Posts
+              </NavLink>
+
+              <NavLink
+                to={"categories"}
+                className={
+                  "flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900"
+                }
+              >
+                Categories
+              </NavLink>
+
+              <NavLink
+                to={"login"}
+                className={
+                  "flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900"
+                }
+              >
+                Login
+              </NavLink>
+            </div>
+            {/* LEAVE IT EMPTY */}
+            <div className="hidden lg:flex lg:flex-1 lg:justify-end"></div>
+            {/* LEAVE IT EMPTY */}
+          </>
+        ) : (
+          <>
+            <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+              <Button
+                onClick={() => {
+                  dispatch(setLogout());
+                  navigate("/");
+                }}
+                buttonName={"logout"}
+              />
+              <span aria-hidden="true">&rarr;</span>
+            </div>
+          </>
+        )}
       </nav>
 
       {/* <!-- Mobile menu, show/hide based on menu open state. --> */}

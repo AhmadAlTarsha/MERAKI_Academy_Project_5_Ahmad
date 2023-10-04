@@ -1,12 +1,19 @@
 import axios from "axios";
 
-export const GetAllPosts = async (limit, offset, isDeleted) => {
+export const GetAllPosts = async (limit, offset, isDeleted, categoryId) => {
   let url = ``;
-  if (!limit && !offset && !isDeleted) {
+  if (limit === 0 && offset === 0 && isDeleted === 0) {
     url = `http://localhost:5000/posts/post/`;
-  } else if (limit && offset && !isDeleted) {
+  } else if (limit !== 0 && offset !== 0 && isDeleted === 0) {
     url = `http://localhost:5000/posts/post/?limit=${limit}&offset=${offset}`;
-  } else if (limit && offset && isDeleted) {
+  } else if (
+    limit !== 0 &&
+    offset !== 0 &&
+    isDeleted !== 0 &&
+    categoryId !== 0
+  ) {
+    url = `http://localhost:5000/posts/post/?limit=${limit}&offset=${offset}&is_deleted=${isDeleted}&category=${categoryId}`;
+  } else if (limit !== 0 && offset !== 0 && isDeleted !== 0) {
     url = `http://localhost:5000/posts/post/?limit=${limit}&offset=${offset}&is_deleted=${isDeleted}`;
   }
 

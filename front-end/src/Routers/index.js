@@ -14,6 +14,7 @@ import AdminSub_Categories from "../pages/Admin/Sub_Categories/Sub_Categories";
 import AdminSub_Category from "../pages/Admin/Sub_Categories/Sub_Category";
 import AdminRegions from "../pages/Admin/Regions/Regions";
 import Orders from "../pages/Orders/Orders";
+import Categories from "../pages/Categories/Categories";
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +32,14 @@ export const router = createBrowserRouter([
       {
         path: "register",
         element: <Register />,
+      },
+      {
+        path: "posts",
+        element: <Home />,
+      },
+      {
+        path: "categories",
+        element: <Categories />,
       },
       {
         path: "orders",

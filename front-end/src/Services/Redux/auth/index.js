@@ -18,33 +18,24 @@ export const authSlice = createSlice({
       id: 0,
       token: "",
       isLoggedIn: false,
-      role:0
+      role: 0,
     },
-
-
-   
   },
   reducers: {
     setLogin: (state, action) => {
-      
       console.log(action.payload);
       state.localUser = {
         id: action.payload.id,
         token: action.payload.token,
         isLoggedIn: true,
-      
       };
-      console.log("LOCAL USER ===> ", state.localUser);
       localStorage.setItem(
         "localUser",
         JSON.stringify({
           id: action.payload.id,
           token: action.payload.token,
           isLoggedIn: true,
-          role:action.payload.role
-          
-          
-       
+          role: action.payload.role,
         })
       );
     },
@@ -66,29 +57,24 @@ export const authSlice = createSlice({
         token: "",
         id: 0,
         isLoggedIn: false,
-        role:0
+        role: 0,
       };
       localStorage.removeItem("localUser");
     },
 
     register: (state, action) => {
-     
       console.log(action.payload);
       Registration(action.payload)
-      .then((res) => {
-      console.log("from redux",  res);
-        
-     
-      
-      })
-    
-      .catch((err) => {
-        console.error("ERROR Register ==> ", err?.response?.data);
-      });
-    }
+        .then((res) => {
+          console.log("from redux", res);
+        })
+
+        .catch((err) => {
+          console.error("ERROR Register ==> ", err?.response?.data);
+        });
+    },
   },
 });
-
 
 export const { setLogin, setUser, setLogout, register } = authSlice.actions;
 export default authSlice.reducer;

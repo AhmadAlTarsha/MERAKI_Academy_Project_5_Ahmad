@@ -55,6 +55,19 @@ export const GetSubCategories = async (limit, offset) => {
   }
 };
 
+export const GetSubCategoriesOnCategory = async (id) => {
+  try {
+    const result = await axios.get(`http://localhost:5000/subcategories/${id}`);
+
+    if (!result?.data?.error) {
+      return result.data;
+    }
+    
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const getSubCategory = async (id) => {
   try {
     const result = await axios.get(
