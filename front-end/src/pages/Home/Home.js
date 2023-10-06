@@ -20,6 +20,8 @@ import Sub_Categories from "../../components/Home_Categories/Sub_Categories";
 
 import Pop_up from "../../components/Dialog_Modal/Pop-up";
 
+import NewPost from "../../components/New_Post/NewPost";
+
 import TAP from "../allservices/Tap";
 import Servicepage from "../allservices/servicepage";
 import Button from "../../components/Button/Button";
@@ -184,6 +186,22 @@ const Home = () => {
                 setLoading={setLoading}
               />
               {/* <TAP></TAP> */}
+
+              {/* <Servicepage/> */}
+              {isCategoryClicked && (
+                <Sub_Categories
+                  subCategories={select?.subCategories}
+                  GetCommentsByPost={GetCommentsByPost}
+                  dispatch={dispatch}
+                  postComments={postComments}
+                  setComments={setComments}
+                  setLoading={setLoading}
+                  setPosts={setPosts}
+                  limit={limit}
+                  offset={offset}
+                />
+              )}
+
               <div>
                 <ul
                   class="mb-4 flex list-none flex-row flex-wrap border-b-0 pl-0"
@@ -221,20 +239,8 @@ const Home = () => {
 
                 <div></div>
               </div>
-              {/* <Servicepage/> */}
-              {isCategoryClicked && (
-                <Sub_Categories
-                  subCategories={select?.subCategories}
-                  GetCommentsByPost={GetCommentsByPost}
-                  dispatch={dispatch}
-                  postComments={postComments}
-                  setComments={setComments}
-                  setLoading={setLoading}
-                  setPosts={setPosts}
-                  limit={limit}
-                  offset={offset}
-                />
-              )}
+
+              <NewPost />
 
               {toggle
                 ? select?.post.map((newPost) => {

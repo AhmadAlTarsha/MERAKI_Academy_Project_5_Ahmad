@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/20/solid";
 import Button from "../Button/Button";
+import { CreateNewComment } from "../../Services/APIS/Comments/CreateNewComment";
+import { GetCommentsByPost } from "../../Services/APIS/Posts/GetAllPosts";
+import { setComments } from "../../Services/Redux/Posts";
 
 function Post({
   imageSrc,
@@ -18,12 +21,33 @@ function Post({
   comments,
   numberOfComments,
   commentDivClassName,
-
   isShowComments,
   buttonsDivClass,
-
+  postId,
+  dispatch,
+  postComments,
   title,
 }) {
+  const [comment, setComment] = useState("");
+  const [textValue, setTextValue] = useState("");
+
+  const handlePostComment = async () => {
+    CreateNewComment(postId, { comment })
+      .then((res) => {
+        return GetCommentsByPost(postId);
+      })
+      .then((comments) => {
+        postComments[`post_${postId}`] = comments;
+        dispatch(setComments(postComments));
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setTextValue("");
+      });
+  };
+
   return (
     <div className={postDivClassName}>
       <div className={`${userDivClassName}`}>
