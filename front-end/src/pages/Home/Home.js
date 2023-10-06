@@ -17,11 +17,8 @@ import { setSubCategories } from "../../Services/Redux/Sub_Categories";
 import { setServices } from "../../Services/Redux/Services";
 import Categories from "../../components/Home_Categories/Categories";
 import Sub_Categories from "../../components/Home_Categories/Sub_Categories";
-
 import Pop_up from "../../components/Dialog_Modal/Pop-up";
-
 import NewPost from "../../components/New_Post/NewPost";
-
 import TAP from "../allservices/Tap";
 import Servicepage from "../allservices/servicepage";
 import Button from "../../components/Button/Button";
@@ -184,6 +181,7 @@ const Home = () => {
                 postComments={postComments}
                 setComments={setComments}
                 setLoading={setLoading}
+                isCategoriesPages={false}
               />
               {/* <TAP></TAP> */}
 
@@ -300,6 +298,7 @@ const Home = () => {
                           }
                           imageSrc={service?.provider?.image}
                           postImage={service?.default_image}
+                          isShowComments={true}
                         />
                       </>
                     );
