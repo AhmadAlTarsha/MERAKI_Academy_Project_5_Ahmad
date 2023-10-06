@@ -15,6 +15,9 @@ import AdminSub_Category from "../pages/Admin/Sub_Categories/Sub_Category";
 import AdminRegions from "../pages/Admin/Regions/Regions";
 import Orders from "../pages/Orders/Orders";
 import Categories from "../pages/Categories/Categories";
+import Profile from "../pages/Profile/Profile";
+import MyPosts from "../pages/MyPosts/MyPosts";
+import CategoriesPage from "../pages/Categories/Categories";
 
 export const router = createBrowserRouter([
   {
@@ -35,15 +38,19 @@ export const router = createBrowserRouter([
       },
       {
         path: "posts",
-        element: <Home />,
+        element: <MyPosts />,
       },
       {
         path: "categories",
-        element: <Categories />,
+        element: <CategoriesPage />,
       },
       {
         path: "orders",
         element: <Orders />,
+      },
+      {
+        path: "profile",
+        element: <Profile />,
       },
     ],
   },

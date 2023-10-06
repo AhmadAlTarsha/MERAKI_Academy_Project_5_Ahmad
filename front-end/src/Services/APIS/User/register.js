@@ -10,7 +10,6 @@ export const Registration = async (payload) => {
 
     if (result?.status === 200) {
       if (!result?.data?.error) {
-        console.log(result);
         return result?.data;
       }
     }

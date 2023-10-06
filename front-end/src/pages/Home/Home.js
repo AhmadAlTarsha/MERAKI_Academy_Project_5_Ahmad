@@ -16,12 +16,15 @@ import { setCategories } from "../../Services/Redux/Category";
 import { setSubCategories } from "../../Services/Redux/Sub_Categories";
 import Categories from "../../components/Home_Categories/Categories";
 import Sub_Categories from "../../components/Home_Categories/Sub_Categories";
+import Pop_up from "../../components/Dialog_Modal/Pop-up";
 
 const Home = () => {
   const limit = 10;
   const [offset, setOffset] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [isCategoryClicked, setIsCategoryClicked] = useState(false);
+
   const dispatch = useDispatch();
   const select = useSelector((state) => {
     return {
@@ -50,9 +53,11 @@ const Home = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        console.log("POSTS ERROR === > ", err);
       });
+  }, []);
 
+  useEffect(() => {
     GetCategories(0, 0, 0)
       .then((result) => {
         dispatch(setCategories(result));
@@ -60,7 +65,9 @@ const Home = () => {
       .catch((err) => {
         console.error("ERROR GETING CATEGORIES ===> ".err);
       });
+  }, []);
 
+  useEffect(() => {
     const socket = openSocket("http://localhost:5000");
     socket.on("posts", (data) => {
       if (data.action === "create") {
@@ -108,6 +115,14 @@ const Home = () => {
       });
   };
 
+  const handleButtonClick = () => {
+    setError("An error occurred.");
+  };
+
+  const handleCloseModal = () => {
+    setError(false);
+  };
+
   return (
     <>
       {loading ? (
@@ -116,81 +131,87 @@ const Home = () => {
         </div>
       ) : (
         <>
-          <Categories
-            categories={select?.categories?.categories}
-            dispatch={dispatch}
-            setIsCategoryClicked={setIsCategoryClicked}
-            setSubCategories={setSubCategories}
-            limit={limit}
-            offset={offset}
-            setPosts={setPosts}
-            postComments={postComments}
-            setComments={setComments}
-            setLoading={setLoading}
-          />
+          {/* {error && <Pop_up message={error} onClose={handleCloseModal} />} */}
 
-          {isCategoryClicked && (
-            <Sub_Categories
-              subCategories={select?.subCategories}
-              GetCommentsByPost={GetCommentsByPost}
-              dispatch={dispatch}
-              postComments={postComments}
-              setComments={setComments}
-              setLoading={setLoading}
-              setPosts={setPosts}
-              limit={limit}
-              offset={offset}
-            />
-          )}
-
-          {select?.post.map((newPost) => {
-            return (
-              <>
-                <Post
-                  key={newPost?.id}
-                  userName={newPost?.user?.fullName}
-                  body={newPost?.description}
-                  postDivClassName={
-                    "border-slate-900 border-4 mx-4 my-6 px-2 py-4"
-                  }
-                  imageSrc={newPost?.user?.userImage}
-                  postImage={newPost?.main_image}
-                  commentDivClassName={
-                    "border-slate-900 border-2 mx-4 my-6 px-2 py-4"
-                  }
-                  numberOfComments={
-                    select?.comments[`post_${newPost.id}`]?.length
-                  }
-                  comments={select?.comments[`post_${newPost.id}`]?.map(
-                    (comment) => {
-                      return (
-                        <>
-                          <Comment
-                            key={comment.id}
-                            fullCommentDivClassName={
-                              "border-slate-900 border-2 mx-4 my-6 px-2 py-4"
-                            }
-                            commenterImage={comment?.commenter.userImage}
-                            commenterFullName={comment.commenter.fullName}
-                            createdAt={comment.created_at}
-                            comment={comment.comment}
-                          />
-                          
-                        </>
-                      );
-                    }
-                  )}
+          {error ? (
+            <Pop_up message={error} onClose={handleCloseModal} />
+          ) : (
+            <>
+              <Categories
+                categories={select?.categories?.categories}
+                dispatch={dispatch}
+                setIsCategoryClicked={setIsCategoryClicked}
+                setSubCategories={setSubCategories}
+                limit={limit}
+                offset={offset}
+                setPosts={setPosts}
+                postComments={postComments}
+                setComments={setComments}
+                setLoading={setLoading}
+              />
+              {isCategoryClicked && (
+                <Sub_Categories
+                  subCategories={select?.subCategories}
+                  GetCommentsByPost={GetCommentsByPost}
+                  dispatch={dispatch}
+                  postComments={postComments}
+                  setComments={setComments}
+                  setLoading={setLoading}
+                  setPosts={setPosts}
+                  limit={limit}
+                  offset={offset}
                 />
-              </>
-            );
-          })}
-          {select?.post.length !== 0 && (
-            <Pagination
-              handlePage={handlePage}
-              limit={limit}
-              offset={offset}
-              setOffset={setOffset}
-            />
+              )}
+              {select?.post.map((newPost) => {
+                return (
+                  <>
+                    <Post
+                      isShowComments={true}
+                      key={newPost?.id}
+                      userName={newPost?.user?.fullName}
+                      body={newPost?.description}
+                      postDivClassName={
+                        "border-slate-900 border-4 mx-4 my-6 px-2 py-4"
+                      }
+                      imageSrc={newPost?.user?.userImage}
+                      postImage={newPost?.main_image}
+                      commentDivClassName={
+                        "border-slate-900 border-2 mx-4 my-6 px-2 py-4"
+                      }
+                      numberOfComments={
+                        select?.comments[`post_${newPost.id}`]?.length
+                      }
+                      comments={select?.comments[`post_${newPost.id}`]?.map(
+                        (comment) => {
+                          return (
+                            <>
+                              <Comment
+                                key={comment.id}
+                                fullCommentDivClassName={
+                                  "border-slate-900 border-2 mx-4 my-6 px-2 py-4"
+                                }
+                                commenterImage={comment?.commenter.userImage}
+                                commenterFullName={comment.commenter.fullName}
+                                createdAt={comment.created_at}
+                                comment={comment.comment}
+                              />
+                            </>
+                          );
+                        }
+                      )}
+                    />
+                  </>
+                );
+              })}
+              {select?.post.length !== 0 && (
+                <Pagination
+                  handlePage={handlePage}
+                  limit={limit}
+                  offset={offset}
+                  setOffset={setOffset}
+                />
+              )}
+            </>
           )}
         </>
       )}

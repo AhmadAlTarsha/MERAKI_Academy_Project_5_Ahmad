@@ -35,9 +35,6 @@ exports.getAllPosts = (req, res, next) => {
     //Admin
   }
   //website
-
-  console.log(query);
-
   pool
     .query(query, data)
     .then(async (result) => {
@@ -88,43 +85,44 @@ exports.getAllPosts = (req, res, next) => {
 };
 
 exports.getAllPostsByUser = (req, res, next) => {
-  let images = [];
+  const { posterId } = req.params;
+  const perPage = Number(req.query.limit);
+  const currentPage = Number(req.query.offset);
+  const { active } = req.query;
+
   let posts = [];
 
-  const { active } = req.body;
-  const { posterId } = req.params;
-  const query = `SELECT * FROM posts WHERE is_deleted = $1 AND poster_id=$2;`;
+  // SELECT * FROM posts WHERE is_deleted = $1 AND poster_id = $2 LIMIT $3 OFFSET $4;
+
+  const query = `SELECT posts.id, posts.description, posts.category_id, posts.sub_category_id, posts.created_at, posts.is_deleted, posts.main_image,
+  users.first_name, users.last_name, users.image 
+  FROM posts JOIN users ON users.id = posts.poster_id 
+  WHERE posts.is_deleted = $1 AND posts.poster_id = $2 
+  ORDER BY posts.id DESC 
+  LIMIT $3 OFFSET $4`;
   pool
-    .query(query, [active, posterId])
+    .query(query, [active, posterId, perPage, (currentPage - 1) * perPage])
     .then((result) => {
       if (result.command === `SELECT`) {
-        posts = result.rows;
-        const newQuery = `SELECT * FROM serverices_images`;
-        return pool.query(newQuery);
+        posts = result.rows.map((post) => ({
+          id: post.id,
+          user: {
+            fullName: `${post.first_name} ${post.last_name}`,
+            userImage: `http://localhost:5000/images/${post.image}`,
+          },
+          is_deleted: post.is_deleted,
+          description: post.description,
+          main_image: `http://localhost:5000/${post.main_image}`,
+          category_id: post.category_id,
+          sub_category_id: post.sub_category_id,
+          created_at: post.created_at,
+        }));
+        return res.status(200).json({
+          error: false,
+          posts,
+          // posts: result.rows,
+        });
       }
-      return throwError(400, "Something went wrong");
-    })
-    .then((result2) => {
-      images = result2.rows;
-      posts = posts.map((post) => ({
-        id: post.id,
-        user: {
-          fullName: `${post.first_name} ${post.last_name}`,
-          userImage: post.image,
-        },
-        is_deleted: post.is_deleted,
-        description: post.description,
-        category_id: post.category_id,
-        sub_category_id: post.sub_category_id,
-        created_at: post.created_at,
-        images: images.filter((image) => {
-          return image.service_id === post.id;
-        }),
-      }));
-      return res.status(200).json({
-        error: false,
-        posts: posts,
-      });
     })
     .catch((err) => {
       if (!err.statusCode) {
