@@ -17,6 +17,7 @@ const Categories = ({
   postComments,
   setComments,
   setLoading,
+  isCategoriesPages,
 }) => {
   return (
     <div className="bg-green-400 mb-7 flex flex-col justify-center items-center">
@@ -30,29 +31,32 @@ const Categories = ({
             imageSrc={category?.image}
             cardName={category.name}
             onClick={() => {
-              // GetSubCategoriesOnCategory(category?.id)
-              //   .then((result) => {
-              //     dispatch(setSubCategories(result.subCategories));
-              //     return GetAllPosts(limit, offset, category?.id, 0, 0);
-              //   })
-              //   .then((posts) => {
-              //     dispatch(setPosts(posts));
-              //     posts?.forEach((el) => {
-              //       GetCommentsByPost(el.id)
-              //         .then((comments) => {
-              //           postComments[`post_${el?.id}`] = comments;
-              //           dispatch(setComments(postComments));
-              //           setIsCategoryClicked(true);
-              //         })
-              //         .catch((err) => {
-              //           console.log("ERROR GETTING COMMENTS ===> ", err);
-              //         });
-              //     });
-              //     setLoading(false);
-              //   })
-              //   .catch((err) => {
-              //     console.error("ERROR GETTING SUB CATEGORY ===> ", err);
-              //   });
+              if (isCategoriesPages) {
+              } else {
+                GetSubCategoriesOnCategory(category?.id)
+                  .then((result) => {
+                    dispatch(setSubCategories(result.subCategories));
+                    return GetAllPosts(limit, offset, category?.id, 0, 0);
+                  })
+                  .then((posts) => {
+                    dispatch(setPosts(posts));
+                    posts?.forEach((el) => {
+                      GetCommentsByPost(el.id)
+                        .then((comments) => {
+                          postComments[`post_${el?.id}`] = comments;
+                          dispatch(setComments(postComments));
+                          setIsCategoryClicked(true);
+                        })
+                        .catch((err) => {
+                          console.log("ERROR GETTING COMMENTS ===> ", err);
+                        });
+                    });
+                    setLoading(false);
+                  })
+                  .catch((err) => {
+                    console.error("ERROR GETTING SUB CATEGORY ===> ", err);
+                  });
+              }
             }}
           />
         ))}

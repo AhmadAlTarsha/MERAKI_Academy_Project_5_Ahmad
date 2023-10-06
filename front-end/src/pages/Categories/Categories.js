@@ -49,6 +49,7 @@ const CategoriesPage = () => {
             limit={limit}
             offset={offset}
             setLoading={setIsLoading}
+            isCategoriesPages={true}
           />
         </>
       )}
