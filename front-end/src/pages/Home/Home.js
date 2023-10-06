@@ -17,21 +17,21 @@ import { setSubCategories } from "../../Services/Redux/Sub_Categories";
 import { setServices } from "../../Services/Redux/services";
 import Categories from "../../components/Home_Categories/Categories";
 import Sub_Categories from "../../components/Home_Categories/Sub_Categories";
+
+import NewPost from "../../components/New_Post/NewPost";
+
 import TAP from "../allservices/Tap";
 import Servicepage from "../allservices/servicepage";
 import Button from "../../components/Button/Button";
 import { getAllServices } from "../../Services/APIS/Services/Get_Services";
+
 
 const Home = () => {
   const limit = 10;
   const [offset, setOffset] = useState(1);
   const [loading, setLoading] = useState(true);
   const [isCategoryClicked, setIsCategoryClicked] = useState(false);
-  // const [page, setpage] = useState({
-  //   ser: false,
-  //   post: true
-  // })
- // const [isServices, setIsServices] = useState(false)
+
   const [toggle, setToggle] = useState(true)
 
   const dispatch = useDispatch();
@@ -207,11 +207,15 @@ const Home = () => {
               offset={offset}
             />
           )}
+          <NewPost />
 
           {toggle ? select?.post.map((newPost) => {
             return (
               <>
                 <Post
+                  postComments={postComments}
+                  dispatch={dispatch}
+                  postId={newPost.id}
                   key={newPost?.id}
                   userName={newPost?.user?.fullName}
                   body={newPost?.description}
