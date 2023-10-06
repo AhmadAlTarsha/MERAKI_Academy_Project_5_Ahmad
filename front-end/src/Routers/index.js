@@ -18,6 +18,7 @@ import Categories from "../pages/Categories/Categories";
 import Profile from "../pages/Profile/Profile";
 import MyPosts from "../pages/MyPosts/MyPosts";
 import CategoriesPage from "../pages/Categories/Categories";
+import MyServices from "../pages/MyServices/MyServices";
 
 export const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ export const router = createBrowserRouter([
       {
         path: "posts",
         element: <MyPosts />,
+      },
+      {
+        path: "services",
+        element: <MyServices />,
       },
       {
         path: "categories",

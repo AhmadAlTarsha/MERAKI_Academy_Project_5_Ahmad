@@ -25,7 +25,11 @@ const Login = () => {
     e.preventDefault();
     dispatch(loginUser(credentials))
       .then((result) => {
-        return dispatch(getUser(result?.payload?.id));
+        console.log("RESULT -===> ", result);
+        if (!result.payload.error) {
+          return dispatch(getUser(result?.payload?.id));
+        }
+        throw new Error("Invalid email or Password");
       })
       .then((res2) => {
         console.log("GETTING USER FROM PAGE ===> ", res2);

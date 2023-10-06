@@ -19,7 +19,7 @@ const ProviderNavBar = ({ dispatch, navigate, setLogout }) => {
         </div>
 
         <NavLink
-          to={"posts"}
+          to={"services"}
           className={
             "flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900"
           }
