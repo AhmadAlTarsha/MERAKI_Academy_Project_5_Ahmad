@@ -4,7 +4,7 @@ import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 
 import { GetAllRoles } from "../../Services/APIS/User/register";
-import { register } from "../../Services/Redux/auth";
+import { registerUser } from "../../Services/Redux/auth";
 import { setroles } from "../../Services/Redux/roles/roles";
 import "./register.css";
 
@@ -13,29 +13,8 @@ import { GetAllRegions } from "../../Services/APIS/Regions/GetRegions";
 import { setRegions } from "../../Services/Redux/regions/regions";
 
 export const Register = () => {
-  useEffect(() => {
-    GetAllRegions()
-      .then((res) => {
-        console.log(res);
-        dispatch(setRegions(res.regions));
-      })
-      .catch((err) => {
-        console.log("ERROR GET REGIONS", err);
-      });
-  }, []);
-
-  useEffect(() => {
-    GetAllRoles()
-      .then((res) => {
-        dispatch(setroles(res.roles));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
-  const className =
-    "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500";
+  const [isChecked, setIsChecked] = useState(false);
+  const [isRegisterOk, setIsRegisterOk] = useState(null);
   const [registration, setRegistration] = useState({
     first_name: "",
     last_name: "",
@@ -46,7 +25,28 @@ export const Register = () => {
     role_id: 0,
   });
 
-  const [isChecked, setIsChecked] = useState(false);
+  useEffect(() => {
+    GetAllRegions()
+      .then((res) => {
+        dispatch(setRegions(res.regions));
+      })
+      .catch((err) => {
+        console.log("ERROR GET REGIONS ===> ", err);
+      });
+  }, []);
+
+  useEffect(() => {
+    GetAllRoles()
+      .then((res) => {
+        dispatch(setroles(res.roles));
+      })
+      .catch((err) => {
+        console.log("ERROR GET ROLES ===> ", err);
+      });
+  }, []);
+
+  const className =
+    "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500";
 
   const dispatch = useDispatch();
   const select = useSelector((state) => {
@@ -54,6 +54,7 @@ export const Register = () => {
       register: state.auth,
     };
   });
+
   const select2 = useSelector((state) => {
     return {
       regions: state.regions.regions,
@@ -65,11 +66,26 @@ export const Register = () => {
     };
   });
 
+  // console.log(select3);
+
+  const handleChange = (e) => {
+    setRegistration({
+      ...registration,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("from handel", select2);
-    console.log(select3.roles);
-    dispatch(register(registration));
+    dispatch(registerUser(registration))
+      .then((result) => {
+        if (!result?.payload?.error) {
+          setIsRegisterOk(true);
+        }
+      })
+      .catch((err) => {
+        console.log("ERROR REGISTER PAGE ====> ", err);
+      });
   };
 
   return (
@@ -92,21 +108,11 @@ export const Register = () => {
                     "block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   }
                   divClassName={""}
-                  name={"First Name"}
-                  type={"name"}
+                  name={"first_name"}
+                  type={"text"}
                   inputClassName={className}
                   placeHolder={"Your Name"}
-                  onChange={(e) => {
-                    setRegistration({
-                      first_name: e.target.value,
-                      last_name: registration.last_name,
-                      nick_name: registration.nick_name,
-                      email: registration.email,
-                      password: registration.password,
-                      region_id: registration.region_id,
-                      role_id: registration.role_id,
-                    });
-                  }}
+                  onChange={(e) => handleChange(e)}
                 />
                 <Input
                   labelName={"last Name"}
@@ -114,21 +120,11 @@ export const Register = () => {
                     "block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   }
                   divClassName={""}
-                  name={"Nick Name"}
-                  type={"name"}
+                  name={"last_name"}
+                  type={"text"}
                   inputClassName={className}
                   placeHolder={"Last Name"}
-                  onChange={(e) => {
-                    setRegistration({
-                      first_name: registration.first_name,
-                      last_name: e.target.value,
-                      nick_name: register.nick_name,
-                      email: registration.email,
-                      password: registration.password,
-                      region_id: registration.region_id,
-                      role_id: registration.role_id,
-                    });
-                  }}
+                  onChange={(e) => handleChange(e)}
                 />
                 <Input
                   labelName={"Nick Name"}
@@ -136,23 +132,11 @@ export const Register = () => {
                     "block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   }
                   divClassName={""}
-                  name={"Nick Name"}
-                  type={"name"}
+                  name={"nick_name"}
+                  type={"text"}
                   inputClassName={className}
                   placeHolder={"Your Nick Name "}
-                  onChange={(e) => {
-                    console.log(e.target.value);
-
-                    setRegistration({
-                      first_name: registration.first_name,
-                      last_name: registration.last_name,
-                      nick_name: e.target.value,
-                      email: registration.email,
-                      password: registration.password,
-                      region_id: registration.region_id,
-                      role_id: registration.role_id,
-                    });
-                  }}
+                  onChange={(e) => handleChange(e)}
                 />
               </div>
 
@@ -164,19 +148,8 @@ export const Register = () => {
                   Region
                 </label>
                 <select
-                  onChange={(e) => {
-                    console.log(registration.region_id);
-                    setRegistration({
-                      first_name: registration.first_name,
-                      last_name: registration.last_name,
-                      region_id: e.target.value,
-                      nick_name: registration.nick_name,
-                      email: registration.email,
-                      password: registration.password,
-                      role_id: registration.role_id,
-                    });
-                  }}
-                  name="region"
+                  onChange={(e) => handleChange(e)}
+                  name="region_id"
                   id="region"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required=""
@@ -200,17 +173,7 @@ export const Register = () => {
                   type={"email"}
                   inputClassName={className}
                   placeHolder={"name@company.com"}
-                  onChange={(e) => {
-                    setRegistration({
-                      first_name: registration.first_name,
-                      last_name: registration.last_name,
-                      nick_name: registration.nick_name,
-                      email: e.target.value,
-                      password: registration.password,
-                      region_id: registration.region_id,
-                      role_id: registration.role_id,
-                    });
-                  }}
+                  onChange={(e) => handleChange(e)}
                 />
               </div>
               <div>
@@ -224,17 +187,7 @@ export const Register = () => {
                   labelClassName={
                     "block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   }
-                  onChange={(e) => {
-                    setRegistration({
-                      first_name: registration.first_name,
-                      last_name: registration.last_name,
-                      nick_name: registration.nick_name,
-                      email: registration.email,
-                      password: e.target.value,
-                      region_id: registration.region_id,
-                      role_id: registration.role_id,
-                    });
-                  }}
+                  onChange={(e) => handleChange(e)}
                 />
               </div>
               <div>
@@ -254,18 +207,8 @@ export const Register = () => {
               <div>
                 <label>user or service provider ?</label>
                 <select
-                  onChange={(e) => {
-                    setRegistration({
-                      first_name: registration.first_name,
-                      last_name: registration.last_name,
-                      nick_name: registration.nick_name,
-                      email: registration.email,
-                      password: registration.password,
-                      region_id: registration.region_id,
-                      role_id: e.target.value,
-                    });
-                  }}
-                  name="user-type"
+                  onChange={(e) => handleChange(e)}
+                  name="role_id"
                   id="user-type"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required=""
@@ -278,7 +221,8 @@ export const Register = () => {
                   })}
                 </select>
               </div>
-              <div>
+
+              {/* <div>
                 <label
                   for="profile-image"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -296,13 +240,13 @@ export const Register = () => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required=""
                 />
-              </div>
+              </div> */}
+
               <div className="flex items-start">
                 <div className="flex items-center h-5">
                   <input
                     onClick={(e) => {
                       setIsChecked(!isChecked);
-                      console.log(e.target.checked);
                     }}
                     id="terms"
                     aria-describedby="terms"
@@ -326,6 +270,30 @@ export const Register = () => {
                   </label>
                 </div>
               </div>
+
+              {isRegisterOk && (
+                <div
+                  class="flex items-center p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+                  role="alert"
+                >
+                  <svg
+                    class="flex-shrink-0 inline w-4 h-4 mr-3"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                  </svg>
+                  <span class="sr-only">Info</span>
+                  <div>
+                    <span class="font-medium">
+                      Account Created Successfully!
+                    </span>
+                    You can login now
+                  </div>
+                </div>
+              )}
 
               <Button
                 buttonClassName={`w-full text-white bg-${

@@ -22,7 +22,7 @@ export const GetAllPosts = async (
     url = `http://localhost:5000/posts/post/?limit=${limit}&offset=${offset}`;
   }
 
-  console.log("URL ===> ",url);
+  console.log("URL ===> ", url);
   // Webiste
 
   try {
@@ -50,6 +50,26 @@ export const GetCommentsByPost = async (postId) => {
     }
   } catch (err) {
     console.log("ERROR ==> ", err);
+    throw err;
+  }
+};
+
+export const GetPostsByUserId = async (limit, offset, active) => {
+  const token = JSON.parse(localStorage.getItem("token")) ?? {};
+  let url = `http://localhost:5000/posts/${token.id}?limit=${limit}&offset=${offset}&active=${active}`;
+
+  try {
+    const result = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${token?.token}`,
+      },
+    });
+
+    if (!result?.data?.error) {
+      return result?.data?.posts;
+    }
+    
+  } catch (err) {
     throw err;
   }
 };
