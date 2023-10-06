@@ -263,7 +263,7 @@ const Home = () => {
           })}
 
          
-          {/* {select?.post.length !== 0 && (
+          {select?.post.length !== 0 && (
             <Pagination
               handlePage={handlePage}
               limit={limit}
@@ -272,7 +272,7 @@ const Home = () => {
 
 
             />
-          )} */}
+          )}
         </>
       )}
 
