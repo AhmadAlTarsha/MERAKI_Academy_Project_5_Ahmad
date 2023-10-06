@@ -64,7 +64,7 @@ export const authSlice = createSlice({
       .addCase(registerUser.rejected, (state, action) => {
         state.errorMessage = {
           error: true,
-          message: action.payload,
+          message: action.error,
         };
       })
       .addCase(loginUser.pending, (state) => {
