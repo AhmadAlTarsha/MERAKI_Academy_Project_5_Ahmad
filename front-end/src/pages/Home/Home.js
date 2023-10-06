@@ -14,15 +14,26 @@ import Comment from "../../components/Comment/Comment";
 import { GetCategories } from "../../Services/APIS/Category/Get_Categories";
 import { setCategories } from "../../Services/Redux/Category";
 import { setSubCategories } from "../../Services/Redux/Sub_Categories";
+import { setServices } from "../../Services/Redux/services";
 import Categories from "../../components/Home_Categories/Categories";
 import Sub_Categories from "../../components/Home_Categories/Sub_Categories";
+
 import NewPost from "../../components/New_Post/NewPost";
+
+import TAP from "../allservices/Tap";
+import Servicepage from "../allservices/servicepage";
+import Button from "../../components/Button/Button";
+import { getAllServices } from "../../Services/APIS/Services/Get_Services";
+
 
 const Home = () => {
   const limit = 10;
   const [offset, setOffset] = useState(1);
   const [loading, setLoading] = useState(true);
   const [isCategoryClicked, setIsCategoryClicked] = useState(false);
+
+  const [toggle, setToggle] = useState(true)
+
   const dispatch = useDispatch();
   const select = useSelector((state) => {
     return {
@@ -32,35 +43,55 @@ const Home = () => {
       subCategories: state.subCategories.subCategories,
     };
   });
+  const servicessSelector = useSelector((state) => {
+    return {
+      services: state.services.services,
+      service: state.services.service,
+    };
+  });
 
   let postComments = {};
   useEffect(() => {
-    GetAllPosts(limit, offset, 0, 0, 0)
-      .then((res) => {
-        dispatch(setPosts(res));
-        res?.forEach((el) => {
-          GetCommentsByPost(el.id)
-            .then((comments) => {
-              postComments[`post_${el?.id}`] = comments;
-              dispatch(setComments(postComments));
-            })
-            .catch((err) => {
-              console.log("ERROR GETTING COMMENTS ===> ", err);
-            });
-        });
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
 
-    GetCategories(0, 0, 0)
-      .then((result) => {
-        dispatch(setCategories(result));
+
+    if (toggle) {
+      GetAllPosts(limit, offset, 0, 0, 0)
+        .then((res) => {
+          dispatch(setPosts(res));
+          res?.forEach((el) => {
+            GetCommentsByPost(el.id)
+              .then((comments) => {
+                postComments[`post_${el?.id}`] = comments;
+                dispatch(setComments(postComments));
+              })
+              .catch((err) => {
+                console.log("ERROR GETTING COMMENTS ===> ", err);
+              });
+          });
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      GetCategories(0, 0, 0)
+        .then((result) => {
+          dispatch(setCategories(result));
+        })
+        .catch((err) => {
+          console.error("ERROR GETING CATEGORIES ===> ".err);
+
+
+        });
+    } else  {
+      getAllServices(limit, offset, 0).then(res => {
+        console.log(res);
+        dispatch(setServices(res))
+      }).catch((err) => {
+        console.log(err);
       })
-      .catch((err) => {
-        console.error("ERROR GETING CATEGORIES ===> ".err);
-      });
+    }
+
 
     const socket = openSocket("http://localhost:5000");
     socket.on("posts", (data) => {
@@ -110,7 +141,9 @@ const Home = () => {
   };
 
   return (
+
     <>
+
       {loading ? (
         <div className="flex justify-center items-center h-screen">
           <Loader />
@@ -129,7 +162,38 @@ const Home = () => {
             setComments={setComments}
             setLoading={setLoading}
           />
+          {/* <TAP></TAP> */}
+          <div>
+            <ul
+              class="mb-4 flex list-none flex-row flex-wrap border-b-0 pl-0"
+              id="tabs-tab3"
+              role="tablist"
+              data-te-nav-ref>
+              <div>
+                <li role="presentation">
 
+                  < Button buttonName={"services"} buttonClassName={"my-2 block border-x-0 border-b-2 border-t-0 border-transparent px-7 pb-3.5 pt-4 text-xs font-medium uppercase leading-tight text-neutral-500 hover:isolate hover:border-transparent hover:bg-neutral-100 focus:isolate focus:border-transparent data-[te-nav-active]:border-primary data-[te-nav-active]:text-primary dark:text-neutral-400 dark:hover:bg-transparent dark:data-[te-nav-active]:border-primary-400 dark:data-[te-nav-active]:text-primary-400"} onClick={() => {
+                  setToggle(false)
+                  console.log(servicessSelector.services)
+                  }}></Button>
+                </li>
+              </div>
+
+
+              <li role="presentation">
+                < Button buttonName={"AllPosts"} buttonClassName={"my-2 block border-x-0 border-b-2 border-t-0 border-transparent px-7 pb-3.5 pt-4 text-xs font-medium uppercase leading-tight text-neutral-500 hover:isolate hover:border-transparent hover:bg-neutral-100 focus:isolate focus:border-transparent data-[te-nav-active]:border-primary data-[te-nav-active]:text-primary dark:text-neutral-400 dark:hover:bg-transparent dark:data-[te-nav-active]:border-primary-400 dark:data-[te-nav-active]:text-primary-400"} onClick={() => {
+             setToggle(true)
+                }}></Button>
+              </li>
+
+            </ul>
+
+
+            <div>
+
+
+            </div></div>
+          {/* <Servicepage/> */}
           {isCategoryClicked && (
             <Sub_Categories
               subCategories={select?.subCategories}
@@ -145,7 +209,7 @@ const Home = () => {
           )}
           <NewPost />
 
-          {select?.post.map((newPost) => {
+          {toggle ? select?.post.map((newPost) => {
             return (
               <>
                 <Post
@@ -180,6 +244,7 @@ const Home = () => {
                             createdAt={comment.created_at}
                             comment={comment.comment}
                           />
+
                         </>
                       );
                     }
@@ -187,17 +252,34 @@ const Home = () => {
                 />
               </>
             );
+          }): servicessSelector?.services.map((service, i) => {
+            console.log("ser", service);
+            return (<>< Post
+              title={service?.title}
+              userName={service?.provider?.fullName}
+              body={service?.description}
+              postDivClassName={
+                "border-slate-900 border-4 mx-4 my-6 px-2 py-4"
+              }
+              imageSrc={service?.provider?.image}
+              postImage={service?.default_image}
+            /></>)
           })}
+
+         
           {select?.post.length !== 0 && (
             <Pagination
               handlePage={handlePage}
               limit={limit}
               offset={offset}
               setOffset={setOffset}
+
+
             />
           )}
         </>
       )}
+
     </>
   );
 };

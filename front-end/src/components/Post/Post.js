@@ -24,6 +24,8 @@ function Post({
   postId,
   dispatch,
   postComments,
+  title,
+
 }) {
   const [comment, setComment] = useState("");
   const [textValue, setTextValue] = useState("");
@@ -54,11 +56,12 @@ function Post({
         <h3>{userName}</h3>
       </div>
       <div className={bodyDivClassName}>
+        {title && (<h3>{title}</h3>)}
         <p className={bodyClassName}>{body}</p>
         <img src={postImage} />
       </div>
 
-      <div className="w-full px-4 pt-16">
+      {!title && <div className="w-full px-4 pt-16">
         <div className="mx-auto w-full max-w-md rounded-2xl bg-white p-2">
           <Disclosure>
             {({ open }) => (
@@ -66,9 +69,8 @@ function Post({
                 <Disclosure.Button className="flex w-full justify-between rounded-lg bg-purple-100 px-4 py-2 text-left text-sm font-medium text-purple-900 hover:bg-purple-200 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
                   <span>Comments ({numberOfComments})</span>
                   <ChevronUpIcon
-                    className={`${
-                      open ? "rotate-180 transform" : ""
-                    } h-5 w-5 text-purple-500`}
+                    className={`${open ? "rotate-180 transform" : ""
+                      } h-5 w-5 text-purple-500`}
                   />
                 </Disclosure.Button>
                 <Disclosure.Panel className={commentDivClassName}>
@@ -95,7 +97,12 @@ function Post({
             )}
           </Disclosure>
         </div>
+
       </div>
+
+      </div>}
+
+
     </div>
   );
 }
