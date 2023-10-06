@@ -16,6 +16,7 @@ import { setCategories } from "../../Services/Redux/Category";
 import { setSubCategories } from "../../Services/Redux/Sub_Categories";
 import Categories from "../../components/Home_Categories/Categories";
 import Sub_Categories from "../../components/Home_Categories/Sub_Categories";
+import NewPost from "../../components/New_Post/NewPost";
 
 const Home = () => {
   const limit = 10;
@@ -142,11 +143,15 @@ const Home = () => {
               offset={offset}
             />
           )}
+          <NewPost />
 
           {select?.post.map((newPost) => {
             return (
               <>
                 <Post
+                  postComments={postComments}
+                  dispatch={dispatch}
+                  postId={newPost.id}
                   key={newPost?.id}
                   userName={newPost?.user?.fullName}
                   body={newPost?.description}
@@ -175,7 +180,6 @@ const Home = () => {
                             createdAt={comment.created_at}
                             comment={comment.comment}
                           />
-                          
                         </>
                       );
                     }

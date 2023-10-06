@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/20/solid";
 import Button from "../Button/Button";
+import { CreateNewComment } from "../../Services/APIS/Comments/CreateNewComment";
+import { GetCommentsByPost } from "../../Services/APIS/Posts/GetAllPosts";
+import { setComments } from "../../Services/Redux/Posts";
 
 function Post({
   imageSrc,
@@ -18,7 +21,30 @@ function Post({
   comments,
   numberOfComments,
   commentDivClassName,
+  postId,
+  dispatch,
+  postComments,
 }) {
+  const [comment, setComment] = useState("");
+  const [textValue, setTextValue] = useState("");
+
+  const handlePostComment = async () => {
+    CreateNewComment(postId, { comment })
+      .then((res) => {
+        return GetCommentsByPost(postId);
+      })
+      .then((comments) => {
+        postComments[`post_${postId}`] = comments;
+        dispatch(setComments(postComments));
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setTextValue("");
+      });
+  };
+
   return (
     <div className={postDivClassName}>
       <div className={`${userDivClassName}`}>
@@ -49,11 +75,16 @@ function Post({
                   {comments}
                   <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                     <textarea
+                      value={textValue}
+                      onChange={(e) => {
+                        setComment(e.target.value);
+                      }}
                       className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
                       placeholder="Write comment"
                     ></textarea>
                   </div>
                   <Button
+                    onClick={handlePostComment}
                     buttonClassName={
                       "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                     }
@@ -65,7 +96,6 @@ function Post({
           </Disclosure>
         </div>
       </div>
-      
     </div>
   );
 }
