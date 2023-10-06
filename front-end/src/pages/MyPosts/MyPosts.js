@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllPostsByUser } from "../../Services/Redux/Posts-temp";
+import { getAllPostsByUser } from "../../Services/Redux/Posts";
 import Loader from "../../components/Loader/Loader";
 import Post from "../../components/Post/Post";
 import Pagination from "../../components/Pagination/Pagination";

@@ -7,7 +7,7 @@ import {
   GetAllPosts,
   GetCommentsByPost,
 } from "../../Services/APIS/Posts/GetAllPosts";
-import { setComments, setPosts } from "../../Services/Redux/Posts-temp/index";
+import { setComments, setPosts } from "../../Services/Redux/Posts/index";
 import { useEffect, useState } from "react";
 import Loader from "../../components/Loader/Loader";
 import Comment from "../../components/Comment/Comment";
