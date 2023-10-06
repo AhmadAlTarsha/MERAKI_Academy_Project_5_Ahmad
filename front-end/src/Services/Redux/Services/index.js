@@ -9,6 +9,7 @@ export const servicetSlice = createSlice({
   reducers: {
     setServices: (state, action) => {
       state.services = action.payload;
+     
     },
     setService: (state, action) => {
       console.log("SERVICE PAYLOAD ===> ", action.payload);

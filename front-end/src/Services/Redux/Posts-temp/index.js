@@ -4,7 +4,11 @@ import { GetPostsByUserId } from "../../APIS/Posts/GetAllPosts";
 export const getAllPostsByUser = createAsyncThunk(
   "user/posts",
   async (payload) => {
-    return await GetPostsByUserId(payload.limit, payload.offset, payload.active);
+    return await GetPostsByUserId(
+      payload.limit,
+      payload.offset,
+      payload.active
+    );
   }
 );
 
