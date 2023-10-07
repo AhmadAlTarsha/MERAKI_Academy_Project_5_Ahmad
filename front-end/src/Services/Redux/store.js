@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./auth/index";
 import postReducer from "./Posts/index";
-import serviceReducer from "./Services/index";
+import serviceReducer from "./services/index";
 import categoriesReducer from "./Category/index";
 import roleReducer from "./roles/roles";
 import regionsReducer from "./regions/regions";
