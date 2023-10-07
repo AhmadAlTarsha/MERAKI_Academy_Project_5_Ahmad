@@ -20,7 +20,6 @@ function NewPost({
   sub_category_id,
   cancelButtonOnClick,
   dispatch,
-
   //
   toggle,
   title,
@@ -28,17 +27,7 @@ function NewPost({
   default_image,
 
 }) {
-  const [newService, setNewService] = useState({
-
-    //   category_id:"",
-    // sub_category_id:"",
-    //   title: "",
-    //   description:"",
-    //   service_provider_id: "",
-    //   default_image: "",
-
-
-  });
+  const [newService, setNewService] = useState({});
 
   const handleChange = (e) => {
     console.log(newService);

@@ -14,7 +14,6 @@ import Comment from "../../components/Comment/Comment";
 import { GetCategories } from "../../Services/APIS/Category/Get_Categories";
 import { setCategories } from "../../Services/Redux/Category";
 import { setSubCategories } from "../../Services/Redux/Sub_Categories";
-
 import { setServices } from "../../Services/Redux/Services";
 
 import Categories from "../../components/Home_Categories/Categories";
@@ -27,7 +26,7 @@ import Button from "../../components/Button/Button";
 import { getAllServices } from "../../Services/APIS/Services/Get_Services";
 
 const Home = () => {
-  const dispatch=useDispatch()
+  const dispatch = useDispatch();
   const limit = 10;
   const [offset, setOffset] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -35,8 +34,6 @@ const Home = () => {
   const [isCategoryClicked, setIsCategoryClicked] = useState(false);
 
   const [toggle, setToggle] = useState(true);
-
-
 
   const select = useSelector((state) => {
     return {
@@ -238,15 +235,13 @@ const Home = () => {
                     ></Button>
                   </li>
                 </ul>
-
-                <div></div>
               </div>
 
-
-              <NewPost toggle={toggle} isCategoryClicked={isCategoryClicked} dispatch={dispatch} />
-
-
-
+              <NewPost
+                toggle={toggle}
+                isCategoryClicked={isCategoryClicked}
+                dispatch={dispatch}
+              />
 
               {toggle
                 ? select?.post.map((newPost) => {
@@ -256,13 +251,18 @@ const Home = () => {
                           key={newPost?.id}
                           userName={newPost?.user?.fullName}
                           body={newPost?.description}
+                          userDivClassName={"border flex flex-row"}
                           postDivClassName={
-                            "border-slate-900 border-4 mx-4 my-6 px-2 py-4"
+                            "border-slate-900 border mx-4 my-6 px-2 py-4 rounded-lg"
                           }
                           imageSrc={newPost?.user?.userImage}
                           postImage={newPost?.main_image}
                           commentDivClassName={
                             "border-slate-900 border-2 mx-4 my-6 px-2 py-4"
+                          }
+                          userNameClassName={"text-base font-bold"}
+                          userImageClassName={
+                            "rounded-full h-20 w-20 md:h-28 md:w-28 border-[6px] border-white bg-white"
                           }
                           numberOfComments={
                             select?.comments[`post_${newPost.id}`]?.length
@@ -294,7 +294,6 @@ const Home = () => {
                     );
                   })
                 : servicessSelector?.services.map((service, i) => {
-
                     return (
                       <>
                         <Post

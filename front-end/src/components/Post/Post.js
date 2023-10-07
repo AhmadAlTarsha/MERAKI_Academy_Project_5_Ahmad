@@ -9,8 +9,7 @@ import { setComments } from "../../Services/Redux/Posts";
 function Post({
   imageSrc,
   altName,
-  width,
-  height,
+  userImageClassName,
   bodyDivClassName,
   postDivClassName,
   userName,
@@ -27,6 +26,7 @@ function Post({
   dispatch,
   postComments,
   title,
+  userNameClassName
 }) {
   const [comment, setComment] = useState("");
   const [textValue, setTextValue] = useState("");
@@ -51,10 +51,10 @@ function Post({
   return (
     <div className={postDivClassName}>
       <div className={`${userDivClassName}`}>
-        <div className="bg-green-500 w-1/4">
-          <img src={imageSrc} alt={altName} width={width} height={height} />
+        <div className="w-1/4">
+          <img src={imageSrc} alt={altName} className={userImageClassName} />
         </div>
-        <h3>{userName}</h3>
+        <h3 className={userNameClassName}>{userName}</h3>
       </div>
 
       {!isShowComments && (
