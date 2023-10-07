@@ -14,7 +14,8 @@ const postsRouter = express.Router();
 
 // Crud methods
 postsRouter.get("/post/", getAllPosts);
-postsRouter.post(
+
+postsRouter.get(
   "/:posterId",
   authentication,
   authorization("POST_CONTROL"),

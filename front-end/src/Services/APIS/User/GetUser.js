@@ -1,13 +1,11 @@
 import axios from "axios";
-const localUser = JSON.parse(localStorage.getItem("localUser")) ?? {};
 
 export const GetUser = async (id) => {
-  
+  const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
     const result = await axios.get(`http://localhost:5000/users/${id}`, {
       headers: {
-         Authorization: `Bearer ${localUser?.token}`,
-      
+        Authorization: `Bearer ${token?.token}`,
       },
     });
 
@@ -16,4 +14,3 @@ export const GetUser = async (id) => {
     throw err;
   }
 };
-

@@ -1,50 +1,39 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { NavLink, useNavigate } from "react-router-dom";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
-import { UserLogin } from "../../Services/APIS/User/Login";
-import { setLogin, setUser } from "../../Services/Redux/auth";
-import { GetUser } from "../../Services/APIS/User/GetUser";
+import { getUser, loginUser } from "../../Services/Redux/auth";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
   });
 
   const dispatch = useDispatch();
-  const select = useSelector((state) => {
-    return {
-      user: state.auth,
-    };
-  });
+
+  const handleChange = (e) => {
+    setCredentials({
+      ...credentials,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    let user = {}
-    UserLogin(credentials)
-      .then((res) => {
-        user = res
-       console.log("xx",res);
-        dispatch(setLogin(user));
-        return GetUser(res.id);
+    dispatch(loginUser(credentials))
+      .then((result) => {
+        console.log("RESULT -===> ", result);
+        if (!result.payload.error) {
+          return dispatch(getUser(result?.payload?.id));
+        }
+        throw new Error("Invalid email or Password");
       })
       .then((res2) => {
-        dispatch(
-          setUser({
-            id: res2?.user?.user_id,
-            fullName: `${res2?.user?.first_name} ${res2?.user?.last_name}`,
-            nickName: `${res2?.user?.nick_name}`,
-            token: select?.user.localUser?.token,
-            email: `${res2?.user?.email}`,
-            image: `${res2?.user?.image}`,
-            role: `${res2?.user?.role_id}`,
-            region: `${res2?.user?.user_region}`,
-          })
-        );
-        user.role=res2.user.role_id
-        dispatch(setLogin(user));
+        console.log("GETTING USER FROM PAGE ===> ", res2);
+        navigate("/");
       })
       .catch((err) => {
         console.error("ERROR LOGIN ==> ", err);
@@ -75,12 +64,7 @@ const Login = () => {
                 "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               }
               labelName={"Email address"}
-              onChange={(e) =>
-                setCredentials({
-                  email: e.target.value,
-                  password: credentials.password,
-                })
-              }
+              onChange={(e) => handleChange(e)}
             />
 
             <div>
@@ -95,12 +79,7 @@ const Login = () => {
                 labelClassName={
                   "block text-sm font-medium leading-6 text-gray-900"
                 }
-                onChange={(e) =>
-                  setCredentials({
-                    email: credentials.email,
-                    password: e.target.value,
-                  })
-                }
+                onChange={(e) => handleChange(e)}
               />
             </div>
 

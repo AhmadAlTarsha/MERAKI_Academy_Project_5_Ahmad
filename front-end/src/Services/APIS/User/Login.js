@@ -8,7 +8,6 @@ export const UserLogin = async (payload) => {
 
     if (result?.status === 200) {
       if (!result.data.error) {
-        console.log("ss",result.data);
         return result.data;
       }
      

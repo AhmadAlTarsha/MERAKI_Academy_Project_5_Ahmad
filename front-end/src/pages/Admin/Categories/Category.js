@@ -47,7 +47,7 @@ const AdminCategory = () => {
       })
       .catch((err) => {
         console.log("ERROR UPDATE CATEGORY ====> ", err?.response?.data);
-      });
+      })
   };
 
   return (
