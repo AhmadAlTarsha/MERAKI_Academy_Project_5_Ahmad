@@ -2,13 +2,22 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import Button from "../Button/Button";
 import { useNavigate } from "react-router-dom";
-import { UseSelector, useDispatch } from "react-redux";
+import { UseSelector, useDispatch, useSelector } from "react-redux";
 import { setLogout } from "../../Services/Redux/auth";
+import CustomerNavBar from "./CustomerNavBar";
+import ProviderNavBar from "./ProviderNavBar";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const localUser = JSON?.parse(localStorage?.getItem("localUser")) ?? {};
+  console.log("local ==> ", localUser);
+  const select = useSelector((state) => {
+    return {
+      user: state.auth,
+    };
+  });
+
   return (
     <header className="bg-white">
       <nav
@@ -64,13 +73,6 @@ const Navbar = () => {
                 <div className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5"></div>
               </div>
 
-              {/* <a
-                href="#"
-                className="text-sm font-semibold leading-6 text-gray-900"
-              >
-                Posts
-              </a> */}
-
               <NavLink
                 to={"posts"}
                 className={
@@ -104,16 +106,21 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-              <Button
-                onClick={() => {
-                  dispatch(setLogout());
-                  navigate("/");
-                }}
-                buttonName={"logout"}
+            {localUser?.role === 3 ? (
+              <CustomerNavBar
+                dispatch={dispatch}
+                navigate={navigate}
+                setLogout={setLogout}
               />
-              <span aria-hidden="true">&rarr;</span>
-            </div>
+            ) : localUser?.role === 2 ? (
+              <ProviderNavBar
+                dispatch={dispatch}
+                navigate={navigate}
+                setLogout={setLogout}
+              />
+            ) : (
+              <></>
+            )}
           </>
         )}
       </nav>
@@ -198,13 +205,11 @@ const Navbar = () => {
               </div>
 
               <NavLink to={"login"}>Login</NavLink>
-              <br ></br>
+              <br></br>
               <NavLink to={"logout"}>Logout</NavLink>
-              <br ></br>
+              <br></br>
               <NavLink to={"/"}>Home</NavLink>
-             
             </div>
-           
           </div>
         </div>
       </div>
@@ -213,11 +218,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-// <nav className="">
-// <NavLink to={"/"}>Home</NavLink>
-// <NavLink to={"login"}>Login</NavLink>
-
-// <NavLink>Contact Us</NavLink>
-// <NavLink>Logout</NavLink>
-// </nav>
