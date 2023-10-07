@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Tables from "../../../components/Table/Tables";
 import { getAllServices } from "../../../Services/APIS/Services/Get_Services";
- import { setServices } from "../../../Services/Redux/services";
+import { setServices } from "../../../Services/Redux/Services";
 import Pagination from "../../../components/Pagination/Pagination";
 import Loader from "../../../components/Loader/Loader";
 

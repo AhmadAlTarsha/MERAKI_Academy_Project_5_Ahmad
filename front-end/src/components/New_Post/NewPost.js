@@ -8,10 +8,12 @@ import { addNewServices } from "../../Services/APIS/Services/Add_Services";
 import { useSelector } from "react-redux/";
 import { GetSubCategoriesOnCategory } from "../../Services/APIS/Category/Get_Categories";
 import { setSubCategories } from "../../Services/Redux/Sub_Categories";
-
 import Input from "../Input/Input";
 const className =
   "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500";
+import { CreateNewPost } from "../../Services/APIS/Posts/CreateNewPost";
+import { GetAllPosts } from "../../Services/APIS/Posts/GetAllPosts";
+import { setPosts } from "../../Services/Redux/Posts";
 
 
 function NewPost({
@@ -22,6 +24,7 @@ function NewPost({
   sub_category_id,
   cancelButtonOnClick,
   dispatch,
+
   //
   toggle,
   title,
@@ -254,7 +257,6 @@ function NewPost({
             </div>
           </div>
         </div></>}
-
     </>
   );
 }

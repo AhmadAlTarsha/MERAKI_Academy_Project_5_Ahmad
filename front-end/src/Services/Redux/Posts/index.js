@@ -17,8 +17,6 @@ export const postSlice = createSlice({
   initialState: {
     post: [],
     comments: {},
-
-
     errorMessage: {},
   },
   extraReducers: (builder) => {
@@ -43,7 +41,6 @@ export const postSlice = createSlice({
           message: "Something went wrong",
         };
       });
-
   },
   reducers: {
     setPosts: (state, action) => {

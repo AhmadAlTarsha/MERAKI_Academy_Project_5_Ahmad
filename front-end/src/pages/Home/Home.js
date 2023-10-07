@@ -14,7 +14,9 @@ import Comment from "../../components/Comment/Comment";
 import { GetCategories } from "../../Services/APIS/Category/Get_Categories";
 import { setCategories } from "../../Services/Redux/Category";
 import { setSubCategories } from "../../Services/Redux/Sub_Categories";
-import { setServices } from "../../Services/Redux/services";
+
+import { setServices } from "../../Services/Redux/Services";
+
 import Categories from "../../components/Home_Categories/Categories";
 import Sub_Categories from "../../components/Home_Categories/Sub_Categories";
 import Pop_up from "../../components/Dialog_Modal/Pop-up";
@@ -34,6 +36,8 @@ const Home = () => {
 
   const [toggle, setToggle] = useState(true);
 
+
+  const dispatch = useDispatch();
 
   const select = useSelector((state) => {
     return {
@@ -239,7 +243,11 @@ const Home = () => {
                 <div></div>
               </div>
 
+
               <NewPost toggle={toggle} isCategoryClicked={isCategoryClicked} dispatch={dispatch} />
+
+
+
 
               {toggle
                 ? select?.post.map((newPost) => {
@@ -287,7 +295,7 @@ const Home = () => {
                     );
                   })
                 : servicessSelector?.services.map((service, i) => {
-                   
+
                     return (
                       <>
                         <Post
