@@ -9,9 +9,10 @@ exports.addService = (req, res, next) => {
     sub_category_id,
     title,
     description,
-    images,
+    images
   } = req.body;
 
+  console.log(req.file);
   if (!req.file) {
     return res.status(400).json({
       error: false,
@@ -22,7 +23,7 @@ exports.addService = (req, res, next) => {
   const image = req.file.path.replace("\\", "/");
 
   const values = [
-    service_provider_id,
+    req.token.user.id,
     category_id,
     sub_category_id,
     title,
@@ -104,24 +105,24 @@ exports.updateService = (req, res, next) => {
 
   const values = image
     ? [
-        service_provider_id,
-        category_id,
-        sub_category_id,
-        title,
-        description,
-        status_id,
-        image,
-        id,
-      ]
+      service_provider_id,
+      category_id,
+      sub_category_id,
+      title,
+      description,
+      status_id,
+      image,
+      id,
+    ]
     : [
-        service_provider_id,
-        category_id,
-        sub_category_id,
-        title,
-        description,
-        status_id,
-        id,
-      ];
+      service_provider_id,
+      category_id,
+      sub_category_id,
+      title,
+      description,
+      status_id,
+      id,
+    ];
 
   pool
     .query(

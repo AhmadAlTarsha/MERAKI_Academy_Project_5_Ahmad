@@ -14,7 +14,9 @@ import Comment from "../../components/Comment/Comment";
 import { GetCategories } from "../../Services/APIS/Category/Get_Categories";
 import { setCategories } from "../../Services/Redux/Category";
 import { setSubCategories } from "../../Services/Redux/Sub_Categories";
+
 import { setServices } from "../../Services/Redux/Services";
+
 import Categories from "../../components/Home_Categories/Categories";
 import Sub_Categories from "../../components/Home_Categories/Sub_Categories";
 import Pop_up from "../../components/Dialog_Modal/Pop-up";
@@ -25,6 +27,7 @@ import Button from "../../components/Button/Button";
 import { getAllServices } from "../../Services/APIS/Services/Get_Services";
 
 const Home = () => {
+  const dispatch=useDispatch()
   const limit = 10;
   const [offset, setOffset] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -33,7 +36,9 @@ const Home = () => {
 
   const [toggle, setToggle] = useState(true);
 
+
   const dispatch = useDispatch();
+
   const select = useSelector((state) => {
     return {
       post: state.post.post,
@@ -238,7 +243,11 @@ const Home = () => {
                 <div></div>
               </div>
 
-              <NewPost />
+
+              <NewPost toggle={toggle} isCategoryClicked={isCategoryClicked} dispatch={dispatch} />
+
+
+
 
               {toggle
                 ? select?.post.map((newPost) => {
@@ -286,7 +295,7 @@ const Home = () => {
                     );
                   })
                 : servicessSelector?.services.map((service, i) => {
-                    console.log("ser", service);
+
                     return (
                       <>
                         <Post
