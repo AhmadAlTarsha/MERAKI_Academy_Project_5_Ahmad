@@ -37,7 +37,6 @@ const Home = () => {
   const [toggle, setToggle] = useState(true);
 
 
-  const dispatch = useDispatch();
 
   const select = useSelector((state) => {
     return {
