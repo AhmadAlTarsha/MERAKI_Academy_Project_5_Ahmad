@@ -188,7 +188,7 @@ exports.getAllServices = (req, res, next) => {
   const { is_deleted } = req.query;
   let query = `SELECT serverices.id, serverices.service_provider_id, serverices.category_id, serverices.sub_category_id, serverices.title, serverices.description, serverices.status_id, 
   serverices.default_image, serverices.created_at, serverices.is_deleted,
-  users.first_name, users.last_name, users.image,
+  users.first_name, users.last_name, users.image, users.id AS userId,
   statuses.name, categories.name AS categoryName, sub_categories.name AS subCategoryName
   FROM serverices 
   JOIN users ON users.id = serverices.service_provider_id
@@ -208,6 +208,7 @@ exports.getAllServices = (req, res, next) => {
         status_id: service.status_id,
         status_name: service.name,
         provider: {
+          id: service.userid,
           full_name: `${service.first_name} ${service.last_name}`,
           image: service.image,
         },

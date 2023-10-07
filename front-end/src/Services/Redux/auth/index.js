@@ -182,6 +182,7 @@ export const authSlice = createSlice({
         role: 0,
       };
       localStorage.removeItem("localUser");
+      localStorage.removeItem("token");
     },
   },
 });

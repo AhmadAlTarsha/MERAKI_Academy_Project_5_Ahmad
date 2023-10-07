@@ -12,12 +12,17 @@ function NewPost({
   sub_category_id,
   cancelButtonOnClick,
   dispatch,
+  setError,
+  setLoading,
 }) {
   const handleNewPost = async () => {
     CreateNewPost(description, images, category_id, sub_category_id)
       .then((res) => {})
       .catch((err) => {
-        console.log(err);
+        setError(true);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 

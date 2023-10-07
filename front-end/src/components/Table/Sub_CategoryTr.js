@@ -10,6 +10,8 @@ const Sub_CategoryTr = ({
   setSubCategories,
   limit,
   offset,
+  setError,
+  setLoading
 }) => {
   const navigate = useNavigate();
   return subCategoriesArray?.map((subcategory) => (
@@ -81,10 +83,10 @@ const Sub_CategoryTr = ({
                 dispatch(setSubCategories(result2));
               })
               .catch((err) => {
-                console.log(
-                  "ERROR DELETE Sub Category ===> ",
-                  err.response.data
-                );
+                setError(true);
+              })
+              .finally(() => {
+                setLoading(false);
               });
           }}
         />

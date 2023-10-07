@@ -10,6 +10,8 @@ const CategoryTr = ({
   setCategories,
   limit,
   offset,
+  setError,
+  setLoading,
 }) => {
   const navigate = useNavigate();
   return categoriesArray?.map((category) => (
@@ -71,7 +73,10 @@ const CategoryTr = ({
                 dispatch(setCategories(result2));
               })
               .catch((err) => {
-                console.log("ERROR DELETE Category ===> ", err.response.data);
+                setError(true);
+              })
+              .finally(() => {
+                setLoading(false);
               });
           }}
         />

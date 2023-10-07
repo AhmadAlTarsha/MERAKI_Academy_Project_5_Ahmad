@@ -5,8 +5,10 @@ import { GetAllPosts } from "../../../Services/APIS/Posts/GetAllPosts";
 import { setPosts } from "../../../Services/Redux/Posts";
 import Loader from "../../../components/Loader/Loader";
 import Pagination from "../../../components/Pagination/Pagination";
+import Pop_up from "../../../components/Dialog_Modal/Pop-up";
 
 const AdminPosts = () => {
+  const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [limit, setLimit] = useState(3);
   const [offset, setOffset] = useState(1);
@@ -25,11 +27,13 @@ const AdminPosts = () => {
       .then((result) => {
         if (!result.error) {
           dispatch(setPosts(result));
-          setIsLoading(false);
         }
       })
       .catch((err) => {
-        console.log("CATEGORY ERROR ==> ", err?.response?.data);
+        setIsError(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -38,13 +42,19 @@ const AdminPosts = () => {
       GetAllPosts(limit, offset, 0, 0, 1)
         .then((result) => {
           dispatch(setPosts(result));
-          setIsLoading(false);
         })
         .catch((err) => {
-          console.log("CATEGORY ERROR ==> ", err?.response?.data);
+          setIsError(true);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     };
   }, []);
+
+  const handleCloseModal = () => {
+    setIsError(false);
+  };
 
   return (
     <div className="overflow-auto flex flex-col justify-center items-center w-full h-full">
@@ -52,21 +62,29 @@ const AdminPosts = () => {
         <Loader />
       ) : (
         <>
-          <Tables
-            rows={rows}
-            cols={selectPosts}
-            dispatch={dispatch}
-            setPosts={setPosts}
-            limit={limit}
-            offset={offset}
-          />
-          {selectPosts.posts.length !== 0 && (
-            <Pagination
-              handlePage={handlePage}
-              limit={limit}
-              offset={offset}
-              setOffset={setOffset}
-            />
+          {isError ? (
+            <Pop_up message={""} onClose={handleCloseModal} />
+          ) : (
+            <>
+              <Tables
+                rows={rows}
+                cols={selectPosts}
+                dispatch={dispatch}
+                setPosts={setPosts}
+                limit={limit}
+                offset={offset}
+                setError={setIsError}
+                setLoading={setIsLoading}
+              />
+              {selectPosts.posts.length !== 0 && (
+                <Pagination
+                  handlePage={handlePage}
+                  limit={limit}
+                  offset={offset}
+                  setOffset={setOffset}
+                />
+              )}
+            </>
           )}
         </>
       )}

@@ -12,6 +12,7 @@ const Sub_Categories = ({
   setComments,
   limit,
   offset,
+  setError,
 }) => {
   return (
     <div className="bg-green-400 mb-7 flex flex-col justify-center items-center">
@@ -33,14 +34,14 @@ const Sub_Categories = ({
                         postComments[`post_${el?.id}`] = comments;
                         dispatch(setComments(postComments));
                       })
-                      .catch((err) => {
-                        console.log("ERROR GETTING COMMENTS ===> ", err);
-                      });
+                      .catch((err) => {});
                   });
-                  setLoading(false);
                 })
                 .catch((err) => {
-                  console.error("ERROR GETTING SUB CATEGORY ===> ", err);
+                  setError(true);
+                })
+                .finally(() => {
+                  setLoading(false);
                 });
             }}
           />
