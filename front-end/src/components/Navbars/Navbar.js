@@ -11,7 +11,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const localUser = JSON?.parse(localStorage?.getItem("localUser")) ?? {};
-  console.log("local ==> ", localUser);
   const select = useSelector((state) => {
     return {
       user: state.auth,

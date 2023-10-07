@@ -28,12 +28,12 @@ const CustomerNavBar = ({ dispatch, navigate, setLogout }) => {
         </NavLink>
 
         <NavLink
-          to={"categories"}
+          to={"orders"}
           className={
             "flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900"
           }
         >
-          Categories
+          My Orders
         </NavLink>
 
         <NavLink
@@ -52,7 +52,7 @@ const CustomerNavBar = ({ dispatch, navigate, setLogout }) => {
       {/* <div className="bg-green-500 w-1/2 hidden lg:flex lg:flex-1 lg:justify-end"> */}
 
       <Button
-        divClassName={"bg-green-500"}
+        divClassName={""}
         onClick={() => {
           dispatch(setLogout());
           navigate("/");

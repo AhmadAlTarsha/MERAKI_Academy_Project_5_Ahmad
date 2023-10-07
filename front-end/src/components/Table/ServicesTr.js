@@ -10,6 +10,8 @@ const ServicesTr = ({
   setServices,
   limit,
   offset,
+  setError,
+  setLoading,
 }) => {
   return servicesArray?.map((service) => (
     <tr
@@ -52,7 +54,10 @@ const ServicesTr = ({
                     dispatch(setServices(result2));
                   })
                   .catch((err) => {
-                    console.error("ERROR UPDATE STATUS SERVICE ====> ", err);
+                    setError(true);
+                  })
+                  .finally(() => {
+                    setLoading(false);
                   });
               }}
             />
@@ -70,7 +75,10 @@ const ServicesTr = ({
                     dispatch(setServices(result2));
                   })
                   .catch((err) => {
-                    console.error("ERROR UPDATE STATUS SERVICE ====> ", err);
+                    setError(true);
+                  })
+                  .finally(() => {
+                    setLoading(false);
                   });
               }}
             />

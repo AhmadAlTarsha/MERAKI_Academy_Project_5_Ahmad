@@ -11,11 +11,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { UpdateSubCategory } from "../../../Services/APIS/Category/Update_Category";
 import { setCategories } from "../../../Services/Redux/Category";
 import Loader from "../../../components/Loader/Loader";
+import Pop_up from "../../../components/Dialog_Modal/Pop-up";
 
 const AdminSub_Category = () => {
   const navigate = useNavigate();
   const [subCategoryData, setSubCategoryData] = useState({});
   const [isOpen, setIsOpen] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   let { id } = useParams();
 
@@ -31,7 +33,6 @@ const AdminSub_Category = () => {
     getSubCategory(id)
       .then((result) => {
         if (!result?.error) {
-          //   dispatch(setCategory(result.category));
           setSubCategoryData({
             id: result?.subCategory?.id,
             name: result?.subCategory?.name,
@@ -39,11 +40,13 @@ const AdminSub_Category = () => {
             category_name: result?.subCategory?.category_name,
             category_id: result?.subCategory?.category_id,
           });
-          setIsLoading(false);
         }
       })
       .catch((err) => {
-        console.log("ERROR ADMIN CATEGORY GET ID ====> ", err.response.data);
+        setIsError(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
@@ -54,10 +57,10 @@ const AdminSub_Category = () => {
           dispatch(setCategories(result));
         })
         .catch((err) => {
-          console.log(
-            "ERROR CATEGORIES FROM SUB CATEGORY EDIT ===> ",
-            err?.response?.data
-          );
+          setIsError(true);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     };
   }, []);
@@ -68,10 +71,12 @@ const AdminSub_Category = () => {
     UpdateSubCategory(subCategoryData.id, subCategoryData)
       .then((result) => {
         setIsOpen(!isOpen);
-        console.log("UPDATE CATEGORY ====>", result);
       })
       .catch((err) => {
-        console.log("ERROR UPDATE CATEGORY ====> ", err?.response?.data);
+        setIsError(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -81,118 +86,125 @@ const AdminSub_Category = () => {
         <Loader />
       ) : (
         <>
-          <Dialog_Modal
-            isForm={false}
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            title={"Sub Category Updated Successfully"}
-            dialogPanelClassName={
-              "rounded h-1/4 w-1/4 flex flex-col bg-gray-800 text-white py-8 px-4 text-center"
-            }
-            buttonClassName={`w-1/2 rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium 
-      text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3`}
-            buttonDivClassName={"mt-2.5 w-5/6 self-center"}
-            navigate={navigate}
-            isUpdateSubCategory={true}
-          />
-          <form
-            onSubmit={handleSubmit}
-            className="w-1/2 flex flex-col justify-center space-y-4 md:space-y-6"
-            action="#"
-          >
-            <img src={`${subCategoryData.image}`} alt="img" />
-
-            <Input
-              divClassName={"flex items-center gap-3"}
-              labelDivClassname={
-                "block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              }
-              labelClassName={""}
-              labelName={"Category Image"}
-              inputDiv={"ml-8 w-1/2"}
-              inputClassName={
-                "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              }
-              type={"file"}
-              name={""}
-              onChange={(e) => {
-                setSubCategoryData({
-                  id: subCategoryData.id,
-                  image: e.target.files[0],
-                  name: subCategoryData.name,
-                  category_name: subCategoryData.category_name,
-                  category_id: subCategoryData?.category_id,
-                });
-              }}
-            />
-
-            <Input
-              divClassName={"flex items-center gap-3"}
-              labelDivClassname={
-                "block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              }
-              labelClassName={""}
-              labelName={"Category Name"}
-              inputDiv={"ml-8 w-1/2"}
-              inputClassName={
-                "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              }
-              type={"text"}
-              name={""}
-              placeHolder={"Category Name"}
-              value={subCategoryData.name}
-              onChange={(e) => {
-                setSubCategoryData({
-                  id: subCategoryData.id,
-                  image: subCategoryData.image,
-                  name: e.target.value,
-                  category_name: subCategoryData.category_name,
-                  category_id: subCategoryData?.category_id,
-                });
-              }}
-            />
-
-            <div className="flex flex-col mb-2">
-              <div className="self-start mb-2">
-                <label for="countries" className="">
-                  Select an option
-                </label>
-              </div>
-              <select
-                onChange={(e) =>
-                  setSubCategoryData({
-                    id: subCategoryData.id,
-                    image: subCategoryData.image,
-                    name: subCategoryData.name,
-                    category_name: subCategoryData.category_name,
-                    category_id: e.target.value,
-                  })
+          {isError ? (
+            <Pop_up message={""} />
+          ) : (
+            <>
+              <Dialog_Modal
+                isForm={false}
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                title={"Sub Category Updated Successfully"}
+                dialogPanelClassName={
+                  "rounded h-1/4 w-1/4 flex flex-col bg-gray-800 text-white py-8 px-4 text-center"
                 }
-                id="countries"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                buttonClassName={`w-1/2 rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium 
+      text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3`}
+                buttonDivClassName={"mt-2.5 w-5/6 self-center"}
+                navigate={navigate}
+                isUpdateSubCategory={true}
+              />
+              <form
+                onSubmit={handleSubmit}
+                className="w-1/2 flex flex-col justify-center space-y-4 md:space-y-6"
+                action="#"
               >
-                <option value={subCategoryData?.category_id} selected>
-                  {subCategoryData?.category_name}
-                </option>
-                {categorySelect.categories.categories
-                  .filter(
-                    (category) => category.id !== subCategoryData.category_id
-                  )
-                  .map((category) => (
-                    <option value={category.id}>{category.name}</option>
-                  ))}
-              </select>
-            </div>
+                <img src={`${subCategoryData.image}`} alt="img" />
 
-            <Button
-              divClassName={"self-end"}
-              buttonClassName={
-                "text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-              }
-              buttonName={"Submit"}
-              onClick={() => {}}
-            />
-          </form>
+                <Input
+                  divClassName={"flex items-center gap-3"}
+                  labelDivClassname={
+                    "block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  }
+                  labelClassName={""}
+                  labelName={"Category Image"}
+                  inputDiv={"ml-8 w-1/2"}
+                  inputClassName={
+                    "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  }
+                  type={"file"}
+                  name={""}
+                  onChange={(e) => {
+                    setSubCategoryData({
+                      id: subCategoryData.id,
+                      image: e.target.files[0],
+                      name: subCategoryData.name,
+                      category_name: subCategoryData.category_name,
+                      category_id: subCategoryData?.category_id,
+                    });
+                  }}
+                />
+
+                <Input
+                  divClassName={"flex items-center gap-3"}
+                  labelDivClassname={
+                    "block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  }
+                  labelClassName={""}
+                  labelName={"Category Name"}
+                  inputDiv={"ml-8 w-1/2"}
+                  inputClassName={
+                    "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  }
+                  type={"text"}
+                  name={""}
+                  placeHolder={"Category Name"}
+                  value={subCategoryData.name}
+                  onChange={(e) => {
+                    setSubCategoryData({
+                      id: subCategoryData.id,
+                      image: subCategoryData.image,
+                      name: e.target.value,
+                      category_name: subCategoryData.category_name,
+                      category_id: subCategoryData?.category_id,
+                    });
+                  }}
+                />
+
+                <div className="flex flex-col mb-2">
+                  <div className="self-start mb-2">
+                    <label for="countries" className="">
+                      Select an option
+                    </label>
+                  </div>
+                  <select
+                    onChange={(e) =>
+                      setSubCategoryData({
+                        id: subCategoryData.id,
+                        image: subCategoryData.image,
+                        name: subCategoryData.name,
+                        category_name: subCategoryData.category_name,
+                        category_id: e.target.value,
+                      })
+                    }
+                    id="countries"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  >
+                    <option value={subCategoryData?.category_id} selected>
+                      {subCategoryData?.category_name}
+                    </option>
+                    {categorySelect.categories.categories
+                      .filter(
+                        (category) =>
+                          category.id !== subCategoryData.category_id
+                      )
+                      .map((category) => (
+                        <option value={category.id}>{category.name}</option>
+                      ))}
+                  </select>
+                </div>
+
+                <Button
+                  divClassName={"self-end"}
+                  buttonClassName={
+                    "text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                  }
+                  buttonName={"Submit"}
+                  onClick={() => {}}
+                />
+              </form>
+            </>
+          )}
         </>
       )}
     </div>

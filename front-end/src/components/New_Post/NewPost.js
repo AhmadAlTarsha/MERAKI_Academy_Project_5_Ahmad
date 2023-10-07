@@ -20,11 +20,13 @@ function NewPost({
   sub_category_id,
   cancelButtonOnClick,
   dispatch,
-  //
+  setError,
+  setLoading,
   toggle,
   title,
   service_provider_id,
   default_image,
+
 
 }) {
   const [newService, setNewService] = useState({});
@@ -33,7 +35,6 @@ function NewPost({
     console.log(newService);
     setNewService({
       ...newService,
-
       [e.target.name]: e.target.name === "image" ? e.target.files[0] : e.target.value
 
     });
@@ -47,7 +48,11 @@ function NewPost({
 
       })
       .catch((err) => {
-        console.log("ERROR service PAGE ====> ", err);
+
+        setError(true);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
   const selectcategory = useSelector((state) => {

@@ -3,7 +3,15 @@ import Button from "../Button/Button";
 import { DeleteRegion } from "../../Services/APIS/Regions/DeleteRegions";
 import { GetAllRegions } from "../../Services/APIS/Regions/GetRegions";
 
-const RegionsTr = ({ regionsArray, dispatch, setRegions, limit, offset }) => {
+const RegionsTr = ({
+  regionsArray,
+  dispatch,
+  setRegions,
+  limit,
+  offset,
+  setError,
+  setLoading,
+}) => {
   return regionsArray?.map((region) => (
     <tr
       key={region.id}
@@ -55,7 +63,10 @@ const RegionsTr = ({ regionsArray, dispatch, setRegions, limit, offset }) => {
                 dispatch(setRegions(result2));
               })
               .catch((err) => {
-                console.log("ERROR DELETE region ===> ", err.response.data);
+                setError(true);
+              })
+              .finally(() => {
+                setLoading(false);
               });
           }}
         />

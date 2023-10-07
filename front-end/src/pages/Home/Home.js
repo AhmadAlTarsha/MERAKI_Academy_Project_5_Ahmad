@@ -20,10 +20,9 @@ import Categories from "../../components/Home_Categories/Categories";
 import Sub_Categories from "../../components/Home_Categories/Sub_Categories";
 import Pop_up from "../../components/Dialog_Modal/Pop-up";
 import NewPost from "../../components/New_Post/NewPost";
-import TAP from "../allservices/Tap";
-import Servicepage from "../allservices/servicepage";
 import Button from "../../components/Button/Button";
 import { getAllServices } from "../../Services/APIS/Services/Get_Services";
+import Tabs from "../../components/Tabs/Tabs";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -63,30 +62,26 @@ const Home = () => {
                 dispatch(setComments(postComments));
               })
               .catch((err) => {
-                console.log("ERROR GETTING COMMENTS ===> ", err);
+                // console.log("ERROR GETTING COMMENTS ===> ", err);
               });
           });
+        })
+        .catch((err) => {
+          setError(true);
+        })
+        .finally(() => {
           setLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-
-      GetCategories(0, 0, 0)
-        .then((result) => {
-          dispatch(setCategories(result));
-        })
-        .catch((err) => {
-          console.error("ERROR GETING CATEGORIES ===> ".err);
         });
     } else {
       getAllServices(limit, offset, 0)
         .then((res) => {
-          console.log(res);
           dispatch(setServices(res));
         })
         .catch((err) => {
-          console.log(err);
+          setError(true);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   }, [toggle]);
@@ -97,7 +92,11 @@ const Home = () => {
         dispatch(setCategories(result));
       })
       .catch((err) => {
-        console.error("ERROR GETING CATEGORIES ===> ".err);
+        setError(true);
+        // console.error("ERROR GETING CATEGORIES ===> ".err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -115,13 +114,16 @@ const Home = () => {
                   dispatch(setComments(postComments));
                 })
                 .catch((err) => {
-                  console.log("ERROR GETTING COMMENTS ===> ", err);
+                  // console.log("ERROR GETTING COMMENTS ===> ", err);
                 });
             });
-            setLoading(false);
           })
           .catch((err) => {
-            console.log(err);
+            setError(true);
+            // console.log(err);
+          })
+          .finally(() => {
+            setLoading(false);
           });
       }
     });
@@ -141,11 +143,13 @@ const Home = () => {
               console.log("ERROR GETTING COMMENTS ===> ", err);
             });
         });
-        setLoading(false);
         window.scrollTo({ top: 0 });
       })
       .catch((err) => {
         console.log("POST ERROR ==> ", err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -182,9 +186,8 @@ const Home = () => {
                 postComments={postComments}
                 setComments={setComments}
                 setLoading={setLoading}
-                isCategoriesPages={false}
+                setError={setError}
               />
-              {/* <TAP></TAP> */}
 
               {/* <Servicepage/> */}
               {isCategoryClicked && (
@@ -198,8 +201,15 @@ const Home = () => {
                   setPosts={setPosts}
                   limit={limit}
                   offset={offset}
+                  setError={setError}
                 />
               )}
+
+
+              {/* <TAP></TAP> */}
+
+              <Tabs setToggle={setToggle} />
+
 
               <div>
                 <ul
@@ -241,13 +251,22 @@ const Home = () => {
                 toggle={toggle}
                 isCategoryClicked={isCategoryClicked}
                 dispatch={dispatch}
+                setError={setError} 
+                setLoading={setLoading}
               />
+
 
               {toggle
                 ? select?.post.map((newPost) => {
                     return (
                       <>
                         <Post
+                          setError={setError}
+                          setLoading={setLoading}
+                          isShowButtons={false}
+                          dispatch={dispatch}
+                          postComments={postComments}
+                          postId={newPost?.id}
                           key={newPost?.id}
                           userName={newPost?.user?.fullName}
                           body={newPost?.description}
@@ -293,10 +312,15 @@ const Home = () => {
                       </>
                     );
                   })
-                : servicessSelector?.services.map((service, i) => {
+
+                : servicessSelector?.services?.map((service) => {
+
                     return (
                       <>
                         <Post
+                          setError={setError}
+                          setLoading={setLoading}
+                          isServices={true}
                           title={service?.title}
                           userName={service?.provider?.fullName}
                           body={service?.description}
@@ -305,7 +329,11 @@ const Home = () => {
                           }
                           imageSrc={service?.provider?.image}
                           postImage={service?.default_image}
-                          isShowComments={true}
+                          isShowComments={false}
+                          subCategoryId={service?.sub_category_id}
+                          postId={service?.id}
+                          providerId={service?.provider?.id}
+                          dispatch={dispatch}
                         />
                       </>
                     );

@@ -4,9 +4,11 @@ import { getAllPostsByUser } from "../../Services/Redux/Posts";
 import Loader from "../../components/Loader/Loader";
 import Post from "../../components/Post/Post";
 import Pagination from "../../components/Pagination/Pagination";
+import Pop_up from "../../components/Dialog_Modal/Pop-up";
 
 const MyPosts = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(false);
   const limit = 3;
   const [offset, setOffset] = useState(1);
   const dispatch = useDispatch();
@@ -24,11 +26,12 @@ const MyPosts = () => {
         active: 0,
       })
     )
-      .then((res) => {
-        setIsLoading(false);
-      })
+      .then((res) => {})
       .catch((err) => {
-        console.log("MY POSTS ERROR ===> ", err);
+        setError(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
@@ -40,15 +43,25 @@ const MyPosts = () => {
         active: 0,
       })
     )
-      .then((res) => {
-        setIsLoading(false);
-      })
+      .then((res) => {})
       .catch((err) => {
-        console.log("MY POSTS ERROR ===> ", err);
+        setError(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
 
     window.scrollTo({ top: 0 });
   };
+
+  const handleButtonClick = () => {
+    setError("An error occurred.");
+  };
+
+  const handleCloseModal = () => {
+    setError(false);
+  };
+
   return (
     <>
       {isLoading ? (
@@ -57,25 +70,33 @@ const MyPosts = () => {
         </div>
       ) : (
         <>
-          {postsSelector?.posts?.map((post) => (
-            <Post
-              postDivClassName={"border-slate-900 border-4 mx-4 my-6 px-2 py-4"}
-              key={post?.id}
-              userName={post?.user?.fullName}
-              body={post?.description}
-              imageSrc={post?.user?.userImage}
-              postImage={post?.main_image}
-              isShowComments={false}
-              buttonsDivClass={"bg-green-500 flex justify-center gap-10"}
-            />
-          ))}
-          {postsSelector?.posts.length !== 0 && (
-            <Pagination
-              handlePage={handlePage}
-              limit={limit}
-              offset={offset}
-              setOffset={setOffset}
-            />
+          {error ? (
+            <Pop_up message={""} onClose={handleCloseModal} />
+          ) : (
+            <>
+              {postsSelector?.posts?.map((post) => (
+                <Post
+                  postDivClassName={
+                    "border-slate-900 border-4 mx-4 my-6 px-2 py-4"
+                  }
+                  key={post?.id}
+                  userName={post?.user?.fullName}
+                  body={post?.description}
+                  imageSrc={post?.user?.userImage}
+                  postImage={post?.main_image}
+                  isShowButtons={true}
+                  buttonsDivClass={"bg-green-500 flex justify-center gap-10"}
+                />
+              ))}
+              {postsSelector?.posts.length !== 0 && (
+                <Pagination
+                  handlePage={handlePage}
+                  limit={limit}
+                  offset={offset}
+                  setOffset={setOffset}
+                />
+              )}
+            </>
           )}
         </>
       )}

@@ -5,6 +5,7 @@ import Button from "../Button/Button";
 import { CreateNewComment } from "../../Services/APIS/Comments/CreateNewComment";
 import { GetCommentsByPost } from "../../Services/APIS/Posts/GetAllPosts";
 import { setComments } from "../../Services/Redux/Posts";
+import { addOrder } from "../../Services/Redux/Orders";
 
 function Post({
   imageSrc,
@@ -26,12 +27,20 @@ function Post({
   dispatch,
   postComments,
   title,
+  isServices,
+  subCategoryId,
+  providerId,
+  isShowButtons,
+  setError,
+  setLoading,
   userNameClassName
+
 }) {
   const [comment, setComment] = useState("");
   const [textValue, setTextValue] = useState("");
 
   const handlePostComment = async () => {
+    console.log("Adding comment ERROR");
     CreateNewComment(postId, { comment })
       .then((res) => {
         return GetCommentsByPost(postId);
@@ -41,10 +50,26 @@ function Post({
         dispatch(setComments(postComments));
       })
       .catch((err) => {
-        console.log(err);
+        setError(true);
       })
       .finally(() => {
         setTextValue("");
+        setLoading(false);
+      });
+  };
+
+  const handleAddingOrder = async (sub_category_id, provider_id) => {
+    dispatch(addOrder({ provider_id, sub_category_id }))
+      .then((res) => {
+        if (!res?.payload?.err) {
+          console.log("Adding ORDER Error ===> ", res?.payload?.message);
+        }
+      })
+      .catch((err) => {
+        setError(true);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -57,7 +82,7 @@ function Post({
         <h3 className={userNameClassName}>{userName}</h3>
       </div>
 
-      {!isShowComments && (
+      {isShowButtons && (
         <div className={buttonsDivClass}>
           <Button
             buttonName={"Edit"}
@@ -72,6 +97,13 @@ function Post({
             }}
           />
         </div>
+      )}
+
+      {isServices && (
+        <Button
+          buttonName={"Set Order"}
+          onClick={() => handleAddingOrder(subCategoryId, providerId)}
+        />
       )}
 
       <div className={bodyDivClassName}>
@@ -136,6 +168,7 @@ function Post({
                       <textarea
                         className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
                         placeholder="Write comment"
+                        onChange={(e) => setComment(e.target.value)}
                       ></textarea>
                     </div>
                     <Button
@@ -143,6 +176,7 @@ function Post({
                         "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                       }
                       buttonName={"Post"}
+                      onClick={handlePostComment}
                     />
                   </Disclosure.Panel>
                 </>

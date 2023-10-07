@@ -3,7 +3,15 @@ import Button from "../Button/Button";
 import { DeletePost } from "../../Services/APIS/Posts/DeletePost";
 import { GetAllPosts } from "../../Services/APIS/Posts/GetAllPosts";
 
-const PostsTs = ({ postsArray, limit, offset, dispatch, setPosts }) => {
+const PostsTs = ({
+  postsArray,
+  limit,
+  offset,
+  dispatch,
+  setPosts,
+  setError,
+  setLoading,
+}) => {
   return postsArray?.map((post) => (
     <tr
       key={post.id}
@@ -45,7 +53,10 @@ const PostsTs = ({ postsArray, limit, offset, dispatch, setPosts }) => {
                 dispatch(setPosts(result2));
               })
               .catch((err) => {
-                console.log("DELETE POST ERROR ==>", err?.response?.data);
+                setError(true);
+              })
+              .finally(() => {
+                setLoading(false);
               });
           }}
         />

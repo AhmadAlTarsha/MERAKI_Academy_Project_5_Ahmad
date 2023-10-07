@@ -38,6 +38,8 @@ const Dialog_Modal = ({
   isPosts,
   limit,
   offset,
+  setIsError,
+  setIsLoading,
 }) => {
   const dispatch = useDispatch();
   const [category, setCategory] = useState({
@@ -67,10 +69,12 @@ const Dialog_Modal = ({
           }
         })
         .catch((err) => {
-          console.log("CATEGORY ERROR ====> ", err?.response?.data);
+          setIsError(true);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     } else if (isSubCategory) {
-      // console.log("SUB CATEGORY ===> ", subCategory);
       AddSubCategory(subCategory)
         .then((result) => {
           if (result?.includes("Sub Category Added succefully")) {
@@ -78,7 +82,10 @@ const Dialog_Modal = ({
           }
         })
         .catch((err) => {
-          console.log("SUB CATEGORY ERROR ====> ", err?.response?.data);
+          setIsError(true);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     } else if (isRegions) {
       AddRegion(region)
@@ -88,7 +95,10 @@ const Dialog_Modal = ({
           }
         })
         .catch((err) => {
-          console.log("REGION ERROR ====> ", err?.response?.data);
+          setIsError(true);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
@@ -157,10 +167,10 @@ const Dialog_Modal = ({
                     setIsOpen(!isOpen);
                   })
                   .catch((err) => {
-                    console.log(
-                      "MODEL CATEGORY ERROR ===> ",
-                      err.response.data
-                    );
+                    setIsError(true);
+                  })
+                  .finally(() => {
+                    setIsLoading(false);
                   });
               } else if (isSubCategory) {
                 GetSubCategories(limit, offset, 1)
@@ -169,10 +179,10 @@ const Dialog_Modal = ({
                     setIsOpen(!isOpen);
                   })
                   .catch((err) => {
-                    console.log(
-                      "MODEL SUB CATEGORY ERROR ===> ",
-                      err?.response?.data
-                    );
+                    setIsError(true);
+                  })
+                  .finally(() => {
+                    setIsLoading(false);
                   });
               } else if (isRegions) {
                 GetAllRegions(limit, offset)
@@ -181,7 +191,10 @@ const Dialog_Modal = ({
                     setIsOpen(!isOpen);
                   })
                   .catch((err) => {
-                    console.log("REGION ADD ERROR ===> ", err?.response?.data);
+                    setIsError(true);
+                  })
+                  .finally(() => {
+                    setIsLoading(false);
                   });
               }
             } else if (isUpdateCategory) {
