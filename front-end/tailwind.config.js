@@ -5,6 +5,11 @@ module.exports = {
     extend: {
       colors: {
         primary: {
+          1: "#00b894",
+          2: "#f2f2f2",
+          3: "#2d3436",
+          4: "#00bfff",
+          5: "#001F3F",
           50: "#eff6ff",
           100: "#dbeafe",
           200: "#bfdbfe",
@@ -20,7 +25,7 @@ module.exports = {
       },
     },
     fontFamily: {
-      'body': [
+      body: [
         "Inter",
         "ui-sans-serif",
         "system-ui",
@@ -37,7 +42,7 @@ module.exports = {
         "Segoe UI Symbol",
         "Noto Color Emoji",
       ],
-      'sans': [
+      sans: [
         "Inter",
         "ui-sans-serif",
         "system-ui",
