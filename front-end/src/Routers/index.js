@@ -17,6 +17,7 @@ import Orders from "../pages/Orders/Orders";
 import Profile from "../pages/Profile/Profile";
 import MyPosts from "../pages/MyPosts/MyPosts";
 import MyServices from "../pages/MyServices/MyServices";
+import UpdatemyPost from "../pages/MyPosts/updatemyPost";
 
 export const router = createBrowserRouter([
   {
@@ -99,4 +100,7 @@ export const router = createBrowserRouter([
     path: "*",
     element: <Not_Found />,
   },
+
+  {path:"post_update",
+element:<UpdatemyPost/>}
 ]);

@@ -1,10 +1,14 @@
 import axios from "axios";
 
 export const CreateNewPost = async (payload) => {
+  console.log("mm",payload);
   try {
     const result = await axios.post(`http://localhost:5000/posts`, payload, {
       headers: {
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxLCJyZWdpb25faWQiOjEsInJvbGVfaWQiOjEsImZpcnN0X25hbWUiOiJJYnJhaGltIiwibGFzdF9uYW1lIjoiSHVzaGtpIiwibmlja19uYW1lIjoiaWJvIiwiZW1haWwiOiJpYnJhaG9tQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJHh6WEs3azFlS3RubkxNRDcvSVFieHV5Mk9HeTBpVVljMzVsRmVvaGNyMktWc0M1ZUg3Q1JtIiwiYWN0aXZlIjoxLCJpc19kZWxldGVkIjowLCJsb25ndGl0dWRlIjowLCJsYW5ndGl0dWRlIjowLCJpbWFnZSI6ImRlZmF1bHRVc2VyLnBuZyIsImNyZWF0ZWRfYXQiOiIyMDIzLTA5LTI1VDE1OjU2OjMyLjM3MVoiLCJyZWdpb24iOiJLSEFMREEiLCJwZXJtaXNzaW9ucyI6WyJVU0VSX0NPTlRST0wiLCJDT01NRU5UX0NPTlRST0wiLCJTRVJWSUNFX0NPTlRST0wiLCJQT1NUX0NPTlRST0wiLCJPUkRFUl9DT05UUk9MIiwiQ0FURUdPUllfQ09OVFJPTCJdfSwiaWF0IjoxNjk2MDg1ODk0LCJleHAiOjE2OTY2OTA2OTR9.MadPa1eXRKr0yT4Ap03P_n60PNUUDOdGwf2sCD9FgQI`,
+        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjo0MCwicmVnaW9uX2lkIjozLCJyb2xlX2lkIjozLCJmaXJzdF9uYW1lIjoieHgiLCJsYXN0X25hbWUiOiJ4eCIsIm5pY2tfbmFtZSI6Inh4IiwiZW1haWwiOiJ4QHgiLCJwYXNzd29yZCI6IiQyYiQxMCQ0TllxMWRvbVdHT3c4UkN5dy5rdnouTjdWWHljUjk4UFFPSmFCQTF0cVp4WUg0NElqWHI4ZSIsImFjdGl2ZSI6MSwiaXNfZGVsZXRlZCI6MCwibG9uZ3RpdHVkZSI6MCwibGFuZ3RpdHVkZSI6MCwiaW1hZ2UiOiJkZWZhdWx0VXNlci5wbmciLCJjcmVhdGVkX2F0IjoiMjAyMy0xMC0wN1QxNDo0ODoyNC4zNjZaIiwicmVnaW9uIjoiYWJ1IG5zZWVyIiwicGVybWlzc2lvbnMiOlsiVVNFUl9DT05UUk9MIiwiQ09NTUVOVF9DT05UUk9MIiwiU0VSVklDRV9DT05UUk9MIiwiUE9TVF9DT05UUk9MIiwiT1JERVJfQ09OVFJPTCIsIkNBVEVHT1JZX0NPTlRST0wiXX0sImlhdCI6MTY5NjcwMDkyNywiZXhwIjoxNjk3MzA1NzI3fQ.9l99sC30n4Zw4FnoFZqoiWMKmVkUtZdSXB9qxLHYrAY
+
+        `,
+        "Content-Type": "multipart/form-data",
       },
     });
     if (!result?.data?.error) {

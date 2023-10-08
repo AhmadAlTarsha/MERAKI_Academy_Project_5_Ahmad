@@ -14,7 +14,7 @@ import Comment from "../../components/Comment/Comment";
 import { GetCategories } from "../../Services/APIS/Category/Get_Categories";
 import { setCategories } from "../../Services/Redux/Category";
 import { setSubCategories } from "../../Services/Redux/Sub_Categories";
-import { setServices } from "../../Services/Redux/Services";
+import { setServices } from "../../Services/Redux/services";
 
 import Categories from "../../components/Home_Categories/Categories";
 import Sub_Categories from "../../components/Home_Categories/Sub_Categories";
@@ -211,9 +211,8 @@ const Home = () => {
               <Tabs setToggle={setToggle} />
 
 
-              
 
-              <NewPost
+                <NewPost
                 toggle={toggle}
                 isCategoryClicked={isCategoryClicked}
                 dispatch={dispatch}

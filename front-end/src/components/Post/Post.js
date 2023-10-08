@@ -6,6 +6,10 @@ import { CreateNewComment } from "../../Services/APIS/Comments/CreateNewComment"
 import { GetCommentsByPost } from "../../Services/APIS/Posts/GetAllPosts";
 import { setComments } from "../../Services/Redux/Posts";
 import { addOrder } from "../../Services/Redux/Orders";
+import UpdatemyPost from "../../pages/MyPosts/updatemyPost";
+import Pop_up from "../Dialog_Modal/Pop-up";
+import { useNavigate } from "react-router-dom";
+
 
 function Post({
   imageSrc,
@@ -35,9 +39,13 @@ function Post({
   setLoading,
   userNameClassName,
   userAndPosterDivClassName,
+  post
+
 }) {
+  const navigate=useNavigate()
   const [comment, setComment] = useState("");
   const [textValue, setTextValue] = useState("");
+  const [editClicked, setTEditClicked] = useState(true);
 
   const handlePostComment = async () => {
     console.log("Adding comment ERROR");
@@ -83,12 +91,14 @@ function Post({
           <h3 className={userNameClassName}>{userName}</h3>
         </div>
 
+
         {isShowButtons && (
           <div className={buttonsDivClass}>
             <Button
               buttonName={"Edit"}
               onClick={() => {
-                console.log("Edit");
+                  console.log(post.id);
+            navigate("/post_update")
               }}
             />
             <Button
@@ -101,6 +111,7 @@ function Post({
         )}
 
         {isServices && (
+
           <Button
             buttonName={"Set Order"}
             onClick={() => handleAddingOrder(subCategoryId, providerId)}
