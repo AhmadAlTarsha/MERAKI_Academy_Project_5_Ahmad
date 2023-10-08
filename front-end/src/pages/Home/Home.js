@@ -211,6 +211,7 @@ const Home = () => {
               <Tabs setToggle={setToggle} />
 
 
+
                 <NewPost
                 toggle={toggle}
                 isCategoryClicked={isCategoryClicked}
@@ -225,6 +226,7 @@ const Home = () => {
                     return (
                       <>
                         <Post
+                        userAndPosterDivClassName={"border-b-[2px] pb-4"}
                           setError={setError}
                           setLoading={setLoading}
                           isShowButtons={false}
@@ -234,16 +236,16 @@ const Home = () => {
                           key={newPost?.id}
                           userName={newPost?.user?.fullName}
                           body={newPost?.description}
-                          userDivClassName={"border flex flex-row"}
+                          userDivClassName={"flex flex-row"}
                           postDivClassName={
                             "border-slate-900 border mx-4 my-6 px-2 py-4 rounded-lg"
                           }
                           imageSrc={newPost?.user?.userImage}
                           postImage={newPost?.main_image}
                           commentDivClassName={
-                            "border-slate-900 border-2 mx-4 my-6 px-2 py-4"
+                            "border-slate-900 border mx-4 my-6 px-2 py-4 rounded-lg"
                           }
-                          userNameClassName={"text-base font-bold"}
+                          userNameClassName={"text-base font-bold text-sky-700"}
                           userImageClassName={
                             "rounded-full h-20 w-20 md:h-28 md:w-28 border-[6px] border-white bg-white"
                           }
@@ -257,7 +259,7 @@ const Home = () => {
                                   <Comment
                                     key={comment.id}
                                     fullCommentDivClassName={
-                                      "border-slate-900 border-2 mx-4 my-6 px-2 py-4"
+                                      "border-slate-900 my-6 px-2 py-4 bg-[#F2F2F2] rounded-lg"
                                     }
                                     commenterImage={
                                       comment?.commenter.userImage

@@ -89,7 +89,7 @@ function NewPost({
       </div>
 
         <style>body</style>
-        <div className="editor mx-auto w-10/12 flex flex-col text-gray-800 border border-gray-300 p-4 shadow-lg max-w-2xl">
+        <div className="editor mx-auto w-10/12 flex flex-col text-gray-800 border border-gray-300 p-4 shadow-lg max-w-2xl rounded-lg">
           <div>
             <label for="category">Category</label>
             <select onClick={(e)=>{
@@ -130,8 +130,8 @@ function NewPost({
           </div>
 
           <textarea
-          onChange={(e)=>handleChange(e)}
-            className="description bg-gray-100 sec p-3 h-60 border border-gray-300 outline-none mt-2"
+            className="description bg-gray-100 sec p-3 h-60 border border-gray-300 outline-none mt-2 rounded-lg"
+            onChange={(e)=>handleChange(e)}
             spellcheck="false"
             placeholder="Write your post here"
             name="description"
