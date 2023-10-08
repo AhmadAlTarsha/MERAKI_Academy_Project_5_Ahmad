@@ -40,12 +40,13 @@ function Post({
   userNameClassName,
   userAndPosterDivClassName,
   post
-
 }) {
   const navigate=useNavigate()
   const [comment, setComment] = useState("");
   const [textValue, setTextValue] = useState("");
+  const localUser = JSON?.parse(localStorage?.getItem("localUser")) ?? {};
   const [editClicked, setTEditClicked] = useState(true);
+
 
   const handlePostComment = async () => {
     console.log("Adding comment ERROR");
@@ -110,13 +111,16 @@ function Post({
           </div>
         )}
 
-        {isServices && (
 
-          <Button
-            buttonName={"Set Order"}
-            onClick={() => handleAddingOrder(subCategoryId, providerId)}
-          />
-        )}
+
+
+      {isServices && localUser?.isLoggedIn && (
+        <Button
+          buttonName={"Set Order"}
+          onClick={() => handleAddingOrder(subCategoryId, providerId)}
+        />
+      )}
+
 
         <div className={bodyDivClassName}>
           {title && <h3>{title}</h3>}

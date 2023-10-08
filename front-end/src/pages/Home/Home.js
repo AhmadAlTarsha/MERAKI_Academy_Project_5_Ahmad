@@ -205,21 +205,21 @@ const Home = () => {
                 />
               )}
 
-
               {/* <TAP></TAP> */}
 
               <Tabs setToggle={setToggle} />
 
 
 
+
                 <NewPost
+
                 toggle={toggle}
                 isCategoryClicked={isCategoryClicked}
                 dispatch={dispatch}
-                setError={setError} 
+                setError={setError}
                 setLoading={setLoading}
               />
-
 
               {toggle
                 ? select?.post.map((newPost) => {
@@ -278,9 +278,7 @@ const Home = () => {
                       </>
                     );
                   })
-
                 : servicessSelector?.services?.map((service) => {
-
                     return (
                       <>
                         <Post
