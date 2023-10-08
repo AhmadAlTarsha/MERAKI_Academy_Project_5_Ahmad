@@ -33,8 +33,8 @@ function Post({
   isShowButtons,
   setError,
   setLoading,
-  userNameClassName
-
+  userNameClassName,
+  userAndPosterDivClassName,
 }) {
   const [comment, setComment] = useState("");
   const [textValue, setTextValue] = useState("");
@@ -75,41 +75,43 @@ function Post({
 
   return (
     <div className={postDivClassName}>
-      <div className={`${userDivClassName}`}>
-        <div className="w-1/4">
-          <img src={imageSrc} alt={altName} className={userImageClassName} />
+      <div className={userAndPosterDivClassName}>
+        <div className={`${userDivClassName}`}>
+          <div>
+            <img src={imageSrc} alt={altName} className={userImageClassName} />
+          </div>
+          <h3 className={userNameClassName}>{userName}</h3>
         </div>
-        <h3 className={userNameClassName}>{userName}</h3>
-      </div>
 
-      {isShowButtons && (
-        <div className={buttonsDivClass}>
+        {isShowButtons && (
+          <div className={buttonsDivClass}>
+            <Button
+              buttonName={"Edit"}
+              onClick={() => {
+                console.log("Edit");
+              }}
+            />
+            <Button
+              buttonName={"Delete"}
+              onClick={() => {
+                console.log("Delete");
+              }}
+            />
+          </div>
+        )}
+
+        {isServices && (
           <Button
-            buttonName={"Edit"}
-            onClick={() => {
-              console.log("Edit");
-            }}
+            buttonName={"Set Order"}
+            onClick={() => handleAddingOrder(subCategoryId, providerId)}
           />
-          <Button
-            buttonName={"Delete"}
-            onClick={() => {
-              console.log("Delete");
-            }}
-          />
+        )}
+
+        <div className={bodyDivClassName}>
+          {title && <h3>{title}</h3>}
+          <p className={bodyClassName}>{body}</p>
+          <img src={postImage} />
         </div>
-      )}
-
-      {isServices && (
-        <Button
-          buttonName={"Set Order"}
-          onClick={() => handleAddingOrder(subCategoryId, providerId)}
-        />
-      )}
-
-      <div className={bodyDivClassName}>
-        {title && <h3>{title}</h3>}
-        <p className={bodyClassName}>{body}</p>
-        <img src={postImage} />
       </div>
 
       {isShowComments && (
@@ -118,7 +120,7 @@ function Post({
             <Disclosure>
               {({ open }) => (
                 <>
-                  <Disclosure.Button className="flex w-full justify-between rounded-lg bg-purple-100 px-4 py-2 text-left text-sm font-medium text-purple-900 hover:bg-purple-200 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
+                  <Disclosure.Button className="flex w-full justify-between rounded-lg bg-cyan-500 px-4 py-2 text-left text-sm font-medium text-purple-900 hover:bg-cyan-700 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
                     <span>Comments ({numberOfComments})</span>
                     <ChevronUpIcon
                       className={`${
@@ -154,7 +156,7 @@ function Post({
             <Disclosure>
               {({ open }) => (
                 <>
-                  <Disclosure.Button className="flex w-full justify-between rounded-lg bg-purple-100 px-4 py-2 text-left text-sm font-medium text-purple-900 hover:bg-purple-200 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
+                  <Disclosure.Button className="flex w-full justify-between rounded-lg bg-slate-200 px-4 py-2 text-left text-sm font-medium text-cyan-950 hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
                     <span>Comments ({numberOfComments})</span>
                     <ChevronUpIcon
                       className={`${
