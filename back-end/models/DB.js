@@ -186,6 +186,32 @@ CREATE TABLE customer_provider_rate (
         FOREIGN KEY (provider_id) REFERENCES users(id)
       );
      );
+
+
+     CREATE TABLE chats(
+      id SERIAL PRIMARY KEY,
+      chat_from_id integer,
+      chat_to_id integer,
+      created_at timestamp DEFAULT now(),
+      FOREIGN KEY (chat_from_id) REFERENCES chatters_from(id),
+      FOREIGN KEY (chat_to_id) REFERENCES chatters_to(id)
+      );
+      
+      CREATE TABLE chatters_from(
+      id SERIAL PRIMARY KEYrs,
+      from_id integer,
+      chat text,
+      created_at SET DEFAULT now(),
+      FOREIGN KEY (from_id) REFERENCES users(id)
+      );
+      
+      CREATE TABLE chatters_to(
+      id SERIAL PRIMARY KEY,
+      to_id integer,
+      chat text,
+      created_at timestamp DEFAULT now(),
+      FOREIGN KEY (to_id) REFERENCES users(id)
+      );
       
      INSERT INTO roles (role) VALUES ('ADMIN'),('PROVIDER'),('CUSTOMER')
 

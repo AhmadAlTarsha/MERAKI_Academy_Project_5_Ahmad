@@ -81,14 +81,14 @@ const Navbar = () => {
                 Posts
               </NavLink>
 
-              <NavLink
+              {/* <NavLink
                 to={"categories"}
                 className={
                   "flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900"
                 }
               >
                 Categories
-              </NavLink>
+              </NavLink> */}
 
               <NavLink
                 to={"login"}
