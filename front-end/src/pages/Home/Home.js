@@ -14,7 +14,7 @@ import Comment from "../../components/Comment/Comment";
 import { GetCategories } from "../../Services/APIS/Category/Get_Categories";
 import { setCategories } from "../../Services/Redux/Category";
 import { setSubCategories } from "../../Services/Redux/Sub_Categories";
-import { setServices } from "../../Services/Redux/services";
+import { setServices } from "../../Services/Redux/Services";
 
 import Categories from "../../components/Home_Categories/Categories";
 import Sub_Categories from "../../components/Home_Categories/Sub_Categories";
@@ -205,20 +205,17 @@ const Home = () => {
                 />
               )}
 
-
               {/* <TAP></TAP> */}
 
               <Tabs setToggle={setToggle} />
 
-
-                <NewPost
+              <NewPost
                 toggle={toggle}
                 isCategoryClicked={isCategoryClicked}
                 dispatch={dispatch}
-                setError={setError} 
+                setError={setError}
                 setLoading={setLoading}
               />
-
 
               {toggle
                 ? select?.post.map((newPost) => {
@@ -276,9 +273,7 @@ const Home = () => {
                       </>
                     );
                   })
-
                 : servicessSelector?.services?.map((service) => {
-
                     return (
                       <>
                         <Post

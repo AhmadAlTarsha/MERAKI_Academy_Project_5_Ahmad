@@ -33,11 +33,11 @@ function Post({
   isShowButtons,
   setError,
   setLoading,
-  userNameClassName
-
+  userNameClassName,
 }) {
   const [comment, setComment] = useState("");
   const [textValue, setTextValue] = useState("");
+  const localUser = JSON?.parse(localStorage?.getItem("localUser")) ?? {};
 
   const handlePostComment = async () => {
     console.log("Adding comment ERROR");
@@ -82,7 +82,7 @@ function Post({
         <h3 className={userNameClassName}>{userName}</h3>
       </div>
 
-      {isShowButtons && (
+      {isShowButtons && localUser?.isLoggedIn && (
         <div className={buttonsDivClass}>
           <Button
             buttonName={"Edit"}
@@ -99,7 +99,7 @@ function Post({
         </div>
       )}
 
-      {isServices && (
+      {isServices && localUser?.isLoggedIn && (
         <Button
           buttonName={"Set Order"}
           onClick={() => handleAddingOrder(subCategoryId, providerId)}

@@ -17,6 +17,8 @@ import Orders from "../pages/Orders/Orders";
 import Profile from "../pages/Profile/Profile";
 import MyPosts from "../pages/MyPosts/MyPosts";
 import MyServices from "../pages/MyServices/MyServices";
+import Chats from "../pages/Chats/Chats";
+import Conversations from "../pages/Chats/Conversations";
 
 export const router = createBrowserRouter([
   {
@@ -50,6 +52,14 @@ export const router = createBrowserRouter([
       {
         path: "profile",
         element: <Profile />,
+      },
+      {
+        path: "chats",
+        element: <Conversations />,
+      },
+      {
+        path: "chats/:id/:recieverId",
+        element: <Chats />,
       },
     ],
   },

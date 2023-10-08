@@ -48,6 +48,7 @@ const subCategoryRouter = require("./routes/sub-category");
 const commentsRoute = require("./routes/comments");
 const regionsRoure = require("./routes/regions");
 const ordersRouter = require("./routes/Orders");
+const chatRouter = require("./routes/chats");
 
 app.use("/roles", rolesRouter);
 app.use("/permissions", permissionsRouter);
@@ -59,10 +60,13 @@ app.use("/subcategories", subCategoryRouter);
 app.use("/comment", commentsRoute);
 app.use("/regions", regionsRoure);
 app.use("/orders", ordersRouter);
+app.use("/chats", chatRouter);
 
 app.use("*", (req, res) => res.status(404).json("NO content at this path"));
 
 app.use((err, req, res, next) => {
+  console.log("ERROR ===> ",err);
+
   const { statusCode, message } = err;
   if (statusCode == 500) {
     err.statusCode = 500;
