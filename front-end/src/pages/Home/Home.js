@@ -212,8 +212,8 @@ const Home = () => {
 
 
 
-                <NewPost
 
+                <NewPost
                 toggle={toggle}
                 isCategoryClicked={isCategoryClicked}
                 dispatch={dispatch}
