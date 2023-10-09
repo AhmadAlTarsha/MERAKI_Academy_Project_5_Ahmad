@@ -13,7 +13,7 @@ const Profile = () => {
   const [isUpdateOk, setIsUpdateOk] = useState(false);
   const [isError, setIsError] = useState(false);
   const [profile, setProfile] = useState(false);
-  const localUser = JSON.parse(localStorage.getItem("localUser"));
+  const localUser = JSON.parse(localStorage.getItem("localUser")) ?? {};
   const dispatch = useDispatch();
   const select2 = useSelector((state) => {
     return {
@@ -47,7 +47,10 @@ const Profile = () => {
 
   useEffect(() => {
     dispatch(getUser(localUser?.id))
-      .then((res) => {})
+    .then((res) => {
+        console.log("IDDDD 2222 ===> ", localUser?.id);
+
+      })
       .catch((err) => {
         setIsError(true);
       })
@@ -66,10 +69,6 @@ const Profile = () => {
         setIsLoading(false);
       });
   }, []);
-
-  const handleButtonClick = () => {
-    setIsError("An error occurred.");
-  };
 
   const handleCloseModal = () => {
     setIsError(false);
@@ -177,7 +176,7 @@ const Profile = () => {
                             </option>
                             {select2?.regions.map((region) => {
                               return (
-                                <option value={region.id}>
+                                <option value={region?.id}>
                                   {region.region}
                                 </option>
                               );
@@ -213,26 +212,6 @@ const Profile = () => {
                             onChange={(e) => handleChange(e)}
                           />
                         </div>
-
-                        {/* <div>
-              <label
-                for="profile-image"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Profile Image
-              </label>
-              <input
-                onChange={(e) => {
-                  console.log(e.target.files[0]);
-                }}
-                type="file"
-                name="profile-image"
-                id="profile-image"
-                accept="image/*"
-                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                required=""
-              />
-            </div> */}
 
                         {isUpdateOk && (
                           <div

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const CreateNewPost = async (payload) => {
-  console.log("mm",payload);
+
   try {
     const result = await axios.post(`http://localhost:5000/posts`, payload, {
       headers: {

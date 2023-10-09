@@ -84,6 +84,28 @@ exports.getAllPosts = (req, res, next) => {
     });
 };
 
+exports.getPostById = (req, res, next) => {
+  let query = `SELECT id, description, category_id, sub_category_id, created_at, is_deleted, main_image FROM posts WHERE id = $1`;
+
+  pool
+    .query(query, [req.params.id])
+    .then(async (result) => {
+      if (result.command === `SELECT`) {
+        return res.status(200).json({
+          error: false,
+          post: result.rows[0],
+        });
+      }
+      return throwError(400, "Something went wrong");
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
 exports.getAllPostsByUser = (req, res, next) => {
   const { posterId } = req.params;
   const perPage = Number(req.query.limit);
@@ -209,7 +231,13 @@ exports.updatePostById = async (req, res, next) => {
   }
 
   const data = image
-    ? [description || null, image || null, category_id || null, sub_category_id || null, id]
+    ? [
+        description || null,
+        image || null,
+        category_id || null,
+        sub_category_id || null,
+        id,
+      ]
     : [description || null, category_id || null, sub_category_id || null, id];
 
   const query = image
