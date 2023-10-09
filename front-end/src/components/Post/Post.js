@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/20/solid";
 import Button from "../Button/Button";
 import { CreateNewComment } from "../../Services/APIS/Comments/CreateNewComment";
-import { GetCommentsByPost } from "../../Services/APIS/Posts/GetAllPosts";
-import { setComments } from "../../Services/Redux/Posts";
+import { GetCommentsByPost, GetPostsByUserId } from "../../Services/APIS/Posts/GetAllPosts";
+import { getAllPostsByUser, setComments } from "../../Services/Redux/Posts";
 import { addOrder } from "../../Services/Redux/Orders";
 import UpdatemyPost from "../../pages/MyPosts/updatemyPost";
 import Pop_up from "../Dialog_Modal/Pop-up";
 import { useNavigate } from "react-router-dom";
+import { DeletePost } from "../../Services/APIS/Posts/DeletePost";
 
 
 function Post({
@@ -66,7 +67,27 @@ function Post({
         setLoading(false);
       });
   };
+// useEffect(()=>{
+// const handlePage = (li, off) => {
+//     dispatch(
+//       getAllPostsByUser({
+//         limit: li,
+//         offset: off,
+//         active: 0,
+//       })
+//     )
+//       .then((res) => {})
+//       .catch((err) => {
+//         setError(true);
+//       })
+//       .finally(() => {
+//         setIsLoading(false);
+//       });
 
+//     window.scrollTo({ top: 0 });
+//   };
+// },[])
+  
   const handleAddingOrder = async (sub_category_id, provider_id) => {
     dispatch(addOrder({ provider_id, sub_category_id }))
       .then((res) => {
@@ -99,12 +120,15 @@ function Post({
               buttonName={"Edit"}
               onClick={() => {
                   console.log(post.id);
-            navigate("/post_update")
+            navigate(`/post_update/${post.id}`)
               }}
             />
             <Button
               buttonName={"Delete"}
               onClick={() => {
+                DeletePost(post.id,1)
+             
+               
                 console.log("Delete");
               }}
             />
