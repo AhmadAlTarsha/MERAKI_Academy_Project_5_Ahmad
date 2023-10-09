@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getConversationRedux } from "../../Services/Redux/Chats";
 import Loader from "../../components/Loader/Loader";
-import Button from "../../components/Button/Button";
-import { useNavigate } from "react-router";
+import { Outlet, useNavigate } from "react-router";
+import { NavLink } from "react-router-dom";
 
 const Conversations = () => {
   const navigate = useNavigate();
@@ -35,19 +35,29 @@ const Conversations = () => {
         </div>
       ) : (
         <>
-          <div>
-            {conversationsSelector?.conversations?.map((conversation) => (
-              <Button
-                key={conversation?.id}
-                buttonName={`${conversation.customer.full_name}`}
-                buttonClassName={`focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900`}
-                onClick={() => {
-                  navigate(
-                    `/chats/${conversation?.id}/${conversation?.customer?.id}`
-                  );
-                }}
-              />
-            ))}
+          <div className="bg-green-400 flex">
+            <div className="bg-red-400 flex flex-col justify-start items-center h-screen w-1/6">
+              {conversationsSelector?.conversations?.map((conversation) => (
+                <NavLink
+                  key={conversation.id}
+                  to={`/chats/${conversation?.id}/${conversation?.customer?.id}`}
+                  className={({ isActive, isPending }) =>
+                    isPending
+                      ? "flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base w-full h-28"
+                      : isActive
+                      ? "bg-neutral-700 text-white flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base w-full h-28"
+                      : "text-neutral-400 flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base w-full h-28"
+                  }
+                >
+                  <span className="text-xl">
+                    {/* <FcBullish /> */}
+                    <img src={conversation?.customer?.image} height={"80px"} width={"80px"}/>
+                  </span>
+                  {conversation.customer.full_name}
+                </NavLink>
+              ))}
+            </div>
+            <Outlet />
           </div>
         </>
       )}

@@ -57,10 +57,12 @@ export const router = createBrowserRouter([
       {
         path: "chats",
         element: <Conversations />,
-      },
-      {
-        path: "chats/:id/:recieverId",
-        element: <Chats />,
+        children: [
+          {
+            path: ":id/:recieverId",
+            element: <Chats />,
+          },
+        ],
       },
       { path: "post_update/:id", element: <UpdateMyPost /> },
     ],
