@@ -3,14 +3,13 @@ import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/20/solid";
 import Button from "../Button/Button";
 import { CreateNewComment } from "../../Services/APIS/Comments/CreateNewComment";
-import { GetCommentsByPost, GetPostsByUserId } from "../../Services/APIS/Posts/GetAllPosts";
+import { GetCommentsByPost } from "../../Services/APIS/Posts/GetAllPosts";
 import { getAllPostsByUser, setComments } from "../../Services/Redux/Posts";
 import { addOrder } from "../../Services/Redux/Orders";
-import UpdatemyPost from "../../pages/MyPosts/updatemyPost";
-import Pop_up from "../Dialog_Modal/Pop-up";
+// import UpdateMyPost from "../../pages/MyPosts/updatemyPost";
+// import Pop_up from "../Dialog_Modal/Pop-up";
 import { useNavigate } from "react-router-dom";
 import { DeletePost } from "../../Services/APIS/Posts/DeletePost";
-
 
 function Post({
   imageSrc,
@@ -40,17 +39,17 @@ function Post({
   setLoading,
   userNameClassName,
   userAndPosterDivClassName,
-  post
+  post,
+  limit,
+  offset,
 }) {
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const [comment, setComment] = useState("");
   const [textValue, setTextValue] = useState("");
   const localUser = JSON?.parse(localStorage?.getItem("localUser")) ?? {};
   const [editClicked, setTEditClicked] = useState(true);
 
-
   const handlePostComment = async () => {
-    console.log("Adding comment ERROR");
     CreateNewComment(postId, { comment })
       .then((res) => {
         return GetCommentsByPost(postId);
@@ -67,32 +66,12 @@ function Post({
         setLoading(false);
       });
   };
-// useEffect(()=>{
-// const handlePage = (li, off) => {
-//     dispatch(
-//       getAllPostsByUser({
-//         limit: li,
-//         offset: off,
-//         active: 0,
-//       })
-//     )
-//       .then((res) => {})
-//       .catch((err) => {
-//         setError(true);
-//       })
-//       .finally(() => {
-//         setIsLoading(false);
-//       });
 
-//     window.scrollTo({ top: 0 });
-//   };
-// },[])
-  
   const handleAddingOrder = async (sub_category_id, provider_id) => {
     dispatch(addOrder({ provider_id, sub_category_id }))
       .then((res) => {
         if (!res?.payload?.err) {
-          console.log("Adding ORDER Error ===> ", res?.payload?.message);
+          // console.log("Adding ORDER Error ===> ", res?.payload?.message);
         }
       })
       .catch((err) => {
@@ -113,38 +92,42 @@ function Post({
           <h3 className={userNameClassName}>{userName}</h3>
         </div>
 
-
         {isShowButtons && (
           <div className={buttonsDivClass}>
             <Button
               buttonName={"Edit"}
               onClick={() => {
-                  console.log(post.id);
-            navigate(`/post_update/${post.id}`)
+                console.log(post.id);
+                navigate(`/post_update/${post.id}`);
               }}
             />
             <Button
               buttonName={"Delete"}
               onClick={() => {
-                DeletePost(post.id,1)
-             
-               
-                console.log("Delete");
+                DeletePost(post.id, 1)
+                  .then((result) => {
+                    return dispatch(
+                      getAllPostsByUser({ limit, offset, active: 0 })
+                    );
+                  })
+                  .then((result2) => {})
+                  .catch((err) => {
+                    setError(true);
+                  })
+                  .finally(() => {
+                    setLoading(false);
+                  });
               }}
             />
           </div>
         )}
 
-
-
-
-      {isServices && localUser?.isLoggedIn && (
-        <Button
-          buttonName={"Set Order"}
-          onClick={() => handleAddingOrder(subCategoryId, providerId)}
-        />
-      )}
-
+        {isServices && localUser?.isLoggedIn && (
+          <Button
+            buttonName={"Set Order"}
+            onClick={() => handleAddingOrder(subCategoryId, providerId)}
+          />
+        )}
 
         <div className={bodyDivClassName}>
           {title && <h3>{title}</h3>}

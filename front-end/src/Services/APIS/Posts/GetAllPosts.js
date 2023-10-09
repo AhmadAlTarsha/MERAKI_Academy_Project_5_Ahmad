@@ -68,8 +68,22 @@ export const GetPostsByUserId = async (limit, offset, active) => {
     if (!result?.data?.error) {
       return result?.data?.posts;
     }
-    
   } catch (err) {
+    throw err;
+  }
+};
+
+export const GetPost = async (id) => {
+  //Admin
+  let url = `http://localhost:5000/posts/post/${id}`;
+
+  try {
+    const result = await axios.get(url);
+    if (!result?.data?.error) {
+      return result?.data?.post;
+    }
+  } catch (err) {
+    console.log("ERROR ==> ", err);
     throw err;
   }
 };

@@ -9,6 +9,7 @@ const {
   getAllServices,
   updateServiceStatus,
   deleteService,
+  getAllServicesByUser,
 } = require("../controllers/services");
 
 const { authentication } = require("../middlewares/authentication");
@@ -38,6 +39,8 @@ servericesRouter.put(
 servericesRouter.get("/", getAllServices);
 
 servericesRouter.get("/:id", getServiceOnId);
+
+servericesRouter.get("/services/:providerId", getAllServicesByUser);
 
 servericesRouter.get("/category/:categoryId", getAllServicesOnCategory);
 

@@ -6,6 +6,7 @@ const {
   activationPostById,
   getAllPosts,
   getAllPostsByUser,
+  getPostById,
 } = require("../controllers/posts");
 const { authentication } = require("../middlewares/authentication");
 const { authorization } = require("../middlewares/authorization");
@@ -14,6 +15,7 @@ const postsRouter = express.Router();
 
 // Crud methods
 postsRouter.get("/post/", getAllPosts);
+postsRouter.get("/post/:id", getPostById);
 
 postsRouter.get(
   "/:posterId",

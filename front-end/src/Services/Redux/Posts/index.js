@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { GetPostsByUserId } from "../../APIS/Posts/GetAllPosts";
+import { GetPost, GetPostsByUserId } from "../../APIS/Posts/GetAllPosts";
 
 export const getAllPostsByUser = createAsyncThunk(
   "user/posts",
@@ -12,10 +12,15 @@ export const getAllPostsByUser = createAsyncThunk(
   }
 );
 
+export const getPostById = createAsyncThunk("post", async (payload) => {
+  return await GetPost(payload.id);
+});
+
 export const postSlice = createSlice({
   name: "post",
   initialState: {
     post: [],
+    postId: {},
     comments: {},
     errorMessage: {},
   },
@@ -39,6 +44,23 @@ export const postSlice = createSlice({
         state.errorMessage = {
           error: true,
           message: "Something went wrong",
+        };
+      });
+
+    builder
+      .addCase(getPostById.pending, (state) => {
+        state.errorMessage = {
+          error: false,
+          message: "",
+        };
+      })
+      .addCase(getPostById.fulfilled, (state, action) => {
+        state.postId = action.payload;
+      })
+      .addCase(getPostById.rejected, (state, action) => {
+        state.errorMessage = {
+          error: true,
+          message: action.error,
         };
       });
   },

@@ -1,7 +1,6 @@
 import axios from "axios";
 
 export const DeletePost = async (id,is_deleted) => {
-console.log(id+is_deleted);
   try {
     const result = await axios.delete(
       `http://localhost:5000/posts/delete/${id}`,

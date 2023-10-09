@@ -10,6 +10,7 @@ import { GetAllRegions } from "../../Services/APIS/Regions/GetRegions";
 import { setRegions } from "../../Services/Redux/regions/regions";
 import Loader from "../../components/Loader/Loader";
 import Pop_up from "../../components/Dialog_Modal/Pop-up";
+import { useNavigate } from "react-router";
 
 export const Register = () => {
   const [isError, setIsError] = useState(false);
@@ -27,6 +28,7 @@ export const Register = () => {
   });
 
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const select = useSelector((state) => {
     return {
       register: state.auth,
@@ -78,7 +80,8 @@ export const Register = () => {
     dispatch(registerUser(registration))
       .then((result) => {
         if (!result?.payload?.error) {
-          setIsRegisterOk(true);
+          // setIsRegisterOk(true);
+          navigate('/login')
         }
       })
       .catch((err) => {
