@@ -86,6 +86,9 @@ const MyPosts = () => {
                   postImage={post?.main_image}
                   isShowButtons={true}
                   buttonsDivClass={"bg-green-500 flex justify-center gap-10"}
+                  limit={limit}
+                  offset={offset}
+                  dispatch={dispatch}
                 />
               ))}
               {postsSelector?.posts.length !== 0 && (

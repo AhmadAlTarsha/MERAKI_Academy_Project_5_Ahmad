@@ -25,6 +25,7 @@ const Categories = ({
       <div className="mt-3 flex items-center justify-center gap-10 flex-wrap">
         {categories?.map((category) => (
           <Card
+            key={category?.id}
             altName={"category Image"}
             height={"300px"}
             width={"300px"}

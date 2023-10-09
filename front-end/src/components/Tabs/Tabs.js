@@ -5,7 +5,7 @@ const Tabs = ({ setToggle }) => {
   return (
     <div>
       <ul
-        class="mb-4 flex list-none flex-row flex-wrap border-b-0 pl-0"
+        className="mb-4 flex list-none flex-row flex-wrap border-b-0 pl-0"
         id="tabs-tab3"
         role="tablist"
         data-te-nav-ref

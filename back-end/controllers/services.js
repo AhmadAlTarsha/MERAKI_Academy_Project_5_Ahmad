@@ -9,7 +9,7 @@ exports.addService = (req, res, next) => {
     sub_category_id,
     title,
     description,
-    images
+    images,
   } = req.body;
 
   console.log(req.file);
@@ -105,24 +105,24 @@ exports.updateService = (req, res, next) => {
 
   const values = image
     ? [
-      service_provider_id,
-      category_id,
-      sub_category_id,
-      title,
-      description,
-      status_id,
-      image,
-      id,
-    ]
+        service_provider_id,
+        category_id,
+        sub_category_id,
+        title,
+        description,
+        status_id,
+        image,
+        id,
+      ]
     : [
-      service_provider_id,
-      category_id,
-      sub_category_id,
-      title,
-      description,
-      status_id,
-      id,
-    ];
+        service_provider_id,
+        category_id,
+        sub_category_id,
+        title,
+        description,
+        status_id,
+        id,
+      ];
 
   pool
     .query(
@@ -204,6 +204,66 @@ exports.getAllServices = (req, res, next) => {
   pool
     .query(query, [perPage, (currentPage - 1) * perPage])
     .then((result) => {
+      const serverices = result.rows.map((service) => ({
+        id: service.id,
+        status_id: service.status_id,
+        status_name: service.name,
+        provider: {
+          id: service.userid,
+          full_name: `${service.first_name} ${service.last_name}`,
+          image: service.image,
+        },
+        category_id: service.category_id,
+        category_name: service.categoryname,
+        sub_category_id: service.sub_category_id,
+        sub_categories_name: service.subcategoryname,
+        title: service.title,
+        description: service.description,
+        is_deleted: service.is_deleted,
+        default_image: `http://localhost:5000/${service.default_image}`,
+        created_at: service.created_at,
+      }));
+      if (result.command === `SELECT`) {
+        return res.status(200).json({
+          error: false,
+          serverices,
+        });
+      }
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
+exports.getAllServicesByUser = (req, res, next) => {
+  const perPage = Number(req.query.limit);
+  const currentPage = Number(req.query.offset);
+  const { providerId } = req.params;
+  const { is_deleted } = req.query;
+
+  let query = `SELECT serverices.id, serverices.service_provider_id, serverices.category_id, serverices.sub_category_id, serverices.title, serverices.description, serverices.status_id, 
+  serverices.default_image, serverices.created_at, serverices.is_deleted,
+  users.first_name, users.last_name, users.image, users.id AS userId,
+  statuses.name, categories.name AS categoryName, sub_categories.name AS subCategoryName
+  FROM serverices 
+  JOIN users ON users.id = serverices.service_provider_id
+  JOIN statuses ON statuses.id = serverices.status_id
+  JOIN categories ON categories.id = serverices.category_id
+  JOIN sub_categories ON sub_categories.id = serverices.sub_category_id`;
+
+  is_deleted
+    ? (query += ` WHERE serverices.is_deleted = 0 AND serverices.service_provider_id = $1 ORDER BY id ASC LIMIT $2 OFFSET $3`)
+    : (query += ` WHERE serverices.service_provider_id = $1 ORDER BY id ASC LIMIT $2 OFFSET $3`);
+
+  const data = [providerId, perPage, (currentPage - 1) * perPage];
+
+  pool
+    .query(query, data)
+    .then((result) => {
+      // console.log(result.rows);
       const serverices = result.rows.map((service) => ({
         id: service.id,
         status_id: service.status_id,
