@@ -63,6 +63,8 @@ export const router = createBrowserRouter([
         path: "chats/:id/:recieverId",
         element: <Chats />,
       },
+      {path:"post_update/:id",
+      element:<UpdatemyPost/>}
     ],
   },
   {
@@ -112,6 +114,5 @@ export const router = createBrowserRouter([
     element: <Not_Found />,
   },
 
-  {path:"post_update",
-element:<UpdatemyPost/>}
+ 
 ]);

@@ -209,12 +209,12 @@ exports.updatePostById = async (req, res, next) => {
   }
 
   const data = image
-    ? [description, image, category_id, sub_category_id, id]
-    : [description, category_id, sub_category_id, id];
+    ? [description || null, image || null, category_id || null, sub_category_id || null, id]
+    : [description || null, category_id || null, sub_category_id || null, id];
 
   const query = image
-    ? `UPDATE posts SET description = $1, main_image = $2, category_id = $3, sub_category_id = $4 WHERE id=$5 RETURNING *`
-    : `UPDATE posts SET description = $1, category_id = $2, sub_category_id = $3 WHERE id=$4 RETURNING *`;
+    ? `UPDATE posts SET description = COALESCE($1,description), main_image =COALESCE($2,image), category_id =COALESCE($3,category_id), sub_category_id =COALESCE($4,sub_category_id) WHERE id=$5 RETURNING *`
+    : `UPDATE posts SET description =COALESCE($1,description), category_id =COALESCE($2,category_id), sub_category_id = COALESCE($3,sub_category_id) WHERE id=$4 RETURNING *`;
 
   pool
     .query(query, data)
