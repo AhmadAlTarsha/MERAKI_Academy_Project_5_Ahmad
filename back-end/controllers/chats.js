@@ -53,7 +53,7 @@ exports.insertConversation = (req, res, next) => {
 exports.getConversations = (req, res, next) => {
   pool
     .query(
-      `SELECT chat_conversations.id, users.id AS userId, users.first_name, users.last_name 
+      `SELECT chat_conversations.id, users.id AS userId, users.first_name, users.last_name, users.image
       FROM chat_conversations
       INNER JOIN users ON users.id = chat_conversations.customer 
       WHERE provider = $1 ORDER BY id ASC`,
@@ -65,11 +65,12 @@ exports.getConversations = (req, res, next) => {
         customer: {
           id: conversation.userid,
           full_name: `${conversation.first_name} ${conversation.last_name}`,
+          image: `http://localhost:5000/images/${conversation.image}`,
         },
       }));
       res.status(200).json({
         error: false,
-        conversations
+        conversations,
       });
     })
     .catch((err) => {

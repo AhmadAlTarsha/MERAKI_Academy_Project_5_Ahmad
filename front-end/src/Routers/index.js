@@ -21,7 +21,6 @@ import Chats from "../pages/Chats/Chats";
 import Conversations from "../pages/Chats/Conversations";
 import UpdatemyPost from "../pages/MyPosts/updatemyPost";
 
-
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -58,10 +57,12 @@ export const router = createBrowserRouter([
       {
         path: "chats",
         element: <Conversations />,
-      },
-      {
-        path: "chats/:id/:recieverId",
-        element: <Chats />,
+        children: [
+          {
+            path: ":id/:recieverId",
+            element: <Chats />,
+          },
+        ],
       },
     ],
   },
@@ -112,6 +113,5 @@ export const router = createBrowserRouter([
     element: <Not_Found />,
   },
 
-  {path:"post_update",
-element:<UpdatemyPost/>}
+  { path: "post_update", element: <UpdatemyPost /> },
 ]);

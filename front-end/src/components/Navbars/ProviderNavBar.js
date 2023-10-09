@@ -52,7 +52,7 @@ const ProviderNavBar = ({ dispatch, navigate, setLogout }) => {
       {/* <div className="bg-green-500 w-1/2 hidden lg:flex lg:flex-1 lg:justify-end"> */}
 
       <Button
-        divClassName={"bg-green-500"}
+        divClassName={""}
         onClick={() => {
           dispatch(setLogout());
           navigate("/");
