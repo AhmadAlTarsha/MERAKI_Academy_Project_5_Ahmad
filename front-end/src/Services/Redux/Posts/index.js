@@ -20,7 +20,7 @@ export const postSlice = createSlice({
   name: "post",
   initialState: {
     post: [],
-    postId: {},
+    currentPost: {},
     comments: {},
     errorMessage: {},
   },
@@ -55,7 +55,7 @@ export const postSlice = createSlice({
         };
       })
       .addCase(getPostById.fulfilled, (state, action) => {
-        state.postId = action.payload;
+        state.currentPost = action.payload;
       })
       .addCase(getPostById.rejected, (state, action) => {
         state.errorMessage = {

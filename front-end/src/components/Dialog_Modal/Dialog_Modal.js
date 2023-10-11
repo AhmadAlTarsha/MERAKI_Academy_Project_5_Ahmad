@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Dialog } from "@headlessui/react";
-import Input from "../Input/Input";
 import Button from "../Button/Button";
 import {
   AddCategory,
@@ -12,7 +11,7 @@ import {
   GetSubCategories,
 } from "../../Services/APIS/Category/Get_Categories";
 import { setCategories } from "../../Services/Redux/Category";
-import { setSubCategories } from "../../Services/Redux/Sub_Categories";
+import { setSubCategories } from "../../Services/Redux/Sub_Categories"; 
 import CategoryForm from "./CategoryForm";
 import Sub_CategoryForm from "./Sub_CategoryForm";
 import RegionForm from "./RegionForm";
