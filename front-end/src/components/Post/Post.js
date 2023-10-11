@@ -98,7 +98,7 @@ function Post({
               buttonName={"Edit"}
               onClick={() => {
                 console.log(post.id);
-                navigate(`/post_update/${post.id}`);
+                navigate(`/post-update/${post.id}`);
               }}
             />
             <Button
