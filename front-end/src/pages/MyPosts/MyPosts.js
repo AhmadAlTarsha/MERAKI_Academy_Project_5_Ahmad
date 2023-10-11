@@ -75,7 +75,7 @@ const MyPosts = () => {
           ) : (
             <>
               {postsSelector?.posts?.map((post) => (
-                <Post post={post}
+                <Post  post={post}
                   postDivClassName={
                     "border-slate-900 border-4 mx-4 my-6 px-2 py-4"
                   }

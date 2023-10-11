@@ -13,6 +13,8 @@ import { getPostById, setPosts } from "../../Services/Redux/Posts";
 import { setSubCategories } from "../../Services/Redux/Sub_Categories";
 import Loader from "../../components/Loader/Loader";
 import Pop_up from "../../components/Dialog_Modal/Pop-up";
+import "./updatepost.css"
+import TextArea from "../../components/TextArea/TextArea";
 
 const className =
   "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500";
@@ -26,17 +28,17 @@ const UpdateMyPost = () => {
   const select = useSelector((state) => {
     return {
       post: state.post,
-      comments: state.post.comments,
-      categories: state.categories.categories,
-      subCategories: state.subCategories.subCategories,
-    };
-  });
-  const selectcategory = useSelector((state) => {
-    return {
+      comments: state?.post?.comments,
       categories: state?.categories?.categories?.categories,
-      subcategories: state?.subCategories?.subCategories,
+      subCategories: state?.subCategories?.subCategories,
     };
   });
+  // const selectcategory = useSelector((state) => {
+  //   return {
+  //     categories: state?.categories?.categories?.categories,
+  //     subcategories: state?.subCategories?.subCategories,
+  //   };
+  // });
 
   let post = {};
 
@@ -53,7 +55,7 @@ const UpdateMyPost = () => {
       });
 
     dispatch(getPostById({ id }))
-      .then((result) => {})
+      .then((result) => { })
       .catch((err) => {
         setIsError(true);
       })
@@ -62,10 +64,10 @@ const UpdateMyPost = () => {
       });
   }, []);
 
-  console.log("STATE ==> ", select.post.postId);
 
-  const currentCategory = selectcategory?.categories?.filter((currentcat) => {
-    return currentcat.id == select?.post?.postId?.category_id;
+
+  const currentCategory = select?.categories?.filter((currentCat) => {
+    return currentCat.id == select?.post?.currentPost?.category_id;
   });
 
   const [updatePost, setUpdatePost] = useState({});
@@ -95,89 +97,90 @@ const UpdateMyPost = () => {
             <Pop_up message={""} onClose={handleCloseModal} />
           ) : (
             <>
-              <div>
-                <Input
-                  onChange={(e) => {
-                    handleChange(e);
-                  }}
-                  labelName={`current description :${select?.post?.postId?.description} `}
-                  labelClassName={
-                    "block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  }
-                  divClassName={""}
-                  name={"description"}
-                  type={"text"}
-                  inputClassName={className}
-                  placeHolder={"updeat your description "}
-                />
-                <label>{`current category : ${
-                  currentCategory && currentCategory[0]?.name
-                }`}</label>
-                <br></br>
-                <select
-                  onClick={(e) => {
-                    handleChange(e);
-                    GetSubCategoriesOnCategory(e?.target?.value)
-                      .then((result) => {
-                        // console.log(result);
-                        dispatch(setSubCategories(result));
-                      })
-                      .catch((err) => {
-                        console.log(err);
-                      });
-                  }}
-                  name={`category_id`}
-                >
-                  <option disabled value="">
-                    update
-                  </option>
-                  {selectcategory?.categories?.map((sub_cat, i) => {
-                    return (
-                      <option key={i} value={sub_cat?.id}>
-                        {sub_cat.name}
-                      </option>
-                    );
-                  })}
-                </select>
-                <br></br>
-                <label for="Subcategory">{`current sub_cat `}</label>
-                <br></br>
-                <select
-                  onClick={(e) => {
-                    handleChange(e);
-                  }}
-                  name="sub_category_id"
-                >
-                  <option disabled value="">
-                    select sub_category
-                  </option>
-                  {selectcategory?.subcategories?.subCategories?.map(
-                    (sub_cat, i) => {
+              <div className="all_Page">
+                <div className="update_container">
+                 
+
+                  <TextArea
+                    onChange={(e) => {
+                      console.log(currentCategory);
+                      handleChange(e);
+                    }}
+                    labelName={"Description"}
+                    labelClassName={
+                      "block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    }
+
+                    name={"description"}
+                    type={"text"}
+                    inputClassName={className}
+                    placeHolder={`${select?.post?.currentPost?.description} `}
+                  />
+                  <label>{`${currentCategory && currentCategory[0]?.name
+                    }`}</label>
+                  <br></br>
+                  <select
+                    onClick={(e) => {
+                      handleChange(e);
+                      GetSubCategoriesOnCategory(e?.target?.value)
+                        .then((result) => {
+                          // console.log(result);
+                          dispatch(setSubCategories(result));
+                        })
+                        .catch((err) => {
+                          console.log(err);
+                        });
+                    }}
+                    name={`category_id`}
+                  >
+                    <option disabled value="">
+                      update
+                    </option>
+                    {select?.categories?.map((sub_cat, i) => {
                       return (
                         <option key={i} value={sub_cat?.id}>
                           {sub_cat.name}
                         </option>
                       );
-                    }
-                  )}
-                </select>
+                    })}
+                  </select>
+                  <br></br>
+                  <label for="Subcategory">{`Sub Categories`}</label>
+                  <br></br>
+                  <select
+                    onClick={(e) => {
+                      handleChange(e);
+                    }}
+                    name="sub_category_id"
+                  >
+                    <option disabled value="">
+                      select sub_category
+                    </option>
+                    {select?.subCategories?.subCategories?.map(
+                      (sub_cat, i) => {
+                        return (
+                          <option key={i} value={sub_cat?.id}>
+                            {sub_cat.name}
+                          </option>
+                        );
+                      }
+                    )}
+                  </select>
 
-                <Button
-                  buttonName={"update"}
-                  buttonClassName={className}
-                  onClick={(e) => {
-                    console.log(id);
-                    //console.log(currentPost[0]);
-                    console.log(select.post);
-                    console.log(selectcategory.categories);
-                    console.log(currentCategory);
-                    console.log(updatePost);
-                    e.preventDefault();
-                    UpdatePost(id, updatePost);
-                    // navigate("/")
-                  }}
-                />
+                  <Button
+                    buttonName={"Update Your Post"}
+                    buttonClassName="update_Button"
+                    onClick={(e) => {
+                      console.log(id);
+
+                  
+                      UpdatePost(id, updatePost);
+                      // navigate("/")
+                    }}
+                  />
+                </div>
               </div>
+
             </>
           )}
         </>

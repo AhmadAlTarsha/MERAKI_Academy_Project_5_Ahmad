@@ -64,7 +64,7 @@ export const router = createBrowserRouter([
           },
         ],
       },
-      { path: "post_update/:id", element: <UpdateMyPost /> },
+      { path: "post-update/:id", element: <UpdateMyPost /> },
     ],
   },
   {
