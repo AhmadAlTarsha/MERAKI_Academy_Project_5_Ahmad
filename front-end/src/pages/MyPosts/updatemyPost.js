@@ -15,11 +15,12 @@ import Loader from "../../components/Loader/Loader";
 import Pop_up from "../../components/Dialog_Modal/Pop-up";
 
 const className =
-  "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500";
+"bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500";
 
 const UpdateMyPost = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
+  const [updatePost, setUpdatePost] = useState({});
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
@@ -37,8 +38,6 @@ const UpdateMyPost = () => {
       subcategories: state?.subCategories?.subCategories,
     };
   });
-
-  let post = {};
 
   useEffect(() => {
     GetCategories(0, 0, 0)
@@ -62,13 +61,10 @@ const UpdateMyPost = () => {
       });
   }, []);
 
-  console.log("STATE ==> ", select.post.postId);
-
   const currentCategory = selectcategory?.categories?.filter((currentcat) => {
     return currentcat.id == select?.post?.postId?.category_id;
   });
 
-  const [updatePost, setUpdatePost] = useState({});
 
   const handleChange = (e) => {
     setUpdatePost({
@@ -167,11 +163,6 @@ const UpdateMyPost = () => {
                   buttonClassName={className}
                   onClick={(e) => {
                     console.log(id);
-                    //console.log(currentPost[0]);
-                    console.log(select.post);
-                    console.log(selectcategory.categories);
-                    console.log(currentCategory);
-                    console.log(updatePost);
                     e.preventDefault();
                     UpdatePost(id, updatePost);
                     // navigate("/")

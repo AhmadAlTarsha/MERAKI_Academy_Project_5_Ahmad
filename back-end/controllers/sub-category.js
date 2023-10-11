@@ -133,7 +133,14 @@ exports.getAllSubCategoriesOnCategory = (req, res, next) => {
       if (result.command === `SELECT`) {
         return res.status(200).json({
           error: false,
-          subCategories: result.rows,
+          subCategories: result.rows.map((sub) => ({
+            id: sub.id,
+            name: sub.name,
+            category_id: sub.category_id,
+            category_name: sub.category_name,
+            image: `http://localhost:5000/${sub.image}`,
+            created_at : sub.created_at
+          })),
         });
       }
     })

@@ -12,7 +12,6 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdateOk, setIsUpdateOk] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [profile, setProfile] = useState(false);
   const localUser = JSON.parse(localStorage.getItem("localUser")) ?? {};
   const dispatch = useDispatch();
   const select2 = useSelector((state) => {
@@ -47,9 +46,8 @@ const Profile = () => {
 
   useEffect(() => {
     dispatch(getUser(localUser?.id))
-    .then((res) => {
+      .then((res) => {
         console.log("IDDDD 2222 ===> ", localUser?.id);
-
       })
       .catch((err) => {
         setIsError(true);

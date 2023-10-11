@@ -15,14 +15,12 @@ const Sub_Categories = ({
   setError,
 }) => {
   return (
-    <div className="bg-green-400 mb-7 flex flex-col justify-center items-center">
-      <h2>Categories</h2>
+    <div className="bg-primary-5 mb-7 flex flex-col justify-center items-center">
+      <h2 className="text-white mt-3 text-2xl">Sub Categories</h2>
       <div className="mt-3 flex items-center justify-center gap-10 flex-wrap">
         {subCategories?.map((category) => (
           <Card
-            imageSrc={
-              "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/8-step-process.png/220px-8-step-process.png"
-            }
+            imageSrc={category.image}
             cardName={category.name}
             onClick={() => {
               GetAllPosts(limit, offset, 0, category?.id, 0)

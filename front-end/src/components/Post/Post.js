@@ -6,8 +6,6 @@ import { CreateNewComment } from "../../Services/APIS/Comments/CreateNewComment"
 import { GetCommentsByPost } from "../../Services/APIS/Posts/GetAllPosts";
 import { getAllPostsByUser, setComments } from "../../Services/Redux/Posts";
 import { addOrder } from "../../Services/Redux/Orders";
-// import UpdateMyPost from "../../pages/MyPosts/updatemyPost";
-// import Pop_up from "../Dialog_Modal/Pop-up";
 import { useNavigate } from "react-router-dom";
 import { DeletePost } from "../../Services/APIS/Posts/DeletePost";
 
@@ -95,28 +93,37 @@ function Post({
         {isShowButtons && (
           <div className={buttonsDivClass}>
             <Button
+              buttonClassName={`focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-900`}
               buttonName={"Edit"}
               onClick={() => {
-                console.log(post.id);
-                navigate(`/post_update/${post.id}`);
+                if (post?.provider) {
+                  navigate(`/service/${post.id}`);
+                } else {
+                  navigate(`/post/${post.id}`);
+                }
               }}
             />
             <Button
+              buttonClassName={`focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-900`}
               buttonName={"Delete"}
               onClick={() => {
-                DeletePost(post.id, 1)
-                  .then((result) => {
-                    return dispatch(
-                      getAllPostsByUser({ limit, offset, active: 0 })
-                    );
-                  })
-                  .then((result2) => {})
-                  .catch((err) => {
-                    setError(true);
-                  })
-                  .finally(() => {
-                    setLoading(false);
-                  });
+                if (post?.provider) {
+                  console.log(post.id);
+                } else {
+                  DeletePost(post.id, 1)
+                    .then((result) => {
+                      return dispatch(
+                        getAllPostsByUser({ limit, offset, active: 0 })
+                      );
+                    })
+                    .then((result2) => {})
+                    .catch((err) => {
+                      setError(true);
+                    })
+                    .finally(() => {
+                      setLoading(false);
+                    });
+                }
               }}
             />
           </div>
@@ -136,7 +143,7 @@ function Post({
         </div>
       </div>
 
-      {isShowComments && (
+      {/* {isShowComments && (
         <div className="w-full px-4 pt-16">
           <div className="mx-auto w-full max-w-md rounded-2xl bg-white p-2">
             <Disclosure>
@@ -170,9 +177,9 @@ function Post({
             </Disclosure>
           </div>
         </div>
-      )}
+      )} */}
 
-      {!title && (
+      {isShowComments && (
         <div className="w-full px-4 pt-16">
           <div className="mx-auto w-full max-w-md rounded-2xl bg-white p-2">
             <Disclosure>

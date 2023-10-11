@@ -8,9 +8,10 @@ import {
 import Loader from "../../components/Loader/Loader";
 import openSocket from "socket.io-client";
 import { useParams } from "react-router";
+import defaultUserImage from "../../assets/images/defaultUser.png";
 
 const Chats = () => {
-  let { id, recieverId } = useParams();
+  let { id, recieverId, name } = useParams();
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   const [isLoading, setIsLoading] = useState();
   const [payload, setPayload] = useState({
@@ -21,7 +22,7 @@ const Chats = () => {
   const dispatch = useDispatch();
   const chatsSelector = useSelector((state) => {
     return {
-      chats: state.chats.chats,
+      chats: state?.chats?.chats,
     };
   });
 
@@ -72,11 +73,11 @@ const Chats = () => {
   return (
     <>
       {isLoading ? (
-        <div className="overflow-auto flex flex-col justify-center items-center w-full h-full">
+        <div className="overflow-auto flex flex-col justify-center items-center w-full h-screen">
           <Loader />
         </div>
       ) : (
-        <div className="flex-1 p:2 sm:p-6 justify-between flex flex-col h-screen">
+        <div className="border border-gray-500 flex-1 p:2 sm:p-6 justify-between flex flex-col h-screen">
           <div className="flex sm:items-center justify-between py-3 border-b-2 border-gray-200">
             <div className="relative flex items-center space-x-4">
               <div className="relative">
@@ -86,16 +87,16 @@ const Chats = () => {
                   </svg>
                 </span>
                 <img
-                  src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
+                  src={defaultUserImage}
                   alt=""
                   className="w-10 sm:w-16 h-10 sm:h-16 rounded-full"
                 />
               </div>
               <div className="flex flex-col leading-tight">
                 <div className="text-2xl mt-1 flex items-center">
-                  <span className="text-gray-700 mr-3">Anderson Vanhron</span>
+                  <span className="text-gray-700 mr-3">{name}</span>
                 </div>
-                <span className="text-lg text-gray-600">Junior Developer</span>
+                {/* <span className="text-lg text-gray-600">Junior Developer</span> */}
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -176,7 +177,7 @@ const Chats = () => {
                         </div>
                       </div>
                       <img
-                        src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
+                        src={defaultUserImage}
                         alt="My profile"
                         className="w-6 h-6 rounded-full order-1"
                       />
@@ -195,7 +196,7 @@ const Chats = () => {
                         </div>
                       </div>
                       <img
-                        src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
+                        src={defaultUserImage}
                         alt="My profile"
                         className="w-6 h-6 rounded-full order-2"
                       />

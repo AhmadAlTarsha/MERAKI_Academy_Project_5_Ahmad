@@ -36,11 +36,21 @@ servericesRouter.put(
   updateServiceStatus
 );
 
+servericesRouter.get(
+  "/services/:providerId",
+  authentication,
+  authorization("SERVICE_CONTROL"),
+  getAllServicesByUser
+);
+
 servericesRouter.get("/", getAllServices);
 
-servericesRouter.get("/:id", getServiceOnId);
-
-servericesRouter.get("/services/:providerId", getAllServicesByUser);
+servericesRouter.get(
+  "/:id",
+  authentication,
+  authorization("SERVICE_CONTROL"),
+  getServiceOnId
+);
 
 servericesRouter.get("/category/:categoryId", getAllServicesOnCategory);
 

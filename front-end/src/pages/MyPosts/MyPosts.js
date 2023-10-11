@@ -7,9 +7,9 @@ import Pagination from "../../components/Pagination/Pagination";
 import Pop_up from "../../components/Dialog_Modal/Pop-up";
 
 const MyPosts = () => {
+  const limit = 3;
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
-  const limit = 3;
   const [offset, setOffset] = useState(1);
   const dispatch = useDispatch();
   const postsSelector = useSelector((state) => {
@@ -54,10 +54,6 @@ const MyPosts = () => {
     window.scrollTo({ top: 0 });
   };
 
-  const handleButtonClick = () => {
-    setError("An error occurred.");
-  };
-
   const handleCloseModal = () => {
     setError(false);
   };
@@ -75,9 +71,16 @@ const MyPosts = () => {
           ) : (
             <>
               {postsSelector?.posts?.map((post) => (
-                <Post post={post}
+                <Post
+                  userAndPosterDivClassName={"border-b-[2px] pb-4"}
+                  userDivClassName={"flex flex-row"}
+                  post={post}
                   postDivClassName={
-                    "border-slate-900 border-4 mx-4 my-6 px-2 py-4"
+                    "border-slate-900 border mx-4 my-6 px-2 py-4 rounded-lg"
+                  }
+                  userNameClassName={"text-base font-bold text-sky-700"}
+                  userImageClassName={
+                    "rounded-full h-20 w-20 md:h-28 md:w-28 border-[6px] border-white bg-white"
                   }
                   key={post?.id}
                   userName={post?.user?.fullName}
@@ -85,10 +88,11 @@ const MyPosts = () => {
                   imageSrc={post?.user?.userImage}
                   postImage={post?.main_image}
                   isShowButtons={true}
-                  buttonsDivClass={"bg-green-500 flex justify-center gap-10"}
+                  buttonsDivClass={"flex justify-center gap-10"}
                   limit={limit}
                   offset={offset}
                   dispatch={dispatch}
+                  isShowComments={false}
                 />
               ))}
               {postsSelector?.posts.length !== 0 && (

@@ -20,6 +20,7 @@ import MyServices from "../pages/MyServices/MyServices";
 import Chats from "../pages/Chats/Chats";
 import Conversations from "../pages/Chats/Conversations";
 import UpdateMyPost from "../pages/MyPosts/updatemyPost";
+import Service from "../pages/MyServices/Service";
 
 export const router = createBrowserRouter([
   {
@@ -43,8 +44,16 @@ export const router = createBrowserRouter([
         element: <MyPosts />,
       },
       {
+        path: "post/:id",
+        element: <UpdateMyPost />,
+      },
+      {
         path: "services",
         element: <MyServices />,
+      },
+      {
+        path: "service/:id",
+        element: <Service />,
       },
       {
         path: "orders",
@@ -59,12 +68,11 @@ export const router = createBrowserRouter([
         element: <Conversations />,
         children: [
           {
-            path: ":id/:recieverId",
+            path: ":id/:recieverId/:name",
             element: <Chats />,
           },
         ],
       },
-      { path: "post_update/:id", element: <UpdateMyPost /> },
     ],
   },
   {
