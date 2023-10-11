@@ -27,6 +27,7 @@ exports.register = async (req, res, next) => {
     .query(emailQuery, emailData)
     .then(async (resultEmail) => {
       if (resultEmail.rowCount > 0) {
+        
         res.status(400).json({
           error: true,
           message: "User already exist",
@@ -65,6 +66,7 @@ exports.register = async (req, res, next) => {
     })
     .then((resultUser) => {
       if (resultUser.command === "INSERT") {
+     
         return res.status(200).json({
           error: false,
           message: "Account created successfully",
@@ -293,7 +295,7 @@ exports.BanUserById = (req, res, next) => {
 // this function allow user to update his account
 exports.updateUserById = async (req, res, next) => {
   try {
-    const { first_name, last_name, nick_name, email, region_id } = req.body;
+    const { first_name, last_name, nick_name, email } = req.body;
     const { id } = req.params;
 
     let image;
@@ -303,8 +305,8 @@ exports.updateUserById = async (req, res, next) => {
     }
 
     const values = image
-      ? [first_name, last_name, nick_name, email, image, region_id, id]
-      : [first_name, last_name, nick_name, email, region_id, id];
+      ? [first_name, last_name, nick_name, email, image, id]
+      : [first_name, last_name, nick_name, email, id];
 
     const query = image
       ? `UPDATE users
@@ -314,27 +316,28 @@ exports.updateUserById = async (req, res, next) => {
     last_name = COALESCE($2,last_name),
     nick_name = COALESCE($3,nick_name),
     email = COALESCE( $4,email),
-    image = COALESCE($5,image),
-    region_id = COALESCE($6, region_id)
+    image = COALESCE($5,image)
     WHERE
-        id =$7;`
+        id =$6;
+     RETURNING *;`
       : `UPDATE users
     SET
+    
     first_name = COALESCE($1,first_name),
     last_name = COALESCE($2,last_name),
     nick_name = COALESCE($3,nick_name),
     email = COALESCE( $4,email),
-    region_id = COALESCE($5, region_id)
-    WHERE id = $6;`;
-
-    // console.log(query);
+    WHERE
+        id =$5;
+     RETURNING *;`;
 
     const response = await pool.query(query, values);
 
     if (response.rowCount) {
-      return res.status(200).json({
+      res.status(200).json({
         success: true,
-        message: "Your Account updated successfully",
+        message: "your Account updated successfully",
+        response: response.rows,
       });
     }
     return throwError(400, "something went rowing");

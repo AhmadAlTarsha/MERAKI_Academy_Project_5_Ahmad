@@ -114,7 +114,7 @@ exports.getConversationChat = (req, res, next) => {
   pool
     .query(
       `SELECT chat_messages.id, chat_messages.sender_id, chat_messages.receiver_id, chat_messages.message, chat_messages.timestamp,
-      senders.first_name AS sender_first_name, recivers.first_name AS reciver_first_name
+      senders.first_name AS sender_first_name, recivers.first_name AS reciver_first_name, recivers.last_name AS reciver_last_name
       FROM chat_messages
       INNER JOIN users senders ON senders.id = chat_messages.sender_id
       INNER JOIN users recivers ON recivers.id = chat_messages.receiver_id
@@ -131,7 +131,8 @@ exports.getConversationChat = (req, res, next) => {
         },
         reciver: {
           id: chat.receiver_id,
-          name: chat.reciver_first_name,
+          first_name: chat.reciver_first_name,
+          last_name: chat.reciver_last_name,
         },
         created_at: chat.timestamp,
       }));

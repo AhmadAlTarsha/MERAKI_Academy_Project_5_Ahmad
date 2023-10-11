@@ -17,11 +17,12 @@ import "./updatepost.css"
 import TextArea from "../../components/TextArea/TextArea";
 
 const className =
-  "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500";
+"bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500";
 
 const UpdateMyPost = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
+  const [updatePost, setUpdatePost] = useState({});
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
@@ -33,14 +34,6 @@ const UpdateMyPost = () => {
       subCategories: state?.subCategories?.subCategories,
     };
   });
-  // const selectcategory = useSelector((state) => {
-  //   return {
-  //     categories: state?.categories?.categories?.categories,
-  //     subcategories: state?.subCategories?.subCategories,
-  //   };
-  // });
-
-  let post = {};
 
   useEffect(() => {
     GetCategories(0, 0, 0)
@@ -65,12 +58,11 @@ const UpdateMyPost = () => {
   }, []);
 
 
-
   const currentCategory = select?.categories?.filter((currentCat) => {
     return currentCat.id == select?.post?.currentPost?.category_id;
+
   });
 
-  const [updatePost, setUpdatePost] = useState({});
 
   const handleChange = (e) => {
     setUpdatePost({
@@ -142,8 +134,22 @@ const UpdateMyPost = () => {
                           {sub_cat.name}
                         </option>
                       );
-                    })}
-                  </select>
+
+                    }
+                  )}
+                </select>
+
+                <Button
+                  buttonName={"update"}
+                  buttonClassName={className}
+                  onClick={(e) => {
+                    console.log(id);
+                    e.preventDefault();
+                    UpdatePost(id, updatePost);
+                    // navigate("/")
+                  }}
+                />
+
                   <br></br>
                   <label for="Subcategory">{`Sub Categories`}</label>
                   <br></br>
@@ -166,18 +172,6 @@ const UpdateMyPost = () => {
                       }
                     )}
                   </select>
-
-                  <Button
-                    buttonName={"Update Your Post"}
-                    buttonClassName="update_Button"
-                    onClick={(e) => {
-                      console.log(id);
-
-                  
-                      UpdatePost(id, updatePost);
-                      // navigate("/")
-                    }}
-                  />
                 </div>
               </div>
 

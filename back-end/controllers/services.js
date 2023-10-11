@@ -263,7 +263,6 @@ exports.getAllServicesByUser = (req, res, next) => {
   pool
     .query(query, data)
     .then((result) => {
-      // console.log(result.rows);
       const serverices = result.rows.map((service) => ({
         id: service.id,
         status_id: service.status_id,
@@ -271,7 +270,7 @@ exports.getAllServicesByUser = (req, res, next) => {
         provider: {
           id: service.userid,
           full_name: `${service.first_name} ${service.last_name}`,
-          image: service.image,
+          image: `http://localhost:5000/images/${service.image}`,
         },
         category_id: service.category_id,
         category_name: service.categoryname,

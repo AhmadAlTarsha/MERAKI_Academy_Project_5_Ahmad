@@ -24,6 +24,7 @@ const Home_Page = ({
             return (
               <>
                 <Post
+                  isShowComments={true}
                   key={newPost?.id}
                   userAndPosterDivClassName={"border-b-[2px] pb-4"}
                   setError={setError}

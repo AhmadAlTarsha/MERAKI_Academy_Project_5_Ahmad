@@ -233,3 +233,18 @@ INSERT INTO statuses (name) VALUES ('PENDING'), ('ACCEPTED'),('REJECTED'),('CANC
 // createAllTables();
 
 exports.module = pool;
+
+// const knex = require('knex');
+
+// const db = knex({
+//     client: 'mysql2',
+//     connection: {
+//       host : '127.0.0.1',
+//     //   port : 3306,
+//       user : 'root',
+//       password : '',
+//       database : 'tin_tin'
+//     }
+//   });
+
+//   module.exports = db;

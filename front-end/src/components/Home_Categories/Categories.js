@@ -21,14 +21,12 @@ const Categories = ({
 }) => {
   return (
     <div className="bg-primary-5 mb-7 flex flex-col justify-center items-center">
-      <h2>Categories</h2>
+      <h2 className="text-white mt-3 text-2xl">Categories</h2>
       <div className="mt-3 flex items-center justify-center gap-10 flex-wrap">
         {categories?.map((category) => (
           <Card
             key={category?.id}
             altName={"category Image"}
-            height={"300px"}
-            width={"300px"}
             imageSrc={category?.image}
             cardName={category.name}
             onClick={() => {
