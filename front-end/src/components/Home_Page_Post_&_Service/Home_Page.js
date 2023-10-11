@@ -32,20 +32,21 @@ const Home_Page = ({
                   dispatch={dispatch}
                   postComments={postComments}
                   postId={newPost?.id}
+                  bodyDivClassName={"mt-4 mx-20"}
                   userName={newPost?.user?.fullName}
                   body={newPost?.description}
                   userDivClassName={"flex flex-row"}
                   postDivClassName={
-                    "border-slate-900 border mx-4 my-6 px-2 py-4 rounded-lg"
+                    "border-slate-900 border my-6 px-4 py-4 rounded-lg bg-[#FFFFFF] mx-auto w-1/2"
                   }
                   imageSrc={newPost?.user?.userImage}
                   postImage={newPost?.main_image}
                   commentDivClassName={
                     "border-slate-900 border mx-4 my-6 px-2 py-4 rounded-lg"
                   }
-                  userNameClassName={"text-base font-bold text-sky-700"}
+                  userNameClassName={"text-base font-bold text-sky-700 mt-2"}
                   userImageClassName={
-                    "rounded-full h-20 w-20 md:h-28 md:w-28 border-[6px] border-white bg-white"
+                    "object-cover w-16 h-16 rounded-full border-2 border-[#365194]  shadow-[#365194] mr-4"
                   }
                   numberOfComments={commentsArray[`post_${newPost.id}`]?.length}
                   comments={commentsArray[`post_${newPost.id}`]?.map(
@@ -61,6 +62,7 @@ const Home_Page = ({
                             commenterFullName={comment.commenter.fullName}
                             createdAt={comment.created_at}
                             comment={comment.comment}
+                            commenterFullNameClassName={"font-bold"}
                           />
                         </>
                       );
