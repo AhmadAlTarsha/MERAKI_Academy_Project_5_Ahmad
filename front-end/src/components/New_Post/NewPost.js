@@ -5,7 +5,7 @@ import { CreateNewPost } from "../../Services/APIS/Posts/CreateNewPost";
 import { addNewServices } from "../../Services/APIS/Services/Add_Services";
 import { useSelector } from "react-redux/";
 import { GetSubCategoriesOnCategory } from "../../Services/APIS/Category/Get_Categories";
-import { setSubCategories } from "../../Services/Redux/Sub_Categories"; 
+import { setSubCategories } from "../../Services/Redux/Sub_Categories";
 import Input from "../Input/Input";
 const className =
   "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500";
@@ -98,7 +98,7 @@ function NewPost({
           <style>body</style>
 
           <div className="editor mx-auto w-10/12 flex flex-col text-gray-800 border border-gray-300 p-4 shadow-lg max-w-2xl rounded-lg">
-            <div className="flex flex-col mb-5">
+            <div className="flex flex-col mb-3">
               <div className="mb-2">
                 <label htmlFor="category">Category</label>
               </div>
@@ -125,7 +125,7 @@ function NewPost({
             </div>
 
             {isCategoryClicked && (
-              <div className="flex flex-col mb-5">
+              <div className="flex flex-col mb-3">
                 <div className="mb-2">
                   <label htmlFor="Subcategory">Sub Category</label>
                 </div>
@@ -175,7 +175,7 @@ function NewPost({
             <div className="buttons flex">
               <div className="btn border border-gray-300 p-1 px-4 font-semibold cursor-pointer text-gray-500 ml-auto">
                 <Button
-                  onClick={cancelButtonOnClick}
+                  // onClick={cancelButtonOnClick}
                   buttonName={"Cancel"}
                 ></Button>
               </div>
@@ -199,7 +199,7 @@ function NewPost({
 
           <style>body</style>
           <div className="editor mx-auto w-10/12 flex flex-col text-gray-800 border border-gray-300 p-4 shadow-lg max-w-2xl">
-            <div className="flex flex-col mb-5">
+            <div className="flex flex-col mb-2">
               <div className="mb-2">
                 <label htmlFor="category">Category</label>
               </div>
@@ -221,7 +221,7 @@ function NewPost({
                 <option value="" disabled selected>
                   Select categories
                 </option>
-                {selectcategory.categories.map((cat, i) => {
+                {selectcategory?.categories?.map((cat, i) => {
                   return (
                     <option key={i} value={cat?.id}>
                       {cat.name}
@@ -230,7 +230,7 @@ function NewPost({
                 })}
               </select>
             </div>
-            <div className="flex flex-col mb-5">
+            <div className="flex flex-col mb-2">
               <div className="mb-2">
                 <label htmlFor="Subcategory">Sub Category</label>
               </div>
@@ -238,7 +238,7 @@ function NewPost({
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 onClick={(e) => {
                   handleChange(e);
-                  console.log(e.target.value);
+                  // console.log(e.target.value);
                 }}
                 name="sub_category_id"
               >
@@ -270,14 +270,12 @@ function NewPost({
             />
             <textarea
               name="description"
-              onChange={(e) => {
-                handleChange(e);
-              }}
+              onChange={(e) => handleChange(e)}
               className="description bg-gray-100 sec p-3 h-60 border border-gray-300 outline-none mt-2 rounded-lg mb-3"
               spellcheck="false"
               placeholder="write Description about your services"
             >
-              {postBody}
+              {"postBody"}
             </textarea>
             <input
               onChange={(e) => handleChange(e)}
@@ -290,13 +288,13 @@ function NewPost({
             />
             <div className="buttons flex">
               <div className="btn border border-gray-300 p-1 px-4 font-semibold cursor-pointer text-gray-500 ml-auto">
-                <Button onClick={() => {}} buttonName={"Cancel"}></Button>
+                <Button onClick={() => {}} buttonName={"Cancel"} />
               </div>
               <div className="btn border border-indigo-500 p-1 px-4 font-semibold cursor-pointer text-gray-200 ml-2 bg-indigo-500">
                 <Button
-                  onClick={handleNewServiceOrPOST}
+                  onClick={(e) => handleNewServiceOrPOST(e)}
                   buttonName={"Add"}
-                ></Button>
+                />
               </div>
             </div>
           </div>

@@ -24,6 +24,7 @@ const Home_Page = ({
             return (
               <>
                 <Post
+                  post={newPost}
                   isShowComments={true}
                   key={newPost?.id}
                   userAndPosterDivClassName={"border-b-[2px] pb-4"}
@@ -38,7 +39,7 @@ const Home_Page = ({
                   body={newPost?.description}
                   userDivClassName={"flex flex-row"}
                   postDivClassName={
-                    "border-slate-900 border my-6 px-4 py-4 rounded-lg bg-[#FFFFFF] mx-auto w-1/2"
+                    "border-slate-900 border my-6 px-4 py-4 rounded-lg bg-[#F5F5DD] mx-auto w-1/2"
                   }
                   imageSrc={newPost?.user?.userImage}
                   postImage={newPost?.main_image}
@@ -77,6 +78,7 @@ const Home_Page = ({
             return (
               <>
                 <Post
+                  post={service}
                   key={service?.id}
                   setError={setError}
                   setLoading={setLoading}
