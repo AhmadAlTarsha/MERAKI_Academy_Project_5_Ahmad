@@ -192,6 +192,7 @@ const Home = () => {
                 dispatch={dispatch}
                 setError={setError}
                 setLoading={setLoading}
+                
               />
 
               <Home_Page
