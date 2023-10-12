@@ -2,7 +2,6 @@ import axios from "axios";
 
 export const UpdateUserAPI = async (payload) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
-  console.log(payload);
   try {
     const result = await axios.put(
       `http://localhost:5000/users/updateAccount/${payload?.id}`,
@@ -23,7 +22,6 @@ export const UpdateUserAPI = async (payload) => {
       }
     }
   } catch (err) {
-    console.log("API == >", err);
     throw err;
   }
 };

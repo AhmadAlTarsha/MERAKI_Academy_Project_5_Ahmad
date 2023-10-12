@@ -47,7 +47,7 @@ const Profile = () => {
   useEffect(() => {
     dispatch(getUser(localUser?.id))
       .then((res) => {
-        console.log("IDDDD 2222 ===> ", localUser?.id);
+        // console.log("IDDDD 2222 ===> ", localUser?.id);
       })
       .catch((err) => {
         setIsError(true);
@@ -157,22 +157,22 @@ const Profile = () => {
                           >
                             <option
                               value={
-                                select2.regions.filter(
+                                select2?.regions?.filter(
                                   (region) =>
                                     region.region === select2?.user?.region
-                                )[0].id
+                                )[0]?.id
                               }
                               disabled
                               selected
                             >
                               {
-                                select2.regions.filter(
+                                select2?.regions?.filter(
                                   (region) =>
                                     region.region === select2?.user?.region
-                                )[0].region
+                                )[0]?.region
                               }
                             </option>
-                            {select2?.regions.map((region) => {
+                            {select2?.regions?.map((region) => {
                               return (
                                 <option value={region?.id}>
                                   {region.region}

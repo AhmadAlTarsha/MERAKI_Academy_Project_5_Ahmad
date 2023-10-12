@@ -1,4 +1,5 @@
 const pool = require("../models/DB");
+const io = require("../socket");
 const { throwError } = require("../middlewares/throwError");
 
 // ===================== ADD NEW SERVICE =====================
@@ -54,6 +55,7 @@ exports.addService = (req, res, next) => {
     })
     .then(async (result2) => {
       if (result2.status === 201) {
+        io.getIo().emit("services", { action: "create" });
         return res.status(201).json({
           error: false,
           message: result2.message,
@@ -68,6 +70,7 @@ exports.addService = (req, res, next) => {
             [newServiceId, images[i]]
           );
         }
+        io.getIo().emit("services", { action: "create" });
         res.json({
           error: false,
           message: "New service created",
@@ -211,7 +214,7 @@ exports.getAllServices = (req, res, next) => {
         provider: {
           id: service.userid,
           full_name: `${service.first_name} ${service.last_name}`,
-          image: service.image,
+          image: `http://localhost:5000/images/${service.image}`,
         },
         category_id: service.category_id,
         category_name: service.categoryname,

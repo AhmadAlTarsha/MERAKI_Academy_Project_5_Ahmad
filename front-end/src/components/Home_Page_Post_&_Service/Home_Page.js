@@ -50,7 +50,7 @@ const Home_Page = ({
                   userImageClassName={
                     "object-cover w-16 h-16 rounded-full border-2 border-[#365194]  shadow-[#365194] mr-4"
                   }
-                  numberOfComments={commentsArray[`post_${newPost.id}`]?.length}
+                  numberOfComments={commentsArray[`post_${newPost.id}`]?.length ?? 0}
                   comments={commentsArray[`post_${newPost.id}`]?.map(
                     (comment) => {
                       return (

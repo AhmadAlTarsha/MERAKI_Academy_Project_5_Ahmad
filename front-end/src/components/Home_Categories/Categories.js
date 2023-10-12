@@ -42,9 +42,11 @@ const Categories = ({
                       .then((comments) => {
                         postComments[`post_${el?.id}`] = comments;
                         dispatch(setComments(postComments));
-                        setIsCategoryClicked(true);
                       })
-                      .catch((err) => {});
+                      .catch((err) => {})
+                      .finally(() => {
+                        setIsCategoryClicked(true);
+                      });
                   });
                 })
                 .catch((err) => {

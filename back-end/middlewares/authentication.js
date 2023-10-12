@@ -8,7 +8,7 @@ exports.authentication = (req, res, next) => {
     }
 
     const token = req.headers.authorization.split(" ")[1];
-
+    
     jwt.verify(token, "tintin", (err, result) => {
       if (err) {
         return throwError(403, "The token is invalid or expired");
