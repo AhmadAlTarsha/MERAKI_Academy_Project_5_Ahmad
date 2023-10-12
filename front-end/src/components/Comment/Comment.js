@@ -7,18 +7,21 @@ function Comment({
   fullCommentDivClassName,
   createdAt,
   comment,
+  commentClassName,
   commenterFullName,
-  commenterFullNameClassName
+  commenterFullNameClassName,
+  createdAtClassName
 }) {
   return (
     <div className={fullCommentDivClassName}>
       <div className={commenterDivClassName}>
         <image src={commenterImage} />
         <h4 className={commenterFullNameClassName}>{commenterFullName}</h4>
+        <h5 className={createdAtClassName}>{createdAt}</h5>
       </div>
       <div className={commentDivClassName}>
-        <h5>{createdAt}</h5>
-        <p>{comment}</p>
+        
+        <p className={commentClassName}>{comment}</p>
       </div>
     </div>
   );

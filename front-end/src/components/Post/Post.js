@@ -151,12 +151,12 @@ function Post({
             <Disclosure>
               {({ open }) => (
                 <>
-                  <Disclosure.Button className="flex w-full justify-between rounded-lg bg-slate-200 px-4 py-2 text-left text-sm font-medium text-cyan-950 hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
+                  <Disclosure.Button className="flex w-full border border-[#C3A97E] justify-between rounded-lg px-4 py-2 text-left text-sm font-medium text-cyan-950 hover:bg-[#C3A97E] focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
                     <span>Comments ({numberOfComments})</span>
                     <ChevronUpIcon
                       className={`${
                         open ? "rotate-180 transform" : ""
-                      } h-5 w-5 text-purple-500`}
+                      } h-5 w-5 text-cyan-950`}
                     />
                   </Disclosure.Button>
                   <Disclosure.Panel className={commentDivClassName}>

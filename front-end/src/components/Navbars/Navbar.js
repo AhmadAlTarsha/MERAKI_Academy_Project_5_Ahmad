@@ -18,7 +18,7 @@ const Navbar = () => {
   });
 
   return (
-    <header className="bg-white">
+    <header className="bg-gradient-to-b from-[#C3A97E] to-[#F5F5DD]">
       <nav
         className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
         aria-label="Global"

@@ -39,12 +39,12 @@ const Home_Page = ({
                   body={newPost?.description}
                   userDivClassName={"flex flex-row"}
                   postDivClassName={
-                    "border-slate-900 border my-6 px-4 py-4 rounded-lg bg-[#F5F5DD] mx-auto w-1/2"
+                    "border-slate-900 border my-6 px-4 py-4 rounded-lg bg-[#FFFFFF] mx-auto mt-12 w-1/2"
                   }
                   imageSrc={newPost?.user?.userImage}
                   postImage={newPost?.main_image}
                   commentDivClassName={
-                    "border-slate-900 border mx-4 my-6 px-2 py-4 rounded-lg"
+                    "border-[#C3A97E] border-2 mx-4 my-6 px-2 py-4 rounded-lg"
                   }
                   userNameClassName={"text-base font-bold text-sky-700 mt-2"}
                   userImageClassName={
@@ -58,13 +58,16 @@ const Home_Page = ({
                           <Comment
                             key={comment.id}
                             fullCommentDivClassName={
-                              "border-slate-900 my-6 px-2 py-4 bg-[#F2F2F2] rounded-lg"
+                              "border  my-6 px-2 py-4 rounded-lg"
                             }
                             commenterImage={comment?.commenter.userImage}
                             commenterFullName={comment.commenter.fullName}
                             createdAt={comment.created_at}
                             comment={comment.comment}
                             commenterFullNameClassName={"font-bold"}
+                            commenterDivClassName={"flex justify-evenly"}
+                            commentClassName={"text-gray-600 mt-2"}
+                            createdAtClassName={"text-xs"}
                           />
                         </>
                       );
