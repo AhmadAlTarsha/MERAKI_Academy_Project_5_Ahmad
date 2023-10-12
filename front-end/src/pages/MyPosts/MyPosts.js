@@ -73,6 +73,7 @@ const MyPosts = () => {
               {postsSelector?.posts?.map((post) => (
 
                 <Post
+                setLoading={setIsLoading}
                   userAndPosterDivClassName={"border-b-[2px] pb-4"}
                   userDivClassName={"flex flex-row"}
                   post={post}
