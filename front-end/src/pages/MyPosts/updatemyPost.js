@@ -138,19 +138,7 @@ const UpdateMyPost = () => {
                     }
                   )}
                 </select>
-
-                <Button
-                  buttonName={"update"}
-                  buttonClassName={className}
-                  onClick={(e) => {
-                    console.log(id);
-                    e.preventDefault();
-                    UpdatePost(id, updatePost);
-                    // navigate("/")
-                  }}
-                />
-
-                  <br></br>
+                <br></br>
                   <label for="Subcategory">{`Sub Categories`}</label>
                   <br></br>
                   <select
@@ -172,6 +160,21 @@ const UpdateMyPost = () => {
                       }
                     )}
                   </select>
+
+                <Button
+                  buttonName={"update"}
+                  //buttonClassName={className}
+                  buttonClassName="update_Button"
+
+                  onClick={(e) => {
+                    console.log(id);
+                    e.preventDefault();
+                    UpdatePost(id, updatePost);
+                    // navigate("/")
+                  }}
+                />
+
+                 
                 </div>
               </div>
 
