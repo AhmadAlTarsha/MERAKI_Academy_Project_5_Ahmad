@@ -5,6 +5,7 @@ exports.authorization = (string) => {
     if (!req.token.user.permissions.includes(string)) {
       return throwError(403, "Unauthorized");
     }
+
     return next();
   };
 };

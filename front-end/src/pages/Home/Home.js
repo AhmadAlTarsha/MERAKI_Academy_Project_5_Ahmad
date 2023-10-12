@@ -113,6 +113,21 @@ const Home = () => {
           });
       }
     });
+
+    socket.on("services", (data) => {
+      if (data.action === "create") {
+        getAllServices(limit, offset, 0)
+          .then((res) => {
+            dispatch(setServices(res));
+          })
+          .catch((err) => {
+            setError(true);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
+    });
   }, []);
 
   const handlePage = (li, off) => {
@@ -192,7 +207,6 @@ const Home = () => {
                 dispatch={dispatch}
                 setError={setError}
                 setLoading={setLoading}
-                
               />
 
               <Home_Page

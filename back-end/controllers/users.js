@@ -27,7 +27,6 @@ exports.register = async (req, res, next) => {
     .query(emailQuery, emailData)
     .then(async (resultEmail) => {
       if (resultEmail.rowCount > 0) {
-        
         res.status(400).json({
           error: true,
           message: "User already exist",
@@ -66,7 +65,6 @@ exports.register = async (req, res, next) => {
     })
     .then((resultUser) => {
       if (resultUser.command === "INSERT") {
-     
         return res.status(200).json({
           error: false,
           message: "Account created successfully",
@@ -298,6 +296,8 @@ exports.updateUserById = async (req, res, next) => {
     const { first_name, last_name, nick_name, email } = req.body;
     const { id } = req.params;
 
+    console.log(first_name, last_name, nick_name, email);
+
     let image;
 
     if (req.file) {
@@ -311,30 +311,25 @@ exports.updateUserById = async (req, res, next) => {
     const query = image
       ? `UPDATE users
     SET
-    
     first_name = COALESCE($1,first_name),
     last_name = COALESCE($2,last_name),
     nick_name = COALESCE($3,nick_name),
     email = COALESCE( $4,email),
     image = COALESCE($5,image)
-    WHERE
-        id =$6;
-     RETURNING *;`
+    WHERE id =$6 RETURNING *;`
       : `UPDATE users
     SET
-    
     first_name = COALESCE($1,first_name),
     last_name = COALESCE($2,last_name),
     nick_name = COALESCE($3,nick_name),
-    email = COALESCE( $4,email),
-    WHERE
-        id =$5;
+    email = COALESCE($4,email)
+    WHERE id =$5
      RETURNING *;`;
 
     const response = await pool.query(query, values);
 
     if (response.rowCount) {
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         message: "your Account updated successfully",
         response: response.rows,

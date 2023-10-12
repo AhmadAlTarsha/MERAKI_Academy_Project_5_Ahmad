@@ -109,7 +109,12 @@ const AdminSub_Category = () => {
                 className="w-1/2 flex flex-col justify-center space-y-4 md:space-y-6"
                 action="#"
               >
-                <img src={`${subCategoryData.image}`} alt="img" />
+                <img
+                  src={`${subCategoryData.image}`}
+                  alt="img"
+                  height={"150px"}
+                  width={"150px"}
+                />
 
                 <Input
                   divClassName={"flex items-center gap-3"}

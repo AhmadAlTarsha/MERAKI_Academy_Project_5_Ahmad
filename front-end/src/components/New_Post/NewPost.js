@@ -68,6 +68,7 @@ function NewPost({
           setLoading(false);
         });
     } else {
+      console.log(newService);
       addNewServices(newService)
         .then((result) => {
           console.log(result);

@@ -17,7 +17,7 @@ const CategoryForm = ({ handleSubmit, category, setCategory }) => {
           }
           type={""}
           name={""}
-          placeHolder={"Sub Category Name"}
+          placeHolder={"Category Name"}
           value={category.name}
           onChange={(e) =>
             setCategory({

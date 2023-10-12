@@ -128,7 +128,7 @@ const Orders = () => {
                                     )
                                       .then((result) => {
                                         navigate(
-                                          `/chats/${result?.payload?.conversation_id}/${order?.provider?.id}`
+                                          `/chats/${result?.payload?.conversation_id}/${order?.provider?.id}/${order?.provider?.full_name}`
                                         );
                                       })
                                       .catch((err) => {

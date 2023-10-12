@@ -5,11 +5,13 @@ exports.addCategory = (req, res, next) => {
   let { name } = req.body;
 
   if (!req.file) {
+    console.log(req);
     return res.status(400).json({
       error: false,
       message: "No Image provided",
     });
   }
+
 
   const image = req.file.path.replace("\\", "/");
 
@@ -77,20 +79,14 @@ exports.getAllCategories = (req, res, next) => {
   let data = [];
 
   if (isDeleted == 0 && perPage > 0 && currentPage > 0) {
-
     query += ` WHERE is_deleted = $1 ORDER BY id ASC LIMIT $2 OFFSET $3`;
     data = [isDeleted, perPage, (currentPage - 1) * perPage];
-
   } else if (isDeleted == 0 && perPage === 0 && currentPage === 0) {
-
     query += ` WHERE is_deleted = $1 ORDER BY id ASC`;
     data = [isDeleted];
-
   } else {
-
     query += ` ORDER BY id ASC LIMIT $1 OFFSET $2`;
     data = [perPage, (currentPage - 1) * perPage];
-
   }
 
   pool
