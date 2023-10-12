@@ -6,6 +6,7 @@ import { UseSelector, useDispatch, useSelector } from "react-redux";
 import { setLogout } from "../../Services/Redux/auth";
 import CustomerNavBar from "./CustomerNavBar";
 import ProviderNavBar from "./ProviderNavBar";
+import logo from "../../assets/images/logo.jpeg"
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const Navbar = () => {
             <span className="sr-only">Your Company</span>
             <img
               className="h-8 w-auto"
-              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+              src={logo}
               alt=""
             />
           </a>
