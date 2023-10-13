@@ -27,7 +27,7 @@ const Home_Page = ({
                   post={newPost}
                   isShowComments={true}
                   key={newPost?.id}
-                  userAndPosterDivClassName={"border-b-[2px] pb-4"}
+                  userAndPosterDivClassName={"border-b-[2px] border-primary-5 pb-4"}
                   setError={setError}
                   setLoading={setLoading}
                   isShowButtons={false}
@@ -39,12 +39,12 @@ const Home_Page = ({
                   body={newPost?.description}
                   userDivClassName={"flex flex-row"}
                   postDivClassName={
-                    "border-slate-900 border my-6 px-4 py-4 rounded-lg bg-[#FFFFFF] mx-auto mt-12 w-1/2"
+                    "border-primary-5 border my-6 px-4 py-4 rounded-lg bg-[#EFF7FA] mx-auto mt-12 w-1/2 shadow-xl"
                   }
                   imageSrc={newPost?.user?.userImage}
                   postImage={newPost?.main_image}
                   commentDivClassName={
-                    "border-[#C3A97E] border-2 mx-4 my-6 px-2 py-4 rounded-lg"
+                    "border-primary-5 bg-primary-5 border-2 mx-4 my-6 px-2 py-4 rounded-lg"
                   }
                   userNameClassName={"text-base font-bold text-sky-700 mt-2"}
                   userImageClassName={
@@ -58,16 +58,16 @@ const Home_Page = ({
                           <Comment
                             key={comment.id}
                             fullCommentDivClassName={
-                              "border  my-6 px-2 py-4 rounded-lg"
+                              "border bg-[#F5F5DD] border-primary-5 my-6 px-2 py-4 rounded-lg"
                             }
                             commenterImage={comment?.commenter.userImage}
                             commenterFullName={comment.commenter.fullName}
                             createdAt={comment.created_at}
                             comment={comment.comment}
                             commenterFullNameClassName={"font-bold"}
-                            commenterDivClassName={"flex justify-evenly"}
+                            commenterDivClassName={"flex justify-around items-center"}
                             commentClassName={"text-gray-600 mt-2"}
-                            createdAtClassName={"text-xs"}
+                            createdAtClassName={"text-[12px]"}
                           />
                         </>
                       );
@@ -90,7 +90,7 @@ const Home_Page = ({
                   userName={service?.provider?.fullName}
                   body={service?.description}
                   postDivClassName={
-                    "border-slate-900 border-4 mx-4 my-6 px-2 py-4"
+                    "border-primary-5 border my-6 px-4 py-4 rounded-lg bg-[#DEF2FE] mx-auto mt-12 w-1/2 shadow-xl"
                   }
                   imageSrc={service?.provider?.image}
                   postImage={service?.default_image}

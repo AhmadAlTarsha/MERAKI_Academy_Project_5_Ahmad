@@ -20,7 +20,7 @@ const Categories = ({
   setError,
 }) => {
   return (
-    <div className="bg-primary-5 mb-7 flex flex-col justify-center items-center">
+    <div className="bg-primary-5 mb-7 flex flex-col justify-center items-center mx-10 rounded-lg">
       <h2 className="text-white mt-3 text-2xl">Categories</h2>
       <div className="mt-3 flex items-center justify-center gap-10 flex-wrap">
         {categories?.map((category) => (

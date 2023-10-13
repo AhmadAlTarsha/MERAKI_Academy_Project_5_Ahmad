@@ -194,12 +194,12 @@ function NewPost({
         </>
       ) : (
         <>
-          <div className="heading text-center font-bold text-2xl m-5 text-gray-800">
+          <div className="heading text-center font-bold text-2xl m-5">
             Add New Service
           </div>
 
           <style>body</style>
-          <div className="editor mx-auto w-10/12 flex flex-col text-gray-800 border border-gray-300 p-4 shadow-lg max-w-2xl bg-[#FFFFFF]">
+          <div className="editor mx-auto w-10/12 flex flex-col text-gray-800 border border-gray-300 p-4 shadow-lg max-w-2xl bg-[#FFFFFF] rounded-lg mb-6">
             <div className="flex flex-col mb-2">
               <div className="mb-2">
                 <label htmlFor="category">Category</label>
@@ -232,7 +232,7 @@ function NewPost({
               </select>
             </div>
             <div className="flex flex-col mb-2">
-              <div className="mb-2">
+              <div className="mb-2 ">
                 <label htmlFor="Subcategory">Sub Category</label>
               </div>
               <select

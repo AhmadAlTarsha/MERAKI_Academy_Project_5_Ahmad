@@ -208,7 +208,7 @@ const Home = () => {
                 setError={setError}
                 setLoading={setLoading}
               />
-
+              <hr className="w-[90%] h-[1px] mx-auto my-8 bg-gray-400 border-0 rounded" />
               <Home_Page
                 postsArray={select?.post}
                 servicesArray={select?.services}
