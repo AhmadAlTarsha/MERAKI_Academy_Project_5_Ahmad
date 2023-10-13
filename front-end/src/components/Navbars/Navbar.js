@@ -6,7 +6,7 @@ import { UseSelector, useDispatch, useSelector } from "react-redux";
 import { setLogout } from "../../Services/Redux/auth";
 import CustomerNavBar from "./CustomerNavBar";
 import ProviderNavBar from "./ProviderNavBar";
-import logo from "../../assets/images/logo.jpeg"
+import logo from "../../assets/images/logo.png"
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -21,18 +21,20 @@ const Navbar = () => {
   return (
     <header className="bg-gradient-to-b from-[#C3A97E] to-[#F5F5DD]">
       <nav
-        className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+        className="mx-auto flex  items-center justify-between lg:px-8"
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
-          <a href="#" className="-m-1.5 p-1.5">
-            <span className="sr-only">Your Company</span>
-            <img
-              className="h-8 w-auto"
+          <NavLink to=""><img
+            height="120px"
+            width="120px"
               src={logo}
               alt=""
-            />
-          </a>
+            /></NavLink>
+          {/* <a href="#" className="-m-1.5 p-1.5">
+            <span className="sr-only">Your Company</span>
+            
+          </a> */}
         </div>
 
         {/* <div className="flex lg:hidden">

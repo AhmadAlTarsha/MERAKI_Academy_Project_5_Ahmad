@@ -96,13 +96,11 @@ function Post({
               buttonClassName={`focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-900`}
               buttonName={"Edit"}
               onClick={() => {
-
                 if (post?.provider) {
                   navigate(`/service/${post.id}`);
                 } else {
                   navigate(`/post/${post.id}`);
                 }
-
               }}
             />
             <Button
@@ -141,22 +139,24 @@ function Post({
         <div className={bodyDivClassName}>
           {title && <h3>{title}</h3>}
           <p className={bodyClassName}>{body}</p>
-          <img src={postImage} />
+          <div className="flex justify-center items-center">
+            <img src={postImage} />
+          </div>
         </div>
       </div>
 
       {isShowComments && (
         <div className="w-full px-4 pt-16">
-          <div className="mx-auto w-full max-w-md rounded-2xl bg-white p-2">
+          <div className="mx-auto w-full max-w-md rounded-2xl p-2">
             <Disclosure>
               {({ open }) => (
                 <>
-                  <Disclosure.Button className="flex w-full border border-[#C3A97E] justify-between rounded-lg px-4 py-2 text-left text-sm font-medium text-cyan-950 hover:bg-[#C3A97E] focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
+                  <Disclosure.Button className="flex w-full border bg-[#9BD3F5] border-primary-5 justify-between rounded-lg px-4 py-2 text-left text-sm font-medium text-cyan-950 hover:bg-primary-5 hover:text-[#FFFFFF] focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
                     <span>Comments ({numberOfComments})</span>
                     <ChevronUpIcon
                       className={`${
                         open ? "rotate-180 transform" : ""
-                      } h-5 w-5 text-cyan-950`}
+                      } h-5 w-5`}
                     />
                   </Disclosure.Button>
                   <Disclosure.Panel className={commentDivClassName}>

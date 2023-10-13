@@ -13,7 +13,7 @@ function Card({
       className={"w-1/4 flex flex-col justify-center items-center"}
       onClick={onClick}
     >
-      <div className={"w-1/2 rounded-full mb-3"}>
+      <div className={"w-1/2 rounded-full mb-3 border cursor-pointer"}>
         <img
           src={imageSrc}
           alt={altName}
@@ -22,7 +22,7 @@ function Card({
           className={"rounded-full object-cover"}
         />
       </div>
-      <h3 className={"text-white text-lg"}>{cardName}</h3>
+      <h3 className={"text-white text-lg cursor-pointer"}>{cardName}</h3>
     </div>
   );
 }

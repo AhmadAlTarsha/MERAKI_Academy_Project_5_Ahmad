@@ -10,7 +10,7 @@ function Comment({
   commentClassName,
   commenterFullName,
   commenterFullNameClassName,
-  createdAtClassName
+  createdAtClassName,
 }) {
   return (
     <div className={fullCommentDivClassName}>
@@ -20,7 +20,6 @@ function Comment({
         <h5 className={createdAtClassName}>{createdAt}</h5>
       </div>
       <div className={commentDivClassName}>
-        
         <p className={commentClassName}>{comment}</p>
       </div>
     </div>
