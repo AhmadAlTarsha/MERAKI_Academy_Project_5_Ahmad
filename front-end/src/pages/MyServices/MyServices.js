@@ -64,14 +64,14 @@ const MyServices = () => {
           {error ? (
             <Pop_up message={""} onClose={handleCloseModal} />
           ) : (
-            <>
+            <div className="flex flex-col items-center">
               {servicesSelector.services?.map((service) => (
                 <Post
                   userAndPosterDivClassName={"border-b-[2px] pb-4"}
                   userDivClassName={"flex flex-row"}
                   post={service}
                   postDivClassName={
-                    "border-slate-900 border mx-4 my-6 px-2 py-4 rounded-lg"
+                    "border-slate-900 border mx-4 my-6 px-2 py-4 rounded-lg w-1/2 bg-[#FFFFFF]"
                   }
                   userNameClassName={"text-base font-bold text-sky-700"}
                   userImageClassName={
@@ -91,7 +91,7 @@ const MyServices = () => {
                   isShowComments={false}
                 />
               ))}
-            </>
+            </div>
           )}
         </>
       )}

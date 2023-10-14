@@ -18,6 +18,7 @@ const Categories = ({
   setComments,
   setLoading,
   setError,
+  toggle,
 }) => {
   return (
     <div className="bg-primary-5 mb-7 flex flex-col justify-center items-center mx-10 rounded-lg">
@@ -30,9 +31,11 @@ const Categories = ({
             imageSrc={category?.image}
             cardName={category.name}
             onClick={() => {
-              GetSubCategoriesOnCategory(category?.id)
+              if(toggle){
+                GetSubCategoriesOnCategory(category?.id)
                 .then((result) => {
                   dispatch(setSubCategories(result.subCategories));
+                  setIsCategoryClicked(true);
                   return GetAllPosts(limit, offset, category?.id, 0, 0);
                 })
                 .then((posts) => {
@@ -45,16 +48,45 @@ const Categories = ({
                       })
                       .catch((err) => {})
                       .finally(() => {
-                        setIsCategoryClicked(true);
                       });
                   });
                 })
                 .catch((err) => {
+                  console.log(err);
                   setError(true);
                 })
                 .finally(() => {
                   setLoading(false);
                 });
+              } else {
+                GetSubCategoriesOnCategory(category?.id)
+                .then((result) => {
+                  dispatch(setSubCategories(result.subCategories));
+                  setIsCategoryClicked(true);
+                  return GetAllPosts(limit, offset, category?.id, 0, 0);
+                })
+                .then((posts) => {
+                  dispatch(setPosts(posts));
+                  posts?.forEach((el) => {
+                    GetCommentsByPost(el.id)
+                      .then((comments) => {
+                        postComments[`post_${el?.id}`] = comments;
+                        dispatch(setComments(postComments));
+                      })
+                      .catch((err) => {})
+                      .finally(() => {
+                      });
+                  });
+                })
+                .catch((err) => {
+                  console.log(err);
+                  setError(true);
+                })
+                .finally(() => {
+                  setLoading(false);
+                });
+              }
+              
             }}
           />
         ))}

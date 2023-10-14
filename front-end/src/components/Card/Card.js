@@ -19,7 +19,7 @@ function Card({
           alt={altName}
           width={"100%"}
           height={"100%"}
-          className={"rounded-full object-cover"}
+          className={"rounded-full object-cover bg-[#FFFFFF]"}
         />
       </div>
       <h3 className={"text-white text-lg cursor-pointer"}>{cardName}</h3>

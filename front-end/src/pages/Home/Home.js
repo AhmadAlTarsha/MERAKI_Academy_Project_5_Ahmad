@@ -182,6 +182,7 @@ const Home = () => {
                 setComments={setComments}
                 setLoading={setLoading}
                 setError={setError}
+                toggle={toggle}
               />
 
               {isCategoryClicked && (

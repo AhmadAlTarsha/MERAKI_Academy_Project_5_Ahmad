@@ -25,7 +25,7 @@ const Orders = () => {
   useEffect(() => {
     dispatch(
       GetOrdersCustomer({
-        limit: 3,
+        limit: 10,
         offset,
         status: 0,
       })

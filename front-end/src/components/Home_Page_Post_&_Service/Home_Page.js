@@ -53,6 +53,7 @@ const Home_Page = ({
                   numberOfComments={commentsArray[`post_${newPost.id}`]?.length ?? 0}
                   comments={commentsArray[`post_${newPost.id}`]?.map(
                     (comment) => {
+                      console.log(comment);
                       return (
                         <>
                           <Comment
@@ -60,7 +61,7 @@ const Home_Page = ({
                             fullCommentDivClassName={
                               "border bg-[#F5F5DD] border-primary-5 my-6 px-2 py-4 rounded-lg"
                             }
-                            commenterImage={comment?.commenter.userImage}
+                            commenterImage={comment?.commenter?.userImage}
                             commenterFullName={comment.commenter.fullName}
                             createdAt={comment.created_at}
                             comment={comment.comment}
@@ -87,8 +88,11 @@ const Home_Page = ({
                   setLoading={setLoading}
                   isServices={true}
                   title={service?.title}
-                  userName={service?.provider?.fullName}
+                  userName={service?.provider?.full_name}
                   body={service?.description}
+                  userNameClassName={"font-bold"}
+                  userDivClassName={"flex flex-row"}
+                  userImageClassName={"object-cover w-16 h-16 rounded-full border-2 border-[#365194]  shadow-[#365194] mr-4"}
                   postDivClassName={
                     "border-primary-5 border my-6 px-4 py-4 rounded-lg bg-[#DEF2FE] mx-auto mt-12 w-1/2 shadow-xl"
                   }
