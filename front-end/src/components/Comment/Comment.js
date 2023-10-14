@@ -15,7 +15,7 @@ function Comment({
   return (
     <div className={fullCommentDivClassName}>
       <div className={commenterDivClassName}>
-        <image src={commenterImage} />
+        <img src={commenterImage} width={"50px"} height={"50px"}/>
         <h4 className={commenterFullNameClassName}>{commenterFullName}</h4>
         <h5 className={createdAtClassName}>{createdAt}</h5>
       </div>

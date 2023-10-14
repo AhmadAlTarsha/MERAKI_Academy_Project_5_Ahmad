@@ -37,6 +37,7 @@ const AdminSub_Categories = () => {
   };
 
   const rows = ["ID", "Image", "Name", "Category Name", "Is deleted", "Action"];
+  console.log(selectSubCategories?.subCategories?.subCategories);
 
   useEffect(() => {
     return () => {
@@ -58,15 +59,18 @@ const AdminSub_Categories = () => {
   };
 
   return (
-    <div className="overflow-auto flex flex-col justify-center items-center w-full h-full">
-      {isLoading ? (
+    <>
+
+      {isLoading ? <div className="overflow-auto flex flex-col justify-center items-center w-full h-screen">
+
         <Loader />
-      ) : (
-        <>
-          {isError ? (
-            <Pop_up message={""} onClose={handleCloseModal} />
-          ) : (
-            <>
+
+      </div> : <>
+
+        {
+          isError ? <Pop_up message={""} onClose={handleCloseModal} /> :
+            <div className="flex flex-col justify-center items-center w-full h-screen">
+
               {isOpen && (
                 <Dialog_Modal
                   isOpen={isOpen}
@@ -86,6 +90,7 @@ const AdminSub_Categories = () => {
                   setIsLoading={setIsLoading}
                 />
               )}
+
               <Button
                 divClassName={"self-start mb-2"}
                 buttonName={"Add Sub Category"}
@@ -94,6 +99,7 @@ const AdminSub_Categories = () => {
                 }
                 onClick={() => setIsOpen(!isOpen)}
               />
+
               <Tables
                 rows={rows}
                 cols={selectSubCategories.subCategories}
@@ -104,7 +110,8 @@ const AdminSub_Categories = () => {
                 setError={setIsError}
                 setLoading={setIsLoading}
               />
-              {selectSubCategories.subCategories.subCategories.length !== 0 && (
+
+              {selectSubCategories?.subCategories?.subCategories?.length !== 0 && (
                 <Pagination
                   handlePage={handlePage}
                   limit={limit}
@@ -112,11 +119,14 @@ const AdminSub_Categories = () => {
                   setOffset={setOffset}
                 />
               )}
-            </>
-          )}
-        </>
-      )}
-    </div>
+
+            </div>
+        }
+
+      </>}
+
+
+    </>
   );
 };
 

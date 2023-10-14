@@ -26,7 +26,7 @@ const MyPosts = () => {
         active: 0,
       })
     )
-      .then((res) => {})
+      .then((res) => { })
       .catch((err) => {
         setError(true);
       })
@@ -43,7 +43,7 @@ const MyPosts = () => {
         active: 0,
       })
     )
-      .then((res) => {})
+      .then((res) => { })
       .catch((err) => {
         setError(true);
       })
@@ -69,21 +69,22 @@ const MyPosts = () => {
           {error ? (
             <Pop_up message={""} onClose={handleCloseModal} />
           ) : (
-            <>
+            <div className="flex flex-col items-center">
               {postsSelector?.posts?.map((post) => (
 
                 <Post
-                setLoading={setIsLoading}
+                  setLoading={setIsLoading}
                   userAndPosterDivClassName={"border-b-[2px] pb-4"}
                   userDivClassName={"flex flex-row"}
                   post={post}
                   postDivClassName={
-                    "border-slate-900 border mx-4 my-6 px-2 py-4 rounded-lg bg-[#FFFFFF]"
+                    "border-slate-900 border mx-4 my-6 px-2 py-4 rounded-lg w-1/2 bg-[#FFFFFF]"
                   }
                   userNameClassName={"text-base font-bold text-sky-700"}
                   userImageClassName={
                     "rounded-full h-20 w-20 md:h-28 md:w-28 border-[6px] border-white bg-white"
                   }
+                  bodyDivClassName={"my-4"}
                   key={post?.id}
                   userName={post?.user?.fullName}
                   body={post?.description}
@@ -105,7 +106,7 @@ const MyPosts = () => {
                   setOffset={setOffset}
                 />
               )}
-            </>
+            </div>
           )}
         </>
       )}

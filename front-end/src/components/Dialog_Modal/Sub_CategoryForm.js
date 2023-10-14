@@ -11,8 +11,8 @@ const Sub_CategoryForm = ({ handleSubmit, subCategory, setSubCategory }) => {
   });
 
   return (
-    <div className="h-5/6 flex flex-col justify-center items-center">
-      <form onSubmit={handleSubmit} className=" w-1/2 h-fit">
+    <div className="flex flex-col justify-center items-center">
+      <form onSubmit={handleSubmit} className="w-1/2">
         <Input
           divClassName={"flex flex-col mb-2"}
           labelDivClassname={"self-start"}
@@ -35,8 +35,8 @@ const Sub_CategoryForm = ({ handleSubmit, subCategory, setSubCategory }) => {
           }
         />
 
-        <div className="flex flex-col mb-2">
-          <div className="self-start mb-2">
+        <div className="flex flex-col">
+          <div className="self-start">
             <label for="countries" className="">
               Select an option
             </label>
@@ -66,7 +66,7 @@ const Sub_CategoryForm = ({ handleSubmit, subCategory, setSubCategory }) => {
           labelDivClassname={"self-start"}
           labelClassName={""}
           labelName={`Sub Category Image`}
-          inputDiv={"mt-2"}
+          inputDiv={""}
           inputClassName={`block w-full text-sm text-gray-900 border border-gray-300 
       rounded-lg cursor-pointer 
       bg-gray-50 dark:text-gray-400 

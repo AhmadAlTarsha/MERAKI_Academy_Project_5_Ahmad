@@ -4,8 +4,8 @@ import Button from "../Button/Button";
 
 const CategoryForm = ({ handleSubmit, category, setCategory }) => {
   return (
-    <div className="h-4/6 flex flex-col justify-center items-center">
-      <form onSubmit={handleSubmit} className=" w-1/2 h-1/2">
+    <div className="flex flex-col justify-center items-center">
+      <form onSubmit={handleSubmit} className=" w-1/2">
         <Input
           divClassName={"flex flex-col mb-2"}
           labelDivClassname={"self-start"}

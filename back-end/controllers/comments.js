@@ -48,7 +48,7 @@ exports.getCommentsByPostId = (req, res, next) => {
         comment: comment.comment,
         commenter: {
           fullName: `${comment.first_name} ${comment.last_name}`,
-          userImage: comment.image,
+          userImage: `http://localhost:5000/images/${comment.image}`,
         },
         created_at: comment.created_at,
       }));

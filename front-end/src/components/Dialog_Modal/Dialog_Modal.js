@@ -31,6 +31,7 @@ const Dialog_Modal = ({
   navigate,
   isUpdateCategory,
   isUpdateSubCategory,
+  isOrder,
   isSubCategory,
   isCategory,
   isRegions,
@@ -200,6 +201,8 @@ const Dialog_Modal = ({
               navigate("/Admin/categories");
             } else if (isUpdateSubCategory) {
               navigate("/Admin/sub-categories");
+            } else if(isOrder) {
+              navigate('/')
             }
           }}
         />

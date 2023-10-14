@@ -8,6 +8,7 @@ import { getAllPostsByUser, setComments } from "../../Services/Redux/Posts";
 import { addOrder } from "../../Services/Redux/Orders";
 import { useNavigate } from "react-router-dom";
 import { DeletePost } from "../../Services/APIS/Posts/DeletePost";
+import Dialog_Modal from "../Dialog_Modal/Dialog_Modal";
 
 function Post({
   imageSrc,
@@ -43,6 +44,7 @@ function Post({
 }) {
   const navigate = useNavigate();
   const [comment, setComment] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
   const [textValue, setTextValue] = useState("");
   const localUser = JSON?.parse(localStorage?.getItem("localUser")) ?? {};
   const [editClicked, setTEditClicked] = useState(true);
@@ -57,7 +59,7 @@ function Post({
         dispatch(setComments(postComments));
       })
       .catch((err) => {
-        setError(true);
+        setError("Login First!");
       })
       .finally(() => {
         setTextValue("");
@@ -69,6 +71,7 @@ function Post({
     dispatch(addOrder({ provider_id, sub_category_id }))
       .then((res) => {
         if (!res?.payload?.err) {
+          setIsOpen(!isOpen);
           // console.log("Adding ORDER Error ===> ", res?.payload?.message);
         }
       })
@@ -82,12 +85,31 @@ function Post({
 
   return (
     <div className={postDivClassName}>
+      {
+        isOpen && (
+          <Dialog_Modal
+            isForm={false}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            title={"Order Added Successfully"}
+            dialogPanelClassName={
+              "rounded h-1/4 w-1/4 flex flex-col bg-gray-800 text-white py-8 px-4 text-center"
+            }
+            buttonClassName={`w-1/2 rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium 
+        text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3`}
+            buttonDivClassName={"mt-2.5 w-5/6 self-center"}
+            navigate={navigate}
+            isOrder={true}
+          
+          />)
+      }
       <div className={userAndPosterDivClassName}>
         <div className={`${userDivClassName}`}>
           <div>
             <img src={imageSrc} alt={altName} className={userImageClassName} />
           </div>
           <h3 className={userNameClassName}>{userName}</h3>
+
         </div>
 
         {isShowButtons && (
@@ -116,7 +138,7 @@ function Post({
                         getAllPostsByUser({ limit, offset, active: 0 })
                       );
                     })
-                    .then((result2) => {})
+                    .then((result2) => { })
                     .catch((err) => {
                       setError(true);
                     })
@@ -129,13 +151,15 @@ function Post({
           </div>
         )}
 
+
         {isServices && localUser?.isLoggedIn && (
           <Button
+            buttonClassName={`mt-3 focus:outline-none text-white bg-blue-700 hover:bg-primary-5 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800
+            `}
             buttonName={"Set Order"}
             onClick={() => handleAddingOrder(subCategoryId, providerId)}
           />
         )}
-
         <div className={bodyDivClassName}>
           {title && <h3>{title}</h3>}
           <p className={bodyClassName}>{body}</p>
@@ -154,9 +178,8 @@ function Post({
                   <Disclosure.Button className="flex w-full border bg-[#9BD3F5] border-primary-5 justify-between rounded-lg px-4 py-2 text-left text-sm font-medium text-cyan-950 hover:bg-primary-5 hover:text-[#FFFFFF] focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
                     <span>Comments ({numberOfComments})</span>
                     <ChevronUpIcon
-                      className={`${
-                        open ? "rotate-180 transform" : ""
-                      } h-5 w-5`}
+                      className={`${open ? "rotate-180 transform" : ""
+                        } h-5 w-5`}
                     />
                   </Disclosure.Button>
                   <Disclosure.Panel className={commentDivClassName}>
