@@ -25,7 +25,7 @@ const AdminCategory = () => {
           setCategoryData({
             id: result.id,
             name: result.name,
-            image: `http://95.179.236.103:8080/api/${result.image}`,
+            image: `https://tintin-bqtw.onrender.com/${result.image}`,
           });
       })
       .catch((err) => {

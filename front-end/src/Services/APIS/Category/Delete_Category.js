@@ -4,7 +4,7 @@ export const DeleteCategories = async (id, is_deleted) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
     const result = await axios.delete(
-      `http://95.179.236.103:8080/api/categories/${id}/${is_deleted}`,
+      `https://tintin-bqtw.onrender.com/categories/${id}/${is_deleted}`,
       {
         headers: {
           Authorization: `Bearer ${token?.token}`,
@@ -24,7 +24,7 @@ export const DeleteSubCategories = async (id, is_deleted) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
     const result = await axios.delete(
-      `http://95.179.236.103:8080/api/subcategories/${id}/${is_deleted}`,
+      `https://tintin-bqtw.onrender.com/subcategories/${id}/${is_deleted}`,
       {
         headers: {
           Authorization: `Bearer ${token?.token}`,

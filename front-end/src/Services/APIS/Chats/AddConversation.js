@@ -3,7 +3,7 @@ import axios from "axios";
 export const newConversation = async (provider_id, customer_id) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
-    const result = await axios.post(`http://95.179.236.103:8080/api/chats`, {
+    const result = await axios.post(`https://tintin-bqtw.onrender.com/m/m/m/chats`, {
       provider_id,
       customer_id,
     }, {

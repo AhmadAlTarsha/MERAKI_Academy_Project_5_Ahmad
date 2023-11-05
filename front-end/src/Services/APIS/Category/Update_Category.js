@@ -4,7 +4,7 @@ const token = JSON.parse(localStorage.getItem("token")) ?? {};
 
   try {
     const result = await axios.put(
-      `http://95.179.236.103:8080/api/categories/${id}`,
+      `https://tintin-bqtw.onrender.com/categories/${id}`,
       payload,
       {
         headers: {
@@ -27,7 +27,7 @@ const token = JSON.parse(localStorage.getItem("token")) ?? {};
 
   try {
     const result = await axios.put(
-      `http://95.179.236.103:8080/api/subcategories/${id}`,
+      `https://tintin-bqtw.onrender.com/subcategories/${id}`,
       payload,
       {
         headers: {

@@ -4,7 +4,7 @@ export const DeletePost = async (id, is_deleted) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
     const result = await axios.delete(
-      `http://95.179.236.103:8080/api/posts/${id}/${is_deleted}`,
+      `https://tintin-bqtw.onrender.com/posts/${id}/${is_deleted}`,
       {
         headers: {
           Authorization: `Bearer ${token?.token}`,

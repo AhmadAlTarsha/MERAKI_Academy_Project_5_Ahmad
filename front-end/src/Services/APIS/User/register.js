@@ -3,7 +3,7 @@ import axios from "axios";
 export const Registration = async (payload) => {
   try {
     const result = await axios.post(
-      `http://95.179.236.103:8080/api/users/register`,
+      `https://tintin-bqtw.onrender.com/users/register`,
       payload
     );
     console.log("from Api", result);
@@ -20,7 +20,7 @@ export const Registration = async (payload) => {
 };
 export const GetAllRoles = async () => {
   try {
-    const result = await axios.get(`http://95.179.236.103:8080/api/roles`);
+    const result = await axios.get(`https://tintin-bqtw.onrender.com/roles`);
     if (!result?.data?.error) {
         console.log(result);
       return result?.data;

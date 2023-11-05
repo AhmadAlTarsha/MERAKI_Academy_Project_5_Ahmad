@@ -3,7 +3,7 @@ import axios from "axios";
 export const AddRegion = async (payload) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
-    const result = await axios.post(`http://95.179.236.103:8080/api/regions`, payload, {
+    const result = await axios.post(`https://tintin-bqtw.onrender.com/regions`, payload, {
       headers: {
         Authorization: `Bearer ${token?.token}`,
       },
