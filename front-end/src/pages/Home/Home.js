@@ -99,7 +99,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    const socket = openSocket.connect('http://95.179.236.103:8080/api/')
+    // const socket = openSocket.connect('http://95.179.236.103:8080/api/')
     // const socket = openSocket("http://95.179.236.103:8080/api/");
     // socket.on("posts", (data) => {
     //   if (data.action === "create") {
