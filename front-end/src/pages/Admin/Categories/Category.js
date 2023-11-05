@@ -22,13 +22,11 @@ const AdminCategory = () => {
   useEffect(() => {
     getCategory(id)
       .then((result) => {
-        if (!result?.error) {
           setCategoryData({
-            id: result.category.id,
-            name: result.category.name,
-            image: `http://localhost:5000/${result.category.image}`,
+            id: result.id,
+            name: result.name,
+            image: `http://95.179.236.103:8080/api/${result.image}`,
           });
-        }
       })
       .catch((err) => {
         setIsError(true);

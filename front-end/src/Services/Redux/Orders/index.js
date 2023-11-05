@@ -1,10 +1,18 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { addOrderAPI } from "../../APIS/Orders/AddOrder";
 import { GetOrdersByUserId } from "../../APIS/Orders/GetOrders";
+import { UpdateOrderStatus } from "../../APIS/Orders/UpdateOrder";
 
 export const addOrder = createAsyncThunk("user/order", async (payload) => {
   return await addOrderAPI(payload);
 });
+
+export const UpdateOrder = createAsyncThunk(
+  "user/order/update",
+  async (payload) => {
+    return await UpdateOrderStatus(payload?.id, payload?.status);
+  }
+);
 
 export const GetOrdersCustomer = createAsyncThunk(
   "customer/orders",
@@ -44,7 +52,9 @@ export const orderSlice = createSlice({
           error: false,
           message: action.error,
         };
-      })
+      });
+
+    builder
       .addCase(GetOrdersCustomer.pending, (state) => {
         state.errorMessage = {
           error: false,
@@ -58,6 +68,27 @@ export const orderSlice = createSlice({
         state.errorMessage = {
           error: true,
           message: action.error,
+        };
+      });
+
+    builder
+      .addCase(UpdateOrder.pending, (state) => {
+        state.errorMessage = {
+          error: false,
+          message: "",
+        };
+      })
+      .addCase(UpdateOrder.fulfilled, (state, action) => {
+        state.errorMessage = {
+          error: false,
+          message: "Order Updated",
+          message2: action.payload,
+        };
+      })
+      .addCase(UpdateOrder.rejected, (state, action) => {
+        state.errorMessage = {
+          error: true,
+          message: "Something went wrong",
         };
       });
   },

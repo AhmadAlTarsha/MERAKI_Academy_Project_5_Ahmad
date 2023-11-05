@@ -1,41 +1,40 @@
 const express = require("express");
-
 const commentsRouter = express.Router();
 
 const {
   createNewComment,
   updateCommentById,
-  deleteCommentById,
+  activateOrDeActivateCommentById,
   getCommentsByPostId,
 } = require("../controllers/comments");
 const { authentication } = require("../middlewares/authentication");
 const { authorization } = require("../middlewares/authorization");
 
 commentsRouter.get(
-  "/:id",
+  "/:post_id",
   authentication,
-  authorization("COMMENT_CONTROL"),
+  authorization("get_comment"),
   getCommentsByPostId
 );
 
 commentsRouter.post(
   "/:id",
   authentication,
-  authorization("COMMENT_CONTROL"),
+  authorization("add_comment"),
   createNewComment
 );
 
 commentsRouter.put(
   "/:id",
   authentication,
-  authorization("COMMENT_CONTROL"),
+  authorization("update_comment"),
   updateCommentById
 );
 
 commentsRouter.delete(
-  "/:id",
+  "/:id/:is_deleted",
   authentication,
-  authorization("COMMENT_CONTROL"),
-  deleteCommentById
+  authorization("delete_comment"),
+  activateOrDeActivateCommentById
 );
 module.exports = commentsRouter;

@@ -1,4 +1,4 @@
-const pool = require("../models/DB");
+// const pool = require("../models/DB");
 
 exports.createRoles = (req, res, next) => {
   const { role } = req.body;

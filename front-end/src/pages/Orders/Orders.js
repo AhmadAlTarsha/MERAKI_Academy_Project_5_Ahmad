@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { GetOrders } from "../../Services/APIS/Orders/GetOrders";
-import { setOrders } from "../../Services/Redux/Orders";
+import { UpdateOrder, setOrders } from "../../Services/Redux/Orders";
 import { GetOrdersCustomer } from "../../Services/Redux/Orders/index";
 import Pop_up from "../../components/Dialog_Modal/Pop-up";
 import Loader from "../../components/Loader/Loader";
@@ -18,7 +18,7 @@ const Orders = () => {
   const dispatch = useDispatch();
   const ordersSelect = useSelector((state) => {
     return {
-      orders: state.orders.orders,
+      orders: state?.orders,
     };
   });
 
@@ -27,12 +27,11 @@ const Orders = () => {
       GetOrdersCustomer({
         limit: 10,
         offset,
-        status: 0,
       })
     )
       .then((res) => {})
       .catch((err) => {
-        setIsError(true);
+        setIsError(err);
       })
       .finally(() => {
         setIsLoading(false);
@@ -47,6 +46,8 @@ const Orders = () => {
     setIsError(false);
   };
 
+  // console.log(ordersSelect?.orders?.orders?.rows);
+
   return (
     <>
       {isLoading ? (
@@ -56,7 +57,7 @@ const Orders = () => {
       ) : (
         <>
           {isError ? (
-            <Pop_up message={""} onClose={handleCloseModal} />
+            <Pop_up message={isError} onClose={handleCloseModal} />
           ) : (
             <div className="container mx-auto mt-10">
               <div className="flex justify-center items-center shadow-md my-10">
@@ -91,8 +92,8 @@ const Orders = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {ordersSelect?.orders?.orders &&
-                        ordersSelect?.orders?.orders?.map((order) => (
+                      {ordersSelect?.orders?.orders?.rows &&
+                        ordersSelect?.orders?.orders?.rows?.map((order) => (
                           <tr
                             key={order?.id}
                             className="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -112,7 +113,28 @@ const Orders = () => {
                               <Button
                                 buttonName={"Cancel"}
                                 buttonClassName={`focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900`}
-                                onClick={() => {}}
+                                onClick={() => {
+                                  dispatch(
+                                    UpdateOrder({ id: order?.id, status: 4 })
+                                  )
+                                    .then((result) => {
+                                      if (
+                                        result?.payload?.includes(
+                                          "Order Canceled"
+                                        )
+                                      ) {
+                                        dispatch(
+                                          GetOrdersCustomer({
+                                            limit: 10,
+                                            offset,
+                                          })
+                                        );
+                                      }
+                                    })
+                                    .catch((err) => {
+                                      setIsError(err);
+                                    });
+                                }}
                               />
 
                               {localUser?.role === 3 && (
@@ -127,11 +149,21 @@ const Orders = () => {
                                       })
                                     )
                                       .then((result) => {
-                                        navigate(
-                                          `/chats/${result?.payload?.conversation_id}/${order?.provider?.id}/${order?.provider?.full_name}`
-                                        );
+                                        if (
+                                          result?.payload?.message ===
+                                          "Conversation exist"
+                                        ) {
+                                          navigate(
+                                            `/chats/${result?.payload?.id}/${order?.provider?.id}/${order?.provider?.full_name}`
+                                          );
+                                        } else {
+                                          navigate(
+                                            `/chats/${result?.payload?.conversation_id}/${order?.provider?.id}/${order?.provider?.full_name}`
+                                          );
+                                        }
                                       })
                                       .catch((err) => {
+                                        console.error(err);
                                         setIsError(true);
                                       })
                                       .finally(() => {

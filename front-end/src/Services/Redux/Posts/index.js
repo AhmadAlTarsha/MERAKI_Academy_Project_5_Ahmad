@@ -4,11 +4,7 @@ import { GetPost, GetPostsByUserId } from "../../APIS/Posts/GetAllPosts";
 export const getAllPostsByUser = createAsyncThunk(
   "user/posts",
   async (payload) => {
-    return await GetPostsByUserId(
-      payload.limit,
-      payload.offset,
-      payload.active
-    );
+    return await GetPostsByUserId(payload.limit, payload.offset);
   }
 );
 
@@ -33,6 +29,7 @@ export const postSlice = createSlice({
         };
       })
       .addCase(getAllPostsByUser.fulfilled, (state, action) => {
+        console.log(action.payload);
         state.errorMessage = {
           error: false,
           message: "",

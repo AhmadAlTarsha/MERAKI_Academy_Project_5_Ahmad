@@ -28,6 +28,7 @@ const Home = () => {
   const [error, setError] = useState(false);
   const [isCategoryClicked, setIsCategoryClicked] = useState(false);
   const [toggle, setToggle] = useState(true);
+  const token = JSON.parse(localStorage.getItem("token")) ?? {};
 
   const select = useSelector((state) => {
     return {
@@ -44,19 +45,27 @@ const Home = () => {
 
   useEffect(() => {
     if (toggle) {
-      GetAllPosts(limit, offset, 0, 0, 0)
+      GetAllPosts(limit, offset, 0)
         .then((res) => {
           dispatch(setPosts(res));
-          res?.forEach((el) => {
-            GetCommentsByPost(el.id)
+          res?.rows.forEach((el) => {
+            GetCommentsByPost(el.id, 15, 1)
               .then((comments) => {
                 postComments[`post_${el?.id}`] = comments;
                 dispatch(setComments(postComments));
               })
-              .catch((err) => {});
+              .catch((err) => {
+                if (
+                  err?.response?.data?.message?.includes(
+                    "The token is invalid or expired"
+                  )
+                ) {
+                }
+              });
           });
         })
         .catch((err) => {
+          // console.error(err);
           setError(true);
         })
         .finally(() => {
@@ -77,7 +86,7 @@ const Home = () => {
   }, [toggle]);
 
   useEffect(() => {
-    GetCategories(0, 0, 0)
+    GetCategories(15, 1, 0)
       .then((result) => {
         dispatch(setCategories(result));
       })
@@ -90,52 +99,53 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    const socket = openSocket("http://localhost:5000");
-    socket.on("posts", (data) => {
-      if (data.action === "create") {
-        GetAllPosts(limit, offset, 0, 0, 0)
-          .then((res) => {
-            dispatch(setPosts(res));
-            res?.forEach((el) => {
-              GetCommentsByPost(el.id)
-                .then((comments) => {
-                  postComments[`post_${el?.id}`] = comments;
-                  dispatch(setComments(postComments));
-                })
-                .catch((err) => {});
-            });
-          })
-          .catch((err) => {
-            setError(true);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      }
-    });
+    const socket = openSocket.connect('http://95.179.236.103:8080/api/')
+    // const socket = openSocket("http://95.179.236.103:8080/api/");
+    // socket.on("posts", (data) => {
+    //   if (data.action === "create") {
+    //     GetAllPosts(limit, offset, 0)
+    //       .then((res) => {
+    //         dispatch(setPosts(res));
+    //         res?.rows?.forEach((el) => {
+    //           GetCommentsByPost(el.id, 15, 1)
+    //             .then((comments) => {
+    //               postComments[`post_${el?.id}`] = comments;
+    //               dispatch(setComments(postComments));
+    //             })
+    //             .catch((err) => {});
+    //         });
+    //       })
+    //       .catch((err) => {
+    //         setError(true);
+    //       })
+    //       .finally(() => {
+    //         setLoading(false);
+    //       });
+    //   }
+    // });
 
-    socket.on("services", (data) => {
-      if (data.action === "create") {
-        getAllServices(limit, offset, 0)
-          .then((res) => {
-            dispatch(setServices(res));
-          })
-          .catch((err) => {
-            setError(true);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      }
-    });
+    // socket.on("services", (data) => {
+    //   if (data.action === "create") {
+    //     getAllServices(limit, offset, 0)
+    //       .then((res) => {
+    //         dispatch(setServices(res));
+    //       })
+    //       .catch((err) => {
+    //         setError(true);
+    //       })
+    //       .finally(() => {
+    //         setLoading(false);
+    //       });
+    //   }
+    // });
   }, []);
 
   const handlePage = (li, off) => {
-    GetAllPosts(li, off, 0, 0, 0)
+    GetAllPosts(li, off, 0)
       .then((result) => {
         dispatch(setPosts(result));
-        result?.forEach((el) => {
-          GetCommentsByPost(el.id)
+        result?.rows?.forEach((el) => {
+          GetCommentsByPost(el.id, 15, 1)
             .then((comments) => {
               postComments[`post_${el?.id}`] = comments;
               dispatch(setComments(postComments));
@@ -166,12 +176,12 @@ const Home = () => {
         <>
           {error ? (
             <>
-              <Pop_up message={error} onClose={handleCloseModal} />
+              <Pop_up message={error?.message} onClose={handleCloseModal} />
             </>
           ) : (
             <>
               <Categories
-                categories={select?.categories?.categories}
+                categories={select?.categories?.rows}
                 dispatch={dispatch}
                 setIsCategoryClicked={setIsCategoryClicked}
                 setSubCategories={setSubCategories}
@@ -183,12 +193,14 @@ const Home = () => {
                 setLoading={setLoading}
                 setError={setError}
                 toggle={toggle}
+                setServices={setServices}
               />
 
               {isCategoryClicked && (
                 <Sub_Categories
                   subCategories={select?.subCategories}
                   GetCommentsByPost={GetCommentsByPost}
+                  toggle={toggle}
                   dispatch={dispatch}
                   postComments={postComments}
                   setComments={setComments}
@@ -197,22 +209,27 @@ const Home = () => {
                   limit={limit}
                   offset={offset}
                   setError={setError}
+                  setServices={setServices}
                 />
               )}
 
               <Tabs setToggle={setToggle} />
 
-              <NewPost
-                toggle={toggle}
-                isCategoryClicked={isCategoryClicked}
-                dispatch={dispatch}
-                setError={setError}
-                setLoading={setLoading}
-              />
-              <hr className="w-[90%] h-[1px] mx-auto my-8 bg-gray-400 border-0 rounded" />
+              {token.id && (
+                <>
+                  <NewPost
+                    toggle={toggle}
+                    isCategoryClicked={isCategoryClicked}
+                    dispatch={dispatch}
+                    setError={setError}
+                    setLoading={setLoading}
+                  />
+                  <hr className="w-[90%] h-[1px] mx-auto my-8 bg-gray-400 border-0 rounded" />
+                </>
+              )}
               <Home_Page
-                postsArray={select?.post}
-                servicesArray={select?.services}
+                postsArray={select?.post?.rows}
+                servicesArray={select?.services?.rows}
                 toggle={toggle}
                 commentsArray={select?.comments}
                 dispatch={dispatch}

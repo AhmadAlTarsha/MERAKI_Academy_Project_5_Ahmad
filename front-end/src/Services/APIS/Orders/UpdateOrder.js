@@ -1,10 +1,14 @@
 import axios from "axios";
 
-export const DeleteRegion = async (id, is_deleted) => {
+export const UpdateOrderStatus = async (id, status) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
+
+  let url = `http://95.179.236.103:8080/api/orders/${id}/${status}`;
+
   try {
-    const result = await axios.delete(
-      `http://95.179.236.103:8080/api/regions/${id}/${is_deleted}`,
+    const result = await axios.put(
+      url,
+      {},
       {
         headers: {
           Authorization: `Bearer ${token?.token}`,
@@ -13,7 +17,7 @@ export const DeleteRegion = async (id, is_deleted) => {
     );
 
     if (!result.data?.error) {
-      return result?.data?.message;
+      return result.data?.message;
     }
   } catch (err) {
     throw err;

@@ -4,33 +4,36 @@ export const getAllServices = async (limit, offset, isDeleted) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   let url = "";
 
-  if (!isDeleted && !limit && !offset) {
-    url = "http://localhost:5000/services";
-  } else if (!isDeleted && limit && offset) {
-    url = `http://localhost:5000/services?limit=${limit}&offset=${offset}`;
-  } else if (isDeleted && limit && offset) {
-    url = `http://localhost:5000/services?is_deleted=${isDeleted}&limit=${limit}&offset=${offset}`;
+  if (isDeleted === 0) {
+    url = `http://95.179.236.103:8080/api/services?limit=${limit}&offset=${offset}&is_deleted=0`;
+  } else {
+    url = `http://95.179.236.103:8080/api/services?limit=${limit}&offset=${offset}`;
   }
 
   try {
     const result = await axios.get(url);
 
     if (!result?.data?.error) {
-      return result?.data?.serverices;
+      return result?.data?.services;
     }
   } catch (err) {
     throw err;
   }
 };
 
-export const getAllServicesOnCategory = async (isDeleted, limit, offset) => {
+export const getAllServicesOnCategory = async (
+  category_id,
+  limit,
+  offset,
+  isDeleted
+) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
-  let url = "http://localhost:5000/services";
-  if (isDeleted === 0) {
-    url += `?is_deleted=0&limit=${limit}&offset=${offset}`;
-  }
+  let url = `http://95.179.236.103:8080/api/services/category/${category_id}?is_deleted=0&status_id=2&offset=${offset}&limit=${limit}`;
+  // if (isDeleted === 0) {
+  //   url += `?is_deleted=0&limit=${limit}&offset=${offset}`;
+  // }
 
-  url += `?limit=${limit}&offset=${offset}`;
+  // url += `?limit=${limit}&offset=${offset}`;
 
   try {
     const result = await axios.get(url, {
@@ -40,21 +43,26 @@ export const getAllServicesOnCategory = async (isDeleted, limit, offset) => {
     });
 
     if (!result?.data?.error) {
-      return result?.serverices;
+      return result?.data?.services;
     }
   } catch (err) {
     throw err;
   }
 };
 
-export const getAllServicesOnSubCategory = async (isDeleted, limit, offset) => {
+export const getAllServicesOnSubCategory = async (
+  category_id,
+  limit,
+  offset,
+  isDeleted
+) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
-  let url = "http://localhost:5000/services";
-  if (isDeleted === 0) {
-    url += `?is_deleted=0&limit=${limit}&offset=${offset}`;
-  }
+  let url = `http://95.179.236.103:8080/api/services/subcategory/${category_id}?is_deleted=0&status_id=2&offset=${offset}&limit=${limit}`;
+  // if (isDeleted === 0) {
+  //   url += `?is_deleted=0&limit=${limit}&offset=${offset}`;
+  // }
 
-  url += `?limit=${limit}&offset=${offset}`;
+  // url += `?limit=${limit}&offset=${offset}`;
 
   try {
     const result = await axios.get(url, {
@@ -64,7 +72,7 @@ export const getAllServicesOnSubCategory = async (isDeleted, limit, offset) => {
     });
 
     if (!result?.data?.error) {
-      return result?.serverices;
+      return result?.data?.services;
     }
   } catch (err) {
     throw err;
@@ -75,7 +83,7 @@ export const getServicesOnUser = async (limit, offset) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
     const result = await axios.get(
-      `http://localhost:5000/services/services/${token.id}?limit=${limit}&offset=${offset}`,
+      `http://95.179.236.103:8080/api/services/provider/${token?.id}?limit=${limit}&offset=${offset}&is_deleted=0`,
       {
         headers: {
           Authorization: `Bearer ${token?.token}`,
@@ -84,7 +92,7 @@ export const getServicesOnUser = async (limit, offset) => {
     );
 
     if (!result?.data?.error) {
-      return result?.data?.serverices;
+      return result?.data?.services;
     }
   } catch (err) {
     throw err;
@@ -94,7 +102,7 @@ export const getServicesOnUser = async (limit, offset) => {
 export const getSerivce = async (id) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
-    const result = await axios.get(`http://localhost:5000/services/${id}`, {
+    const result = await axios.get(`http://95.179.236.103:8080/api/services/${id}`, {
       headers: {
         Authorization: `Bearer ${token?.token}`,
       },

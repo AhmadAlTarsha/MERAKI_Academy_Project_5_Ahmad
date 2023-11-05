@@ -8,7 +8,7 @@ const {
   getServiceOnId,
   getAllServices,
   updateServiceStatus,
-  deleteService,
+  activateOrDeActivateServiceById,
   getAllServicesByUser,
 } = require("../controllers/services");
 
@@ -18,28 +18,28 @@ const { authorization } = require("../middlewares/authorization");
 servericesRouter.post(
   "/",
   authentication,
-  authorization("SERVICE_CONTROL"),
+  authorization("add_service"),
   addService
 );
 
 servericesRouter.put(
   "/:id",
   authentication,
-  authorization("SERVICE_CONTROL"),
+  authorization("edit_service"),
   updateService
 );
 
 servericesRouter.put(
-  "/status/:id",
+  "/:id/:status",
   authentication,
-  authorization("SERVICE_CONTROL"),
+  authorization("update_service_status"),
   updateServiceStatus
 );
 
 servericesRouter.get(
-  "/services/:providerId",
+  "/provider/:provider_id",
   authentication,
-  authorization("SERVICE_CONTROL"),
+  authorization("get_service"),
   getAllServicesByUser
 );
 
@@ -48,22 +48,22 @@ servericesRouter.get("/", getAllServices);
 servericesRouter.get(
   "/:id",
   authentication,
-  authorization("SERVICE_CONTROL"),
+  authorization("get_service"),
   getServiceOnId
 );
 
-servericesRouter.get("/category/:categoryId", getAllServicesOnCategory);
+servericesRouter.get("/category/:category_id", getAllServicesOnCategory);
 
 servericesRouter.get(
-  "/subcategory/:subCategoryId",
+  "/subcategory/:sub_category_id",
   getAllServicesOnSubCategory
 );
 
 servericesRouter.delete(
-  "/delete/:id",
+  "/delete/:id/:is_deleted",
   authentication,
-  authorization("SERVICE_CONTROL"),
-  deleteService
+  authorization("delete_service"),
+  activateOrDeActivateServiceById
 );
 
 module.exports = servericesRouter;

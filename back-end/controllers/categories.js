@@ -1,7 +1,17 @@
 const pool = require("../models/DB");
+const Category = require("../models/Category");
+const fs = require("fs");
+const path = require("path");
 const { throwError } = require("../middlewares/throwError");
 
-exports.addCategory = (req, res, next) => {
+const clearImage = (filePath) => {
+  filePath = path.join(__dirname, "..", filePath);
+  fs.unlink(filePath, (err) => {
+    console.log(err);
+  });
+};
+
+exports.addCategory = async (req, res, next) => {
   let { name } = req.body;
 
   if (!req.file) {
@@ -12,150 +22,146 @@ exports.addCategory = (req, res, next) => {
     });
   }
 
-
   const image = req.file.path.replace("\\", "/");
-
-  const values = [name, image];
-
-  pool
-    .query(`INSERT INTO categories (name, image) VALUES ($1, $2)`, values)
-    .then((result) => {
-      if (result.command === "INSERT") {
-        return res.status(200).json({
-          error: false,
-          message: "Category Added succefully",
-        });
-      }
-      return throwError(400, "Something went wrong");
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
+  try {
+    const result = await Category.findOrCreate({
+      where: { name },
+      defaults: { name, image },
     });
+
+    if (!result[0]._options.isNewRecord) {
+      clearImage(image);
+      return res.status(401).json({
+        error: true,
+        message: "Category Already Exist",
+      });
+    }
+
+    return res.status(200).json({
+      error: false,
+      message: "Category Created Successfully",
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 };
 
-exports.updateCategory = (req, res, next) => {
+exports.updateCategory = async (req, res, next) => {
   let { name } = req.body;
+  const { id } = req.params;
   let image;
 
   if (req.file) {
     image = req.file.path.replace("\\", "/");
   }
 
-  const { id } = req.params;
-  const values = image ? [name, image, id] : [name, id];
+  try {
+    const result = await Category.update({ name, image }, { where: { id } });
+    if (typeof result[0] === "number") {
+      return res.status(200).json({
+        error: false,
+        message: "Category Updated Successfully",
+      });
+    }
 
-  pool
-    .query(
-      image
-        ? `UPDATE categories SET name = $1, image = $2 WHERE id = $3`
-        : `UPDATE categories SET name = $1 WHERE id = $2`,
-      values
-    )
-    .then((result) => {
-      if (result.command === "UPDATE") {
-        return res.status(200).json({
-          error: false,
-          message: "Category Updated successfully",
-        });
-      }
-      return throwError(400, "Something went wrong");
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
-    });
+    return throwError(400, "Something went wrong");
+  } catch (err) {
+    console.log(err);
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 };
 
-exports.getAllCategories = (req, res, next) => {
+exports.getAllCategories = async (req, res, next) => {
   const perPage = Number(req.query.limit);
   const currentPage = Number(req.query.offset);
   const isDeleted = req.query.is_deleted;
-  let query = `SELECT * FROM categories`;
-  let data = [];
 
-  if (isDeleted == 0 && perPage > 0 && currentPage > 0) {
-    query += ` WHERE is_deleted = $1 ORDER BY id ASC LIMIT $2 OFFSET $3`;
-    data = [isDeleted, perPage, (currentPage - 1) * perPage];
-  } else if (isDeleted == 0 && perPage === 0 && currentPage === 0) {
-    query += ` WHERE is_deleted = $1 ORDER BY id ASC`;
-    data = [isDeleted];
-  } else {
-    query += ` ORDER BY id ASC LIMIT $1 OFFSET $2`;
-    data = [perPage, (currentPage - 1) * perPage];
+  try {
+    const data = isDeleted
+      ? {
+          order: [["id", "DESC"]],
+          offset: (currentPage - 1) * perPage,
+          limit: perPage,
+          where: { is_deleted: isDeleted },
+        }
+      : {
+          order: [["id", "DESC"]],
+          offset: (currentPage - 1) * perPage,
+          limit: perPage,
+        };
+    const result = await Category.findAndCountAll(data);
+
+    const categories = result?.rows.map((category) => ({
+      id: category.id,
+      name: category.name,
+      image: `http://localhost:5000/${category.image}`,
+      is_deleted: category.is_deleted,
+      created_at: category.created_at,
+    }));
+
+    res.status(200).json({
+      error: false,
+      categories: {
+        count : result.count,
+        rows : categories
+      },
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
   }
-
-  pool
-    .query(query, data)
-    .then((result) => {
-      if (result.command === `SELECT`) {
-        const categories = result.rows.map((category) => ({
-          id: category.id,
-          image: `http://localhost:5000/${category.image}`,
-          name: category.name,
-          is_deleted: category.is_deleted,
-        }));
-        return res.status(200).json({
-          error: false,
-          categories,
-        });
-      }
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
-    });
 };
 
-exports.getCateogoryById = (req, res, next) => {
-  pool
-    .query(`SELECT * FROM categories WHERE id = $1`, [req.params.id])
-    .then((result) => {
-      if (result.command === `SELECT`) {
-        return res.status(200).json({
-          error: false,
-          category: result.rows[0],
-        });
-      }
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
-    });
-};
-
-exports.activateOrDeActivateCategoryById = (req, res, next) => {
+exports.getCateogoryById = async (req, res, next) => {
   const { id } = req.params;
-  const { active } = req.body;
+  try {
+    const result = await Category.findByPk(id);
+    if (result?.dataValues?.id) {
+      return res.status(200).json({
+        error: false,
+        Category: result,
+      });
+    }
+    return throwError(404, "Something went wrong");
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
 
-  const query = `UPDATE categories SET is_deleted = $1 WHERE id = $2 ;`;
-  const data = [active, id];
-  pool
-    .query(query, data)
-    .then((result) => {
-      if (result.rowCount !== 0) {
-        return res.status(200).json({
-          error: false,
-          message:
-            active == 0
-              ? `Category activated successfully`
-              : `Category deleted successfully`,
-        });
-      }
-      return throwError(400, "something went rowing");
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
-    });
+exports.activateOrDeActivateCategoryById = async (req, res, next) => {
+  const { id, isDeleted } = req.params;
+
+  try {
+    const result = await Category.update(
+      { is_deleted: isDeleted },
+      { where: { id } }
+    );
+
+    if (typeof result[0] === "number") {
+      return res.status(200).json({
+        error: false,
+        message:
+          isDeleted == 1
+            ? "Category Deleted Successfully"
+            : "Category Restored Successfully",
+      });
+    }
+    return throwError(404, "Something went wrong");
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 };

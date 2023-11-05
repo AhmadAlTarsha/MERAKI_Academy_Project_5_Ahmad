@@ -23,11 +23,11 @@ const MyPosts = () => {
       getAllPostsByUser({
         limit: limit,
         offset: offset,
-        active: 0,
       })
     )
-      .then((res) => { })
+      .then((res) => {})
       .catch((err) => {
+        console.error(err);
         setError(true);
       })
       .finally(() => {
@@ -38,12 +38,11 @@ const MyPosts = () => {
   const handlePage = (li, off) => {
     dispatch(
       getAllPostsByUser({
-        limit: li,
-        offset: off,
-        active: 0,
+        limit: limit,
+        offset: offset,
       })
     )
-      .then((res) => { })
+      .then((res) => {})
       .catch((err) => {
         setError(true);
       })
@@ -58,6 +57,7 @@ const MyPosts = () => {
     setError(false);
   };
 
+  console.log(isLoading);
   return (
     <>
       {isLoading ? (
@@ -70,8 +70,7 @@ const MyPosts = () => {
             <Pop_up message={""} onClose={handleCloseModal} />
           ) : (
             <div className="flex flex-col items-center">
-              {postsSelector?.posts?.map((post) => (
-
+              {postsSelector?.posts?.rows?.map((post) => (
                 <Post
                   setLoading={setIsLoading}
                   userAndPosterDivClassName={"border-b-[2px] pb-4"}
@@ -86,9 +85,9 @@ const MyPosts = () => {
                   }
                   bodyDivClassName={"my-4"}
                   key={post?.id}
-                  userName={post?.user?.fullName}
+                  userName={post?.user?.nick_name}
                   body={post?.description}
-                  imageSrc={post?.user?.userImage}
+                  imageSrc={post?.user?.image}
                   postImage={post?.main_image}
                   isShowButtons={true}
                   buttonsDivClass={"flex justify-center gap-10"}
@@ -98,7 +97,8 @@ const MyPosts = () => {
                   isShowComments={false}
                 />
               ))}
-              {postsSelector?.posts.length !== 0 && (
+              {postsSelector?.posts?.rows?.length <
+                postsSelector?.posts?.count && (
                 <Pagination
                   handlePage={handlePage}
                   limit={limit}

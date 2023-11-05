@@ -3,7 +3,7 @@ import axios from "axios";
 export const Registration = async (payload) => {
   try {
     const result = await axios.post(
-      `http://localhost:5000/users/register`,
+      `http://95.179.236.103:8080/api/users/register`,
       payload
     );
     console.log("from Api", result);
@@ -20,7 +20,7 @@ export const Registration = async (payload) => {
 };
 export const GetAllRoles = async () => {
   try {
-    const result = await axios.get(`http://localhost:5000/roles`);
+    const result = await axios.get(`http://95.179.236.103:8080/api/roles`);
     if (!result?.data?.error) {
         console.log(result);
       return result?.data;

@@ -20,14 +20,12 @@ const AdminPosts = () => {
   });
   const dispatch = useDispatch();
 
-  const rows = ["ID", "Author", "Post", "Comments", "Is Deleted", "Actions"];
+  const rows = ["ID", "Author", "Post", "Is Deleted", "Actions"];
 
   const handlePage = (li, off) => {
-    GetAllPosts(li, off, 0, 0, 1)
+    GetAllPosts(li, off, 1)
       .then((result) => {
-        if (!result.error) {
-          dispatch(setPosts(result));
-        }
+        dispatch(setPosts(result));
       })
       .catch((err) => {
         setIsError(true);
@@ -39,7 +37,7 @@ const AdminPosts = () => {
 
   useEffect(() => {
     return () => {
-      GetAllPosts(limit, offset, 0, 0, 1)
+      GetAllPosts(limit, offset, 1)
         .then((result) => {
           dispatch(setPosts(result));
         })
@@ -55,6 +53,8 @@ const AdminPosts = () => {
   const handleCloseModal = () => {
     setIsError(false);
   };
+
+  console.log(selectPosts);
 
   return (
     <div className="overflow-auto flex flex-col justify-center items-center w-full h-full">
@@ -76,7 +76,7 @@ const AdminPosts = () => {
                 setError={setIsError}
                 setLoading={setIsLoading}
               />
-              {selectPosts.posts.length !== 0 && (
+              {selectPosts.posts.rows.length < selectPosts.posts.count && (
                 <Pagination
                   handlePage={handlePage}
                   limit={limit}

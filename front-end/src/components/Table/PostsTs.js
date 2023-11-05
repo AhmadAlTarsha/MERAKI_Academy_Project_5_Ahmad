@@ -24,9 +24,8 @@ const PostsTs = ({
         {post?.id}
       </th>
 
-      <td className="px-6 py-4">{post?.user?.fullName}</td>
+      <td className="px-6 py-4">{post?.user?.nick_name}</td>
       <td className="px-6 py-4">{post?.description}</td>
-      <td className="px-6 py-4">{post?.comments?.length}</td>
       <td className="px-6 py-4">{post?.is_deleted}</td>
       <td className="px-6 py-4">
         <Button
@@ -47,7 +46,7 @@ const PostsTs = ({
           onClick={() => {
             DeletePost(post?.id, post?.is_deleted === 0 ? 1 : 0)
               .then((result) => {
-                return GetAllPosts(limit, offset, 0, 0, 1);
+                return GetAllPosts(limit, offset, 1);
               })
               .then((result2) => {
                 dispatch(setPosts(result2));

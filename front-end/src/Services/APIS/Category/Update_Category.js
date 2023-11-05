@@ -4,7 +4,7 @@ const token = JSON.parse(localStorage.getItem("token")) ?? {};
 
   try {
     const result = await axios.put(
-      `http://localhost:5000/categories/${id}`,
+      `http://95.179.236.103:8080/api/categories/${id}`,
       payload,
       {
         headers: {
@@ -15,7 +15,7 @@ const token = JSON.parse(localStorage.getItem("token")) ?? {};
     );
 
     if (!result?.data?.error) {
-      return result.data.message;
+      return result?.data?.message;
     }
   } catch (err) {
     throw err;
@@ -27,7 +27,7 @@ const token = JSON.parse(localStorage.getItem("token")) ?? {};
 
   try {
     const result = await axios.put(
-      `http://localhost:5000/subcategories/${id}`,
+      `http://95.179.236.103:8080/api/subcategories/${id}`,
       payload,
       {
         headers: {
@@ -38,7 +38,7 @@ const token = JSON.parse(localStorage.getItem("token")) ?? {};
     );
 
     if (!result?.data?.error) {
-      return result.data.message;
+      return result?.data?.message;
     }
   } catch (err) {
     throw err;

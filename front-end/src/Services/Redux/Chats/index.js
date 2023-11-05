@@ -53,7 +53,7 @@ export const chatSlice = createSlice({
         };
       })
       .addCase(getConversationRedux.fulfilled, (state, action) => {
-        state.conversations = action.payload;
+        state.conversations = action.payload?.rows;
       })
       .addCase(getConversationRedux.rejected, (state, action) => {
         state.errorMessage = {
@@ -95,7 +95,7 @@ export const chatSlice = createSlice({
       })
       .addCase(GetChatsByConversationId.rejected, (state, action) => {
         state.errorMessage = {
-          error: false,
+          error: true,
           message: action.error,
         };
       });

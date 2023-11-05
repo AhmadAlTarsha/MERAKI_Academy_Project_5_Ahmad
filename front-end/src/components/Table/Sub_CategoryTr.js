@@ -11,7 +11,7 @@ const Sub_CategoryTr = ({
   limit,
   offset,
   setError,
-  setLoading
+  setLoading,
 }) => {
   const navigate = useNavigate();
   return subCategoriesArray?.map((subcategory) => (
@@ -45,7 +45,7 @@ const Sub_CategoryTr = ({
         scope="row"
         className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
       >
-        {subcategory?.category_name}
+        {subcategory?.category?.name}
       </td>
 
       <td

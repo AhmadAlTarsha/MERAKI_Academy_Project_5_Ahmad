@@ -8,7 +8,7 @@ import Loader from "../../../components/Loader/Loader";
 import Pop_up from "../../../components/Dialog_Modal/Pop-up";
 
 const AdminServices = () => {
-  const [limit, setLimit] = useState(3);
+  const limit = 3;
   const [offset, setOffset] = useState(1);
   const dispatch = useDispatch();
   const [isError, setIsError] = useState(false);
@@ -20,7 +20,7 @@ const AdminServices = () => {
   });
 
   const handlePage = (li, off) => {
-    getAllServices(1, li, off)
+    getAllServices(li, off, 1)
       .then((services) => {
         dispatch(setServices(services));
       })
@@ -46,7 +46,7 @@ const AdminServices = () => {
 
   useEffect(() => {
     return () => {
-      getAllServices(limit, offset)
+      getAllServices(limit, offset, 1)
         .then((services) => {
           dispatch(setServices(services));
         })
@@ -75,7 +75,7 @@ const AdminServices = () => {
             <>
               <Tables
                 rows={rows}
-                cols={{ services: servicessSelector?.services }}
+                cols={servicessSelector}
                 dispatch={dispatch}
                 limit={limit}
                 offset={offset}
@@ -83,7 +83,8 @@ const AdminServices = () => {
                 setError={setIsError}
                 setLoading={setIsLoading}
               />
-              {servicessSelector?.services.length !== 0 && (
+              {servicessSelector?.services?.rows?.length <
+                servicessSelector?.services.count && (
                 <Pagination
                   handlePage={handlePage}
                   limit={limit}

@@ -21,7 +21,7 @@ const RegionForm = ({ handleSubmit, region, setRegion }) => {
           value={region.region}
           onChange={(e) =>
             setRegion({
-              region: e.target.value,
+              name: e.target.value,
             })
           }
         />

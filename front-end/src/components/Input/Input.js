@@ -12,6 +12,7 @@ function Input({
   value,
   labelDivClassname,
   inputDiv,
+  isRequired,
 }) {
   return (
     <div className={divClassName}>
@@ -27,6 +28,7 @@ function Input({
           onChange={onChange}
           className={inputClassName}
           value={value}
+          required={isRequired ?? false}
         />
       </div>
     </div>

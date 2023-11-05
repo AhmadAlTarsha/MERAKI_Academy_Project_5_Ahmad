@@ -11,7 +11,7 @@ import {
   GetSubCategories,
 } from "../../Services/APIS/Category/Get_Categories";
 import { setCategories } from "../../Services/Redux/Category";
-import { setSubCategories } from "../../Services/Redux/Sub_Categories"; 
+import { setSubCategories } from "../../Services/Redux/Sub_Categories";
 import CategoryForm from "./CategoryForm";
 import Sub_CategoryForm from "./Sub_CategoryForm";
 import RegionForm from "./RegionForm";
@@ -54,7 +54,7 @@ const Dialog_Modal = ({
   });
 
   const [region, setRegion] = useState({
-    region: "",
+    name: "",
   });
 
   const [isAdded, setIsAdded] = useState(false);
@@ -64,7 +64,7 @@ const Dialog_Modal = ({
     if (isCategory) {
       AddCategory(category)
         .then((result) => {
-          if (result?.includes("Category Added succefully")) {
+          if (result?.includes("Category Created Successfully")) {
             setIsAdded(true);
           }
         })
@@ -77,7 +77,7 @@ const Dialog_Modal = ({
     } else if (isSubCategory) {
       AddSubCategory(subCategory)
         .then((result) => {
-          if (result?.includes("Sub Category Added succefully")) {
+          if (result?.includes("Sub Category Created Successfully")) {
             setIsAdded(true);
           }
         })
@@ -90,7 +90,7 @@ const Dialog_Modal = ({
     } else if (isRegions) {
       AddRegion(region)
         .then((result) => {
-          if (result?.includes("Region Added")) {
+          if (result?.includes("Region Created Successfully")) {
             setIsAdded(true);
           }
         })
@@ -118,11 +118,7 @@ const Dialog_Modal = ({
         <Dialog.Title
           className={`text-${isForm ? "red" : "white"}-500 text-3xl`}
         >
-          {isForm
-            ? isSubCategory
-              ? `Sub Category Form`
-              : `Category Form`
-            : `${title}`}
+          {title}
         </Dialog.Title>
 
         {isForm &&
@@ -150,10 +146,6 @@ const Dialog_Modal = ({
 
         {isAdded && <h3>Added Succefully</h3>}
 
-        {/* buttonClassName : w-1/2 rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium 
-            text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 */}
-
-        {/*divClassName : w-5/6 self-center */}
         <Button
           buttonClassName={buttonClassName}
           buttonName={`${isForm ? "Cancel" : "Done"}`}
@@ -201,8 +193,8 @@ const Dialog_Modal = ({
               navigate("/Admin/categories");
             } else if (isUpdateSubCategory) {
               navigate("/Admin/sub-categories");
-            } else if(isOrder) {
-              navigate('/')
+            } else if (isOrder) {
+              navigate("/");
             }
           }}
         />

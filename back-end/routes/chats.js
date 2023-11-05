@@ -12,29 +12,29 @@ const {
 
 chatRouter.post(
   "/",
-  //   authentication,
-  //   authorization("CATEGORY_CONTROL"),
+  authentication,
+  authorization("conversation_control"),
   insertConversation
 );
 
 chatRouter.get(
   "/",
   authentication,
-  authorization("ORDER_CONTROL"),
+  authorization("conversation_control"),
   getConversations
 );
 
 chatRouter.get(
-  "/:conversationId",
+  "/:conversation_id",
   authentication,
-  authorization("ORDER_CONTROL"),
+  authorization("conversation_control"),
   getConversationChat
 );
 
 chatRouter.post(
   "/:conversation_id",
   authentication,
-  authorization("ORDER_CONTROL"),
+  authorization("conversation_control"),
   sendMessage
 );
 

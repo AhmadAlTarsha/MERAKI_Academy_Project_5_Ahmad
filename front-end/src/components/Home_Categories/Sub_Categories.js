@@ -1,6 +1,10 @@
 import React from "react";
 import Card from "../Card/Card";
-import { GetAllPosts } from "../../Services/APIS/Posts/GetAllPosts";
+import {
+  GetAllPosts,
+  GetAllPostsOnSubCategory,
+} from "../../Services/APIS/Posts/GetAllPosts";
+import { getAllServicesOnSubCategory } from "../../Services/APIS/Services/Get_Services";
 
 const Sub_Categories = ({
   subCategories,
@@ -13,6 +17,8 @@ const Sub_Categories = ({
   limit,
   offset,
   setError,
+  toggle,
+  setServices,
 }) => {
   return (
     <div className="bg-primary-5 mb-7 flex flex-col justify-center items-center rounded-lg mx-10">
@@ -23,24 +29,34 @@ const Sub_Categories = ({
             imageSrc={category.image}
             cardName={category.name}
             onClick={() => {
-              GetAllPosts(limit, offset, 0, category?.id, 0)
-                .then((posts) => {
-                  dispatch(setPosts(posts));
-                  posts?.forEach((el) => {
-                    GetCommentsByPost(el.id)
-                      .then((comments) => {
-                        postComments[`post_${el?.id}`] = comments;
-                        dispatch(setComments(postComments));
-                      })
-                      .catch((err) => {});
+              if (toggle) {
+                GetAllPostsOnSubCategory(limit, offset, category?.id, 0)
+                  .then((posts) => {
+                    dispatch(setPosts(posts));
+                    posts?.rows?.forEach((el) => {
+                      GetCommentsByPost(el?.id, 15, 1)
+                        .then((comments) => {
+                          postComments[`post_${el?.id}`] = comments;
+                          dispatch(setComments(postComments));
+                        })
+                        .catch((err) => {});
+                    });
+                  })
+                  .catch((err) => {
+                    setError(true);
+                  })
+                  .finally(() => {
+                    setLoading(false);
                   });
-                })
-                .catch((err) => {
-                  setError(true);
-                })
-                .finally(() => {
-                  setLoading(false);
-                });
+              } else {
+                getAllServicesOnSubCategory(category?.id, limit, offset, 0)
+                  .then((services) => {
+                    dispatch(setServices(services));
+                  })
+                  .catch((err) => {
+                    setError(err);
+                  });
+              }
             }}
           />
         ))}

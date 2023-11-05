@@ -55,7 +55,7 @@ const Sub_CategoryForm = ({ handleSubmit, subCategory, setSubCategory }) => {
             <option selected disabled>
               {"Category "}
             </option>
-            {categorySelect?.categories?.categories?.map((category) => (
+            {categorySelect.categories.rows?.map((category) => (
               <option value={category?.id}>{category?.name}</option>
             ))}
           </select>

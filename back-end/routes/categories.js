@@ -5,7 +5,7 @@ const {
   updateCategory,
   getAllCategories,
   getCateogoryById,
-  activateOrDeActivateCategoryById
+  activateOrDeActivateCategoryById,
 } = require("../controllers/categories");
 
 const { authentication } = require("../middlewares/authentication");
@@ -14,33 +14,30 @@ const { authorization } = require("../middlewares/authorization");
 categoryRouter.post(
   "/",
   authentication,
-  authorization("CATEGORY_CONTROL"),
+  authorization("add_category"),
   addCategory
 );
 
 categoryRouter.put(
   "/:id",
   authentication,
-  authorization("CATEGORY_CONTROL"),
+  authorization("edit_category"),
   updateCategory
 );
 
-categoryRouter.get(
-  "/",
-  getAllCategories
-);
+categoryRouter.get("/", getAllCategories);
 
 categoryRouter.get(
   "/:id",
   authentication,
-  authorization("CATEGORY_CONTROL"),
+  authorization("get_category"),
   getCateogoryById
 );
 
 categoryRouter.delete(
-  "/active/:id",
+  "/:id/:isDeleted",
   authentication,
-  authorization("CATEGORY_CONTROL"),
+  authorization("delete_category"),
   activateOrDeActivateCategoryById
 );
 

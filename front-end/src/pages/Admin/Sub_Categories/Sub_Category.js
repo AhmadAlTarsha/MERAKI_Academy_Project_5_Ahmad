@@ -32,15 +32,13 @@ const AdminSub_Category = () => {
   useEffect(() => {
     getSubCategory(id)
       .then((result) => {
-        if (!result?.error) {
-          setSubCategoryData({
-            id: result?.subCategory?.id,
-            name: result?.subCategory?.name,
-            image: `http://localhost:5000/${result.subCategory?.image}`,
-            category_name: result?.subCategory?.category_name,
-            category_id: result?.subCategory?.category_id,
-          });
-        }
+        setSubCategoryData({
+          id: result?.id,
+          name: result?.name,
+          image: `http://95.179.236.103:8080/api/${result?.image}`,
+          category_name: result?.Category?.name,
+          category_id: result?.Category?.id,
+        });
       })
       .catch((err) => {
         setIsError(true);
@@ -52,7 +50,7 @@ const AdminSub_Category = () => {
 
   useEffect(() => {
     return () => {
-      GetCategories(0, 0, 0)
+      GetCategories(15, 1, 0)
         .then((result) => {
           dispatch(setCategories(result));
         })
@@ -65,12 +63,21 @@ const AdminSub_Category = () => {
     };
   }, []);
 
+  const handleChange = (e) => {
+    setSubCategoryData({
+      ...subCategoryData,
+      [e.target.name]:
+        e.target.name === "image" ? e.target.files[0] : e.target.value,
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log("UPDATED ===> ", subCategoryData);
     UpdateSubCategory(subCategoryData.id, subCategoryData)
       .then((result) => {
-        setIsOpen(!isOpen);
+        if (result.includes("Sub Category Updated Successfully")) {
+          setIsOpen(!isOpen);
+        }
       })
       .catch((err) => {
         setIsError(true);
@@ -128,16 +135,8 @@ const AdminSub_Category = () => {
                     "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   }
                   type={"file"}
-                  name={""}
-                  onChange={(e) => {
-                    setSubCategoryData({
-                      id: subCategoryData.id,
-                      image: e.target.files[0],
-                      name: subCategoryData.name,
-                      category_name: subCategoryData.category_name,
-                      category_id: subCategoryData?.category_id,
-                    });
-                  }}
+                  name={"image"}
+                  onChange={(e) => handleChange(e)}
                 />
 
                 <Input
@@ -152,18 +151,10 @@ const AdminSub_Category = () => {
                     "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   }
                   type={"text"}
-                  name={""}
+                  name={"name"}
                   placeHolder={"Category Name"}
                   value={subCategoryData.name}
-                  onChange={(e) => {
-                    setSubCategoryData({
-                      id: subCategoryData.id,
-                      image: subCategoryData.image,
-                      name: e.target.value,
-                      category_name: subCategoryData.category_name,
-                      category_id: subCategoryData?.category_id,
-                    });
-                  }}
+                  onChange={(e) => handleChange(e)}
                 />
 
                 <div className="flex flex-col mb-2">
@@ -173,23 +164,16 @@ const AdminSub_Category = () => {
                     </label>
                   </div>
                   <select
-                    onChange={(e) =>
-                      setSubCategoryData({
-                        id: subCategoryData.id,
-                        image: subCategoryData.image,
-                        name: subCategoryData.name,
-                        category_name: subCategoryData.category_name,
-                        category_id: e.target.value,
-                      })
-                    }
+                    onChange={(e) => handleChange(e)}
+                    name="category_id"
                     id="countries"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   >
-                    <option value={subCategoryData?.category_id} selected>
+                    <option value={subCategoryData?.category_id} disabled>
                       {subCategoryData?.category_name}
                     </option>
-                    {categorySelect.categories.categories
-                      .filter(
+                    {categorySelect?.categories?.rows
+                      ?.filter(
                         (category) =>
                           category.id !== subCategoryData.category_id
                       )
