@@ -5,7 +5,7 @@ export const sendMessage = async (reciver_id, message, conversationId) => {
 
   try {
     const result = await axios.post(
-      `http://95.179.236.103:8080/api/chats/${conversationId}`,
+      `https://tintin-bqtw.onrender.com/chats/${conversationId}`,
       {
         reciver_id,
         message,

@@ -35,7 +35,7 @@ const AdminSub_Category = () => {
         setSubCategoryData({
           id: result?.id,
           name: result?.name,
-          image: `http://95.179.236.103:8080/api/${result?.image}`,
+          image: `https://tintin-bqtw.onrender.com/${result?.image}`,
           category_name: result?.Category?.name,
           category_id: result?.Category?.id,
         });

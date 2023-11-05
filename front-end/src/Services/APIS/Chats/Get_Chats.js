@@ -3,7 +3,7 @@ import axios from "axios";
 export const getChatsByConversation = async (id) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
-    const result = await axios.get(`http://95.179.236.103:8080/api/chats/${id}`, {
+    const result = await axios.get(`https://tintin-bqtw.onrender.com/chats/${id}`, {
       headers: {
         Authorization: `Bearer ${token?.token}`,
       },
