@@ -31,7 +31,7 @@ function NewPost({
 
   const handleCategoryClicked = (id) => {
     if (isCategoryClicked) {
-      GetSubCategoriesOnCategory(id)
+      GetSubCategoriesOnCategory(15, 1, id, 0)
         .then((result) => {
           dispatch(setSubCategories(result));
         })
@@ -57,24 +57,31 @@ function NewPost({
   const handleNewServiceOrPOST = (e) => {
     e.preventDefault();
     if (toggle) {
+      // console.log(newPost);
       CreateNewPost(newPost)
         .then((result) => {
-          console.log(result);
+          // console.log(result);
         })
         .catch((err) => {
-          setError(true);
+          if (err?.response?.data?.message === "Unauthorized") {
+            return setError({ message: "You Are Unauthorized To Add Post" });
+          }
+          setError(err);
         })
         .finally(() => {
           setLoading(false);
         });
     } else {
-      console.log(newService);
+      // console.log(newService);
       addNewServices(newService)
         .then((result) => {
-          console.log(result);
+          // console.log(result);
         })
         .catch((err) => {
-          setError(true);
+          if (err?.response?.data?.message === "Unauthorized") {
+            return setError({ message: "You Are Unauthorized To Add Service" });
+          }
+          setError(err);
         })
         .finally(() => {
           setLoading(false);
@@ -83,8 +90,8 @@ function NewPost({
   };
   const selectcategory = useSelector((state) => {
     return {
-      categories: state?.categories?.categories?.categories,
-      subcategories: state?.subCategories.subCategories,
+      categories: state?.categories,
+      subcategories: state?.subCategories,
     };
   });
 
@@ -98,7 +105,10 @@ function NewPost({
 
           <style>body</style>
 
-          <div className="editor bg-[#FFFFFF] mx-auto w-10/12 flex flex-col text-gray-800 border border-gray-300 p-4 shadow-lg max-w-2xl rounded-lg mb-6">
+          <form
+            onSubmit={handleNewServiceOrPOST}
+            className="editor bg-[#FFFFFF] mx-auto w-10/12 flex flex-col text-gray-800 border border-gray-300 p-4 shadow-lg max-w-2xl rounded-lg mb-6"
+          >
             <div className="flex flex-col mb-3">
               <div className="mb-2">
                 <label htmlFor="category">Category</label>
@@ -111,11 +121,12 @@ function NewPost({
                   handleCategoryClicked(e.target.value);
                 }}
                 name="category_id"
+                required
               >
-                <option defaultValue="" disabled selected>
-                  Select category
+                <option value="" disabled selected>
+                  Select Category
                 </option>
-                {selectcategory?.categories?.map((cat, i) => {
+                {selectcategory?.categories?.categories?.rows?.map((cat, i) => {
                   return (
                     <option key={i} value={cat.id}>
                       {cat.name}
@@ -134,9 +145,10 @@ function NewPost({
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   onClick={(e) => handleChange(e)}
                   name="sub_category_id"
+                  required
                 >
                   <option disabled defaultValue="">
-                    select Sub Category
+                    Select Sub Category
                   </option>
                   {selectcategory?.subcategories?.subCategories?.map(
                     (sub_cat, i) => {
@@ -154,12 +166,11 @@ function NewPost({
             <textarea
               className="description bg-gray-100 sec p-3 h-60 border border-gray-300 outline-none mt-2 rounded-lg mb-3"
               onChange={(e) => handleChange(e)}
-              spellcheck="false"
+              spellCheck="false"
               placeholder="Write your post here"
               name="description"
-            >
-              {postBody}
-            </textarea>
+              required
+            ></textarea>
 
             <input
               onChange={(e) => {
@@ -170,7 +181,7 @@ function NewPost({
               id="profile-image"
               accept="image/*"
               className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-3"
-              required=""
+              required
             />
 
             <div className="buttons flex">
@@ -181,16 +192,10 @@ function NewPost({
                 ></Button>
               </div>
               <div className="btn border border-indigo-500 p-1 px-4 font-semibold cursor-pointer text-gray-200 ml-2 bg-indigo-500">
-                <Button
-                  onClick={(e) => {
-                    console.log(newPost);
-                    handleNewServiceOrPOST(e);
-                  }}
-                  buttonName={"Post"}
-                ></Button>
+                <Button buttonName={"Post"}></Button>
               </div>
             </div>
-          </div>
+          </form>
         </>
       ) : (
         <>
@@ -198,9 +203,11 @@ function NewPost({
             Add New Service
           </div>
 
-          <style>body</style>
-          <div className="editor mx-auto w-10/12 flex flex-col text-gray-800 border border-gray-300 p-4 shadow-lg max-w-2xl bg-[#FFFFFF] rounded-lg mb-6">
-            <div className="flex flex-col mb-2">
+          <form
+            onSubmit={handleNewServiceOrPOST}
+            className="editor mx-auto w-10/12 flex flex-col text-gray-800 border border-gray-300 p-4 shadow-lg max-w-2xl bg-[#FFFFFF] rounded-lg mb-6"
+          >
+            <div className="flex flex-col">
               <div className="mb-2">
                 <label htmlFor="category">Category</label>
               </div>
@@ -209,20 +216,19 @@ function NewPost({
                 onChange={(e) => {
                   handleChange(e);
 
-                  GetSubCategoriesOnCategory(e?.target?.value)
+                  GetSubCategoriesOnCategory(15, 1, e?.target?.value, 0)
                     .then((result) => {
                       dispatch(setSubCategories(result));
                     })
-                    .catch((err) => {
-                      console.log(err);
-                    });
+                    .catch((err) => {});
                 }}
                 name="category_id"
+                required
               >
                 <option value="" disabled selected>
                   Select categories
                 </option>
-                {selectcategory?.categories?.map((cat, i) => {
+                {selectcategory?.categories?.categories?.rows?.map((cat, i) => {
                   return (
                     <option key={i} value={cat?.id}>
                       {cat.name}
@@ -231,20 +237,18 @@ function NewPost({
                 })}
               </select>
             </div>
-            <div className="flex flex-col mb-2">
-              <div className="mb-2 ">
+            <div className="flex flex-col">
+              <div className="">
                 <label htmlFor="Subcategory">Sub Category</label>
               </div>
               <select
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                onClick={(e) => {
-                  handleChange(e);
-                  // console.log(e.target.value);
-                }}
+                onClick={(e) => handleChange(e)}
                 name="sub_category_id"
+                required
               >
-                <option disabled defaultValue="">
-                  select sub_category
+                <option disabled defaultValue="" selected>
+                  Select Sub Category
                 </option>
                 {selectcategory?.subcategories?.subCategories?.map(
                   (sub_cat, i) => {
@@ -259,25 +263,23 @@ function NewPost({
             </div>
             <Input
               labelName={"Title"}
-              labelClassName={
-                "block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              }
-              divClassName={""}
+              labelClassName={""}
+              divClassName={"mb-3"}
               name={"title"}
               type={"text"}
               inputClassName={className}
               placeHolder={"title"}
               onChange={(e) => handleChange(e)}
+              isRequired={true}
             />
             <textarea
               name="description"
               onChange={(e) => handleChange(e)}
               className="description bg-gray-100 sec p-3 h-60 border border-gray-300 outline-none mt-2 rounded-lg mb-3"
-              spellcheck="false"
+              spellCheck="false"
               placeholder="write Description about your services"
-            >
-              {"postBody"}
-            </textarea>
+              required
+            ></textarea>
             <input
               onChange={(e) => handleChange(e)}
               type="file"
@@ -285,20 +287,17 @@ function NewPost({
               id="profile-image"
               accept="image/*"
               className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-3"
-              required=""
+              required
             />
             <div className="buttons flex">
               <div className="btn border border-gray-300 p-1 px-4 font-semibold cursor-pointer text-gray-500 ml-auto">
                 <Button onClick={() => {}} buttonName={"Cancel"} />
               </div>
               <div className="btn border border-indigo-500 p-1 px-4 font-semibold cursor-pointer text-gray-200 ml-2 bg-indigo-500">
-                <Button
-                  onClick={(e) => handleNewServiceOrPOST(e)}
-                  buttonName={"Add"}
-                />
+                <Button buttonName={"Add"} />
               </div>
             </div>
-          </div>
+          </form>
         </>
       )}
     </>

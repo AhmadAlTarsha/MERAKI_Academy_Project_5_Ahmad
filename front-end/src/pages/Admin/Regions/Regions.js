@@ -60,7 +60,7 @@ const AdminRegions = () => {
   };
 
   return (
-    <div className="overflow-auto flex flex-col justify-center items-center w-full h-full">
+    <div className="flex flex-col items-center justify-center h-full">
       {isLoading ? (
         <Loader />
       ) : (
@@ -80,7 +80,7 @@ const AdminRegions = () => {
                   dialogPanelClassName={
                     "rounded h-1/2 w-1/2 flex flex-col bg-gray-800 text-white py-8 px-4 text-center"
                   }
-                  title={""}
+                  title={"Region Form"}
                   isRegions={true}
                   limit={limit}
                   offset={offset}
@@ -106,7 +106,8 @@ const AdminRegions = () => {
                 setError={setIsError}
                 setLoading={setIsLoading}
               />
-              {selectRgions.regions.length !== 0 && (
+              {selectRgions?.regions?.rows?.length <
+                selectRgions?.regions?.count && (
                 <Pagination
                   handlePage={handlePage}
                   limit={limit}

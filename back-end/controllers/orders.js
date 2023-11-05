@@ -1,262 +1,282 @@
-const pool = require("../models/DB");
+const Order = require("../models/Order");
+const SubCategory = require("../models/Sub_categories");
+const User = require("../models/user");
+const Status = require("../models/Status");
 const { throwError } = require("../middlewares/throwError");
 
-exports.addOrder = (req, res, next) => {
-  let { serverices_provider_id, sub_category_id, review } = req.body;
+exports.addOrder = async (req, res, next) => {
+  let { provider_id, sub_category_id, service_id, review } = req.body;
 
-  const values = [
-    req?.token?.user?.id,
-    serverices_provider_id,
-    sub_category_id,
-    review,
-  ];
-
-  pool
-    .query(
-      `INSERT INTO orders (customer_id, serverices_provider_id, sub_category_id, review) VALUES ($1, $2, $3, $4)`,
-      values
-    )
-    .then((result) => {
-      if (result.command === "INSERT") {
-        return res.status(200).json({
-          error: false,
-          message: "Order Added succefully",
-        });
-      }
-      return throwError(400, "Something went wrong");
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
+  try {
+    const addOrder = await Order.findOrCreate({
+      where: {
+        customer_id: req.token.user.id,
+        service_id,
+      },
+      defaults: {
+        customer_id: req.token.user.id,
+        service_id,
+        provider_id,
+        sub_category_id,
+        review,
+      },
     });
+
+    if (addOrder[0]._options.isNewRecord) {
+      // io.getIo().emit("services", { action: "create" });
+      return res.status(401).json({
+        error: true,
+        message: "Order added Successfully",
+      });
+    }
+    return throwError(404, "Something went wrong");
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 };
 
-exports.getAllOrders = (req, res, next) => {
+exports.getAllOrders = async (req, res, next) => {
   const perPage = Number(req.query.limit);
   const currentPage = Number(req.query.offset);
-  const status = Number(req.query.stauts);
+  const { status_id } = req.query;
 
-  let query = `SELECT orders.id, orders.customer_id, orders.serverices_provider_id, orders.status_id, orders.sub_category_id, orders.review, orders.created_at,
-  customers.first_name AS customerFirstName, customers.last_name AS customerLastName, customers.email AS customerEmail,
-  providers.first_name AS providerFirstName, providers.last_name AS providerLastName, providers.email AS providerEmail,
-  statuses.name, sub_categories.name AS subCategoryName, categories.name AS categoryName, categories.id AS categoryId
-  FROM orders
-  INNER JOIN users customers ON customers.id = orders.customer_id
-  INNER JOIN users providers ON providers.id = orders.serverices_provider_id
-  INNER JOIN statuses ON statuses.id = orders.status_id
-  INNER JOIN sub_categories ON sub_categories.id = orders.sub_category_id
-  INNER JOIN categories ON sub_categories.category_id = categories.id`;
-  let data = [];
-
-  if (perPage && currentPage && status) {
-    query += ` WHERE orders.status_id = $1 ORDER BY orders.id ASC LIMIT $2 OFFSET $3`;
-    data = [status, perPage, (currentPage - 1) * perPage];
-  } else if (perPage && currentPage) {
-    query += ` ORDER BY orders.id ASC LIMIT $1 OFFSET $2`;
-    data = [perPage, (currentPage - 1) * perPage];
-  } else if (!perPage && !currentPage && status) {
-    query += ` WHERE orders.status_id = $1 ORDER BY orders.id ASC`;
-    data = [status];
-  } else {
-    query = query;
-  }
-
-  pool
-    .query(query, data)
-    .then((result) => {
-      if (result.command === `SELECT`) {
-        const orders = result?.rows.map((order) => ({
-          id: order.id,
-          customer: {
-            id: order.customer_id,
-            full_name: `${order.customerfirstname} ${order.customerlastname}`,
-            email: order.customeremail,
-          },
-          provider: {
-            id: order.serverices_provider_id,
-            full_name: `${order.providerfirstname} ${order.providerlastname}`,
-            email: order.provideremail,
-          },
-          review: order.review,
-          category: {
-            id: order.categoryid,
-            name: order.categoryname,
-            sub_category: {
-              id: order.sub_category_id,
-              name: order.subcategoryname,
-            },
-          },
-          status: {
-            id: order.status_id,
-            name: order.name,
-          },
-          created_at: order.created_at,
-        }));
-        return res.status(200).json({
-          error: false,
-          orders,
-        });
+  const data = status_id
+    ? {
+        include: [
+          { model: User, required: true, as: "customer" },
+          { model: User, required: true, as: "provider" },
+          { model: SubCategory, required: true },
+          { model: Status, required: true },
+        ],
+        order: [["id", "DESC"]],
+        offset: (currentPage - 1) * perPage,
+        limit: perPage,
+        where: { status_id },
       }
-      return throwError(400, "Something went wrong");
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
+    : {
+        include: [
+          { model: User, required: true, as: "customer" },
+          { model: User, required: true, as: "provider" },
+          { model: SubCategory, required: true },
+          { model: Status, required: true },
+        ],
+        order: [["id", "DESC"]],
+        offset: (currentPage - 1) * perPage,
+        limit: perPage,
+      };
+
+  try {
+    const ordersData = await Order.findAndCountAll(data);
+    const orders = ordersData.rows.map((order) => {
+      return {
+        ...order.dataValues,
+        customer: {
+          id: order.dataValues.customer.id,
+          full_name: `${order.dataValues.customer.first_name} ${order.dataValues.customer.last_name}`,
+          email: order.dataValues.customer.email,
+          phone: order.dataValues.customer.phone,
+        },
+        provider: {
+          id: order.dataValues.provider.id,
+          full_name: `${order.dataValues.provider.first_name} ${order.dataValues.provider.last_name}`,
+          email: order.dataValues.provider.email,
+          phone: order.dataValues.provider.phone,
+        },
+        sub_category: {
+          ...order.dataValues.sub_category.dataValues,
+        },
+        status: {
+          ...order.dataValues.status.dataValues,
+        },
+      };
     });
+    res.status(200).json({
+      error: false,
+      orders: {
+        count: ordersData.count,
+        rows: orders,
+      },
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 };
 
-exports.getOrdersByCustomerId = (req, res, next) => {
+exports.getOrdersByCustomerId = async (req, res, next) => {
   const perPage = Number(req.query.limit);
   const currentPage = Number(req.query.offset);
-  const status = Number(req.query.stauts);
+  const { status_id } = req.query;
+  const { customer_id } = req.params;
 
-  let query = `SELECT orders.id, orders.customer_id, orders.serverices_provider_id, orders.status_id, orders.sub_category_id, orders.review, orders.created_at,
-  customers.first_name AS customerFirstName, customers.last_name AS customerLastName, customers.email AS customerEmail,
-  providers.first_name AS providerFirstName, providers.last_name AS providerLastName, providers.email AS providerEmail,
-  statuses.name, sub_categories.name AS subCategoryName, categories.name AS categoryName, categories.id AS categoryId
-  FROM orders
-  INNER JOIN users customers ON customers.id = orders.customer_id
-  INNER JOIN users providers ON providers.id = orders.serverices_provider_id
-  INNER JOIN statuses ON statuses.id = orders.status_id
-  INNER JOIN sub_categories ON sub_categories.id = orders.sub_category_id
-  INNER JOIN categories ON sub_categories.category_id = categories.id`;
-  let data = [];
-
-  if (perPage && currentPage && status) {
-    query += ` WHERE orders.status_id = $1 AND orders.customer_id = $2 ORDER BY orders.id ASC LIMIT $3 OFFSET $4`;
-    data = [status, req?.token?.user?.id, perPage, (currentPage - 1) * perPage];
-  } else if (perPage && currentPage) {
-    query += ` WHERE orders.customer_id = $1 ORDER BY orders.id ASC LIMIT $2 OFFSET $3`;
-    data = [req?.token?.user?.id, perPage, (currentPage - 1) * perPage];
-  } else if (!perPage && !currentPage && status) {
-    query += ` WHERE orders.status_id = $1 AND orders.customer_id = $2 ORDER BY orders.id ASC`;
-    data = [status, req?.token?.user?.id];
-  } else {
-    query = query;
-  }
-
-  pool
-    .query(query, data)
-    .then((result) => {
-      if (result.command === `SELECT`) {
-        const orders = result?.rows.map((order) => ({
-          id: order.id,
-          customer: {
-            id: order.customer_id,
-            full_name: `${order.customerfirstname} ${order.customerlastname}`,
-            email: order.customeremail,
-          },
-          provider: {
-            id: order.serverices_provider_id,
-            full_name: `${order.providerfirstname} ${order.providerlastname}`,
-            email: order.provideremail,
-          },
-          review: order.review,
-          category: {
-            id: order.categoryid,
-            name: order.categoryname,
-            sub_category: {
-              id: order.sub_category_id,
-              name: order.subcategoryname,
-            },
-          },
-          status: {
-            id: order.status_id,
-            name: order.name,
-          },
-          created_at: order.created_at,
-        }));
-        return res.status(200).json({
-          error: false,
-          orders,
-        });
+  const data = status_id
+    ? {
+        include: [
+          { model: User, required: true, as: "customer" },
+          { model: User, required: true, as: "provider" },
+          { model: SubCategory, required: true },
+          { model: Status, required: true },
+        ],
+        order: [["id", "DESC"]],
+        offset: (currentPage - 1) * perPage,
+        limit: perPage,
+        where: { status_id, customer_id },
       }
-      return throwError(400, "Something went wrong");
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
+    : {
+        include: [
+          { model: User, required: true, as: "customer" },
+          { model: User, required: true, as: "provider" },
+          { model: SubCategory, required: true },
+          { model: Status, required: true },
+        ],
+        order: [["id", "DESC"]],
+        offset: (currentPage - 1) * perPage,
+        limit: perPage,
+        where: { customer_id },
+      };
+
+  try {
+    const ordersData = await Order.findAndCountAll(data);
+    const orders = ordersData.rows.map((order) => {
+      return {
+        ...order.dataValues,
+        customer: {
+          id: order.dataValues.customer.id,
+          full_name: `${order.dataValues.customer.first_name} ${order.dataValues.customer.last_name}`,
+          email: order.dataValues.customer.email,
+          phone: order.dataValues.customer.phone,
+        },
+        provider: {
+          id: order.dataValues.provider.id,
+          full_name: `${order.dataValues.provider.first_name} ${order.dataValues.provider.last_name}`,
+          email: order.dataValues.provider.email,
+          phone: order.dataValues.provider.phone,
+        },
+        sub_category: {
+          ...order.dataValues.sub_category.dataValues,
+        },
+        status: {
+          ...order.dataValues.status.dataValues,
+        },
+      };
     });
+    res.status(200).json({
+      error: false,
+      orders: {
+        count: ordersData.count,
+        rows: orders,
+      },
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 };
 
-exports.getOrdersByProviderId = (req, res, next) => {
+exports.getOrdersByProviderId = async (req, res, next) => {
   const perPage = Number(req.query.limit);
   const currentPage = Number(req.query.offset);
-  const status = Number(req.query.stauts);
+  const { status_id } = req.query;
+  const { provider_id } = req.params;
 
-  let query = `SELECT orders.id, orders.customer_id, orders.serverices_provider_id, orders.status_id, orders.sub_category_id, orders.review, orders.created_at,
-  customers.first_name AS customerFirstName, customers.last_name AS customerLastName, customers.email AS customerEmail,
-  providers.first_name AS providerFirstName, providers.last_name AS providerLastName, providers.email AS providerEmail,
-  statuses.name, sub_categories.name AS subCategoryName, categories.name AS categoryName, categories.id AS categoryId
-  FROM orders
-  INNER JOIN users customers ON customers.id = orders.customer_id
-  INNER JOIN users providers ON providers.id = orders.serverices_provider_id
-  INNER JOIN statuses ON statuses.id = orders.status_id
-  INNER JOIN sub_categories ON sub_categories.id = orders.sub_category_id
-  INNER JOIN categories ON sub_categories.category_id = categories.id`;
-  let data = [];
-
-  if (perPage && currentPage && status) {
-    query += ` WHERE orders.status_id = $1 AND orders.serverices_provider_id = $2 ORDER BY orders.id ASC LIMIT $3 OFFSET $4`;
-    data = [status, req?.token?.user?.id, perPage, (currentPage - 1) * perPage];
-  } else if (perPage && currentPage) {
-    query += ` ORDER BY orders.id ASC LIMIT $1 OFFSET $2`;
-    data = [perPage, (currentPage - 1) * perPage];
-  } else if (!perPage && !currentPage && status) {
-    query += ` WHERE orders.status_id = $1 AND orders.serverices_provider_id = $2 ORDER BY orders.id ASC`;
-    data = [status, req?.token?.user?.id];
-  } else {
-    query = query;
-  }
-
-  pool
-    .query(query, data)
-    .then((result) => {
-      if (result.command === `SELECT`) {
-        const orders = result?.rows.map((order) => ({
-          id: order.id,
-          customer: {
-            id: order.customer_id,
-            full_name: `${order.customerfirstname} ${order.customerlastname}`,
-            email: order.customeremail,
-          },
-          provider: {
-            id: order.serverices_provider_id,
-            full_name: `${order.providerfirstname} ${order.providerlastname}`,
-            email: order.provideremail,
-          },
-          review: order.review,
-          category: {
-            id: order.categoryid,
-            name: order.categoryname,
-            sub_category: {
-              id: order.sub_category_id,
-              name: order.subcategoryname,
-            },
-          },
-          status: {
-            id: order.status_id,
-            name: order.name,
-          },
-          created_at: order.created_at,
-        }));
-        return res.status(200).json({
-          error: false,
-          orders,
-        });
+  const data = status_id
+    ? {
+        include: [
+          { model: User, required: true, as: "customer" },
+          { model: User, required: true, as: "provider" },
+          { model: SubCategory, required: true },
+          { model: Status, required: true },
+        ],
+        order: [["id", "DESC"]],
+        offset: (currentPage - 1) * perPage,
+        limit: perPage,
+        where: { status_id, provider_id },
       }
-      return throwError(400, "Something went wrong");
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
+    : {
+        include: [
+          { model: User, required: true, as: "customer" },
+          { model: User, required: true, as: "provider" },
+          { model: SubCategory, required: true },
+          { model: Status, required: true },
+        ],
+        order: [["id", "DESC"]],
+        offset: (currentPage - 1) * perPage,
+        limit: perPage,
+        where: { provider_id },
+      };
+
+  try {
+    const ordersData = await Order.findAndCountAll(data);
+    const orders = ordersData.rows.map((order) => {
+      return {
+        ...order.dataValues,
+        customer: {
+          id: order.dataValues.customer.id,
+          full_name: `${order.dataValues.customer.first_name} ${order.dataValues.customer.last_name}`,
+          email: order.dataValues.customer.email,
+          phone: order.dataValues.customer.phone,
+        },
+        provider: {
+          id: order.dataValues.provider.id,
+          full_name: `${order.dataValues.provider.first_name} ${order.dataValues.provider.last_name}`,
+          email: order.dataValues.provider.email,
+          phone: order.dataValues.provider.phone,
+        },
+        sub_category: {
+          ...order.dataValues.sub_category.dataValues,
+        },
+        status: {
+          ...order.dataValues.status.dataValues,
+        },
+      };
     });
+    res.status(200).json({
+      error: false,
+      orders: {
+        count: ordersData.count,
+        rows: orders,
+      },
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.updateOrderStatus = async (req, res, next) => {
+  const { id, status } = req.params;
+  let message = "";
+
+  try {
+    const result = await Order.update({ status_id: status }, { where: { id } });
+
+    if (typeof result[0] === "number") {
+      if (status == 2) {
+        message = `Order Accepted`;
+      } else if (status == 3) {
+        message = `Order Rejected`;
+      } else if (status == 4) {
+        message = `Order Canceled`;
+      }
+      return res.status(200).json({
+        error: false,
+        message,
+      });
+    }
+    return throwError(400, "Something went wrong");
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 };

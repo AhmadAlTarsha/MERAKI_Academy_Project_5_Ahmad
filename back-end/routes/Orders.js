@@ -6,35 +6,43 @@ const {
   getAllOrders,
   getOrdersByCustomerId,
   getOrdersByProviderId,
+  updateOrderStatus
 } = require("../controllers/orders");
 const ordersRouter = express.Router();
 
 ordersRouter.post(
   "/",
   authentication,
-  authorization("ORDER_CONTROL"),
+  authorization("add_orders"),
   addOrder
 );
 
 ordersRouter.get(
   "/",
   authentication,
-  authorization("ORDER_CONTROL"),
+  authorization("get_orders"),
   getAllOrders
 );
 
 ordersRouter.get(
-  "/customer/",
+  "/customer/:customer_id",
   authentication,
-  authorization("ORDER_CONTROL"),
+  authorization("get_orders"),
   getOrdersByCustomerId
 );
 
 ordersRouter.get(
-  "/provider/",
+  "/provider/:provider_id",
   authentication,
-  authorization("ORDER_CONTROL"),
+  authorization("get_orders"),
   getOrdersByProviderId
+);
+
+ordersRouter.put(
+  "/:id/:status",
+  authentication,
+  authorization("update_status"),
+  updateOrderStatus
 );
 
 module.exports = ordersRouter;

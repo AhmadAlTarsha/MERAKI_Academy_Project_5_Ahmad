@@ -1,30 +1,31 @@
-const pool = require("../models/DB");
+// const pool = require("../models/DB");
 const { throwError } = require("../middlewares/throwError");
+const Region = require("../models/regions");
 
 exports.getAllRegions = async (req, res, next) => {
   const perPage = Number(req.query.limit);
   const currentPage = Number(req.query.offset);
-  const isDeleted = Number(req.query.is_deleted);
+  const { is_deleted } = req.query;
 
-  let query = `SELECT * FROM regions`;
-  let data = [];
-
-  if (perPage && currentPage && isDeleted) {
-    query += ` WHERE is_deleted = $1 ORDER BY id ASC LIMIT $2 OFFSET $3`;
-    data = [isDeleted, perPage, (currentPage - 1) * perPage];
-  } else if (perPage && currentPage) {
-    query += ` ORDER BY id ASC LIMIT $1 OFFSET $2`;
-    data = [perPage, (currentPage - 1) * perPage];
-  } else if (!perPage && !currentPage) {
-    query += ` WHERE is_deleted = 0 ORDER BY id ASC`;
-  }
+  const data = is_deleted
+    ? {
+        order: [["id", "DESC"]],
+        offset: (currentPage - 1) * perPage,
+        limit: perPage,
+        where: { is_deleted },
+      }
+    : {
+        order: [["id", "DESC"]],
+        offset: (currentPage - 1) * perPage,
+        limit: perPage,
+      };
 
   try {
-    const response = await pool.query(query, data);
+    const regions = await Region.findAndCountAll(data);
 
     res.status(200).json({
       error: false,
-      regions: response.rows,
+      regions,
     });
   } catch (err) {
     if (!err.statusCode) {
@@ -35,14 +36,26 @@ exports.getAllRegions = async (req, res, next) => {
 };
 
 exports.addNewRegions = async (req, res, next) => {
-  const { region } = req.body;
-  const value = [region];
-  const query = `INSERT INTO regions (region) VALUES ($1)`;
+  const { name } = req.body;
+
   try {
-    const response = await pool.query(query, value);
-    res.status(200).json({
+    const newRegion = await Region.findOrCreate({
+      where: { name },
+      defaults: {
+        name,
+      },
+    });
+
+    if (!newRegion[0]._options.isNewRecord) {
+      return res.status(401).json({
+        error: true,
+        message: "Regions Already Exist",
+      });
+    }
+    return res.status(200).json({
       error: false,
-      message: "Region Added",
+      user: newRegion[0],
+      message: "Region Created Successfully",
     });
   } catch (err) {
     if (!err.statusCode) {
@@ -53,19 +66,20 @@ exports.addNewRegions = async (req, res, next) => {
 };
 
 exports.deleteRegionsById = async (req, res, next) => {
-  const { id } = req.params;
-  const { active } = req.body;
-  const query = `UPDATE regions SET is_deleted = $1 WHERE id = $2`;
-  const value = [active, id];
+  const { id, is_deleted } = req.params;
 
   try {
-    const response = await pool.query(query, value);
-    if (response.rowCount !== 0) {
-      res.status(200).json({
+    const isDeleted = await Region.update({ is_deleted }, { where: { id } });
+    if (typeof isDeleted[0] === "number") {
+      return res.status(200).json({
         error: false,
-        message: active == 1 ? `Region Deleted` : `Region Activated`,
+        message:
+          is_deleted == 1
+            ? "Region Deleted Successfully"
+            : "Region Restored Successfully",
       });
     }
+    return throwError(404, "Something went wrong");
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

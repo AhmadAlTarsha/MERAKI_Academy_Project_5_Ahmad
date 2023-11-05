@@ -110,9 +110,8 @@ export const authSlice = createSlice({
         };
       })
       .addCase(getUser.fulfilled, (state, action) => {
-        // console.log("GETTING USER ===> ", action.payload);
         state.user = {
-          id: action?.payload?.user?.user_id,
+          id: action?.payload?.user?.id,
           first_name: action?.payload?.user?.first_name,
           last_name: action?.payload?.user?.last_name,
           // fullName: `${action?.payload?.user?.first_name} ${action?.payload?.user?.last_name}`,
@@ -120,22 +119,21 @@ export const authSlice = createSlice({
           token: JSON.parse(localStorage?.getItem("token"))?.token,
           email: action?.payload?.user?.email,
           image: action?.payload?.user?.image,
-          role: action?.payload?.user?.role_id,
-          region: action?.payload?.user?.user_region,
+          role: action?.payload?.user?.user_type_id,
+          region: action?.payload?.user?.region_id,
         };
         localStorage.removeItem("localUser");
         localStorage.setItem(
           "localUser",
           JSON.stringify({
-            id: action?.payload?.user?.user_id,
+            id: action?.payload?.user?.id,
             token: JSON.parse(localStorage?.getItem("token"))?.token,
             isLoggedIn: true,
-            role: action?.payload?.user?.role_id,
+            role: action?.payload?.user?.user_type_id,
           })
         );
       })
       .addCase(getUser.rejected, (state, action) => {
-        console.log("ERROR GETTING USER ===> ", action.payload);
         state.errorMessage = {
           error: true,
           message: "Something went wrong",

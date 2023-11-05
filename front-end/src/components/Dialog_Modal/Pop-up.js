@@ -22,9 +22,9 @@ const Pop_up = ({ message, onClose }) => {
             </svg>
           </div>
           <h2 className="text-xl font-semibold text-gray-800">
-            Oops, something went wrong
+            {message === true ? "Oops, something went wrong" : message}
           </h2>
-          <p className="text-gray-600">{message}</p>
+          {/* <p className="text-gray-600">{message}</p> */}
         </div>
         <button
           onClick={onClose}

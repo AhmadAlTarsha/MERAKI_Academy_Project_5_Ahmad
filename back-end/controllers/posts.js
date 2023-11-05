@@ -1,163 +1,317 @@
-const pool = require("../models/DB");
+// const pool = require("../models/DB");
 const io = require("../socket");
+const Post = require("../models/Post");
+const Category = require("../models/Category");
+const SubCategory = require("../models/Sub_categories");
+const User = require("../models/user");
 const { throwError } = require("../middlewares/throwError");
 
 // ===================== GET ALL POSTS =====================
-exports.getAllPosts = (req, res, next) => {
+exports.getAllPosts = async (req, res, next) => {
   const perPage = Number(req.query.limit);
   const currentPage = Number(req.query.offset);
-  const isDeleted = req.query.is_deleted;
-  const categoryId = Number(req.query.category);
-  const subCategoryId = Number(req.query.sub_category);
-  let data = [];
-  let images = [];
-  let posts = [];
-  let query = `SELECT posts.id, posts.description, posts.category_id, posts.sub_category_id, posts.created_at, posts.is_deleted, posts.main_image,
-  users.first_name, users.last_name, users.image FROM posts JOIN users ON users.id = posts.poster_id`;
+  const { is_deleted } = req.query;
 
-  //website
+  const data = is_deleted
+    ? {
+        include: [
+          { model: User, required: true },
+          { model: Category, required: true },
+          { model: SubCategory, required: true },
+        ],
+        order: [["id", "DESC"]],
+        offset: (currentPage - 1) * perPage,
+        limit: perPage,
+        where: { is_deleted },
+      }
+    : {
+        include: [
+          { model: User, required: true },
+          { model: Category, required: true },
+          { model: SubCategory, required: true },
+        ],
+        order: [["id", "DESC"]],
+        offset: (currentPage - 1) * perPage,
+        limit: perPage,
+      };
 
-  if (categoryId) {
-    query += ` WHERE posts.is_deleted = $1 AND posts.category_id = $2 ORDER BY posts.id DESC LIMIT $3 OFFSET $4`;
-    data = [isDeleted, categoryId, perPage, (currentPage - 1) * perPage];
-  } else if (subCategoryId) {
-    query += ` WHERE posts.is_deleted = $1 AND posts.sub_category_id = $2 ORDER BY posts.id DESC LIMIT $3 OFFSET $4`;
-    data = [isDeleted, subCategoryId, perPage, (currentPage - 1) * perPage];
-  } else if (isDeleted == 0) {
-    query += ` WHERE posts.is_deleted = $1 ORDER BY posts.id DESC LIMIT $2 OFFSET $3`;
-    data = [isDeleted, perPage, (currentPage - 1) * perPage];
-  } else {
-    //Admin
+  try {
+    const postsData = await Post.findAndCountAll(data);
+    const posts = postsData.rows.map((post) => {
+      return {
+        ...post.dataValues,
+        main_image: `http://localhost:5000/${post.dataValues.main_image}`,
+        user: {
+          ...post.dataValues.user.dataValues,
+          image: `http://localhost:5000/images/${post.dataValues.user.dataValues.image}`,
+        },
+        Category: {
+          ...post.dataValues.Category.dataValues,
+          image: `http://localhost:5000/${post.dataValues.Category.dataValues.image}`,
+        },
+        sub_category: {
+          ...post.dataValues.sub_category.dataValues,
+          image: `http://localhost:5000/${post.dataValues.sub_category.dataValues.image}`,
+        },
+      };
+    });
 
-    query += ` ORDER BY posts.id DESC LIMIT $1 OFFSET $2`;
-    data = [perPage, (currentPage - 1) * perPage];
-
-    //Admin
+    res.status(200).json({
+      error: false,
+      posts: {
+        count: postsData.count,
+        rows: posts,
+      },
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
   }
-  //website
-  pool
-    .query(query, data)
-    .then(async (result) => {
-      if (result.command === `SELECT`) {
-        posts = result.rows;
-        const newQuery = `SELECT * FROM serverices_images`;
-        try {
-          return await pool.query(newQuery);
-        } catch (error) {
-          throw error;
-        }
-      }
-      return throwError(400, "Something went wrong");
-    })
-    .then(async (result2) => {
-      if (result2.command === "SELECT") {
-        images = result2.rows;
-
-        posts = posts.map((post) => ({
-          id: post.id,
-          user: {
-            fullName: `${post.first_name} ${post.last_name}`,
-            userImage: `http://localhost:5000/images/${post.image}`,
-          },
-          is_deleted: post.is_deleted,
-          description: post.description,
-          main_image: `http://localhost:5000/${post.main_image}`,
-          category_id: post.category_id,
-          sub_category_id: post.sub_category_id,
-          created_at: post.created_at,
-          images: images.filter((image) => {
-            return image.service_id === post.id;
-          }),
-        }));
-
-        return res.status(200).json({
-          error: false,
-          posts,
-        });
-      }
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
-    });
 };
 
-exports.getPostById = (req, res, next) => {
-  let query = `SELECT id, description, category_id, sub_category_id, created_at, is_deleted, main_image FROM posts WHERE id = $1`;
-
-  pool
-    .query(query, [req.params.id])
-    .then(async (result) => {
-      if (result.command === `SELECT`) {
-        return res.status(200).json({
-          error: false,
-          post: result.rows[0],
-        });
-      }
-      return throwError(400, "Something went wrong");
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
-    });
-};
-
-exports.getAllPostsByUser = (req, res, next) => {
-  const { posterId } = req.params;
+exports.getAllPostsByCategory = async (req, res, next) => {
   const perPage = Number(req.query.limit);
   const currentPage = Number(req.query.offset);
-  const { active } = req.query;
+  const { is_deleted } = req.query;
+  const { category_id } = req.params;
 
-  let posts = [];
-
-  // SELECT * FROM posts WHERE is_deleted = $1 AND poster_id = $2 LIMIT $3 OFFSET $4;
-
-  const query = `SELECT posts.id, posts.description, posts.category_id, posts.sub_category_id, posts.created_at, posts.is_deleted, posts.main_image,
-  users.first_name, users.last_name, users.image 
-  FROM posts JOIN users ON users.id = posts.poster_id 
-  WHERE posts.is_deleted = $1 AND posts.poster_id = $2 
-  ORDER BY posts.id DESC 
-  LIMIT $3 OFFSET $4`;
-  pool
-    .query(query, [active, posterId, perPage, (currentPage - 1) * perPage])
-    .then((result) => {
-      if (result.command === `SELECT`) {
-        posts = result.rows.map((post) => ({
-          id: post.id,
-          user: {
-            fullName: `${post.first_name} ${post.last_name}`,
-            userImage: `http://localhost:5000/images/${post.image}`,
-          },
-          is_deleted: post.is_deleted,
-          description: post.description,
-          main_image: `http://localhost:5000/${post.main_image}`,
-          category_id: post.category_id,
-          sub_category_id: post.sub_category_id,
-          created_at: post.created_at,
-        }));
-        return res.status(200).json({
-          error: false,
-          posts,
-          // posts: result.rows,
-        });
+  const data = is_deleted
+    ? {
+        include: [
+          { model: User, required: true },
+          { model: Category, required: true },
+          { model: SubCategory, required: true },
+        ],
+        order: [["id", "DESC"]],
+        offset: (currentPage - 1) * perPage,
+        limit: perPage,
+        where: { is_deleted, category_id },
       }
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
+    : {
+        include: [
+          { model: User, required: true },
+          { model: Category, required: true },
+          { model: SubCategory, required: true },
+        ],
+        order: [["id", "DESC"]],
+        offset: (currentPage - 1) * perPage,
+        limit: perPage,
+        where: { category_id },
+      };
+
+  try {
+    const postsData = await Post.findAndCountAll(data);
+    const posts = postsData.rows.map((post) => {
+      return {
+        ...post.dataValues,
+        main_image: `http://localhost:5000/${post.dataValues.main_image}`,
+        user: {
+          ...post.dataValues.user.dataValues,
+          image: `http://localhost:5000/images/${post.dataValues.user.dataValues.image}`,
+        },
+        Category: {
+          ...post.dataValues.Category.dataValues,
+          image: `http://localhost:5000/${post.dataValues.Category.dataValues.image}`,
+        },
+        sub_category: {
+          ...post.dataValues.sub_category.dataValues,
+          image: `http://localhost:5000/${post.dataValues.sub_category.dataValues.image}`,
+        },
+      };
     });
+
+    res.status(200).json({
+      error: false,
+      posts: {
+        count: postsData.count,
+        rows: posts,
+      },
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.getAllPostsBySubCategory = async (req, res, next) => {
+  const perPage = Number(req.query.limit);
+  const currentPage = Number(req.query.offset);
+  const { is_deleted } = req.query;
+  const { sub_category_id } = req.params;
+
+  const data = is_deleted
+    ? {
+        include: [
+          { model: User, required: true },
+          { model: Category, required: true },
+          { model: SubCategory, required: true },
+        ],
+        order: [["id", "DESC"]],
+        offset: (currentPage - 1) * perPage,
+        limit: perPage,
+        where: { is_deleted, sub_category_id },
+      }
+    : {
+        include: [
+          { model: User, required: true },
+          { model: Category, required: true },
+          { model: SubCategory, required: true },
+        ],
+        order: [["id", "DESC"]],
+        offset: (currentPage - 1) * perPage,
+        limit: perPage,
+        where: { sub_category_id },
+      };
+
+  try {
+    const postsData = await Post.findAndCountAll(data);
+    const posts = postsData.rows.map((post) => {
+      return {
+        ...post.dataValues,
+        main_image: `http://localhost:5000/${post.dataValues.main_image}`,
+        user: {
+          ...post.dataValues.user.dataValues,
+          image: `http://localhost:5000/images/${post.dataValues.user.dataValues.image}`,
+        },
+        Category: {
+          ...post.dataValues.Category.dataValues,
+          image: `http://localhost:5000/${post.dataValues.Category.dataValues.image}`,
+        },
+        sub_category: {
+          ...post.dataValues.sub_category.dataValues,
+          image: `http://localhost:5000/${post.dataValues.sub_category.dataValues.image}`,
+        },
+      };
+    });
+
+    res.status(200).json({
+      error: false,
+      posts: {
+        count: postsData.count,
+        rows: posts,
+      },
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.getPostById = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const post = await Post.findByPk(id, {
+      include: [
+        { model: User, required: true },
+        { model: Category, required: true },
+        { model: SubCategory, required: true },
+      ],
+    });
+    if (post?.dataValues?.id) {
+      res.status(200).json({
+        error: false,
+        post: {
+          ...post.dataValues,
+          main_image: `http://localhost:5000/${post.dataValues.main_image}`,
+          user: {
+            ...post.dataValues.user.dataValues,
+            image: `http://localhost:5000/images/${post.dataValues.user.dataValues.image}`,
+          },
+          Category: {
+            ...post.dataValues.Category.dataValues,
+            image: `http://localhost:5000/${post.dataValues.Category.dataValues.image}`,
+          },
+          sub_category: {
+            ...post.dataValues.sub_category.dataValues,
+            image: `http://localhost:5000/${post.dataValues.sub_category.dataValues.image}`,
+          },
+        },
+      });
+    }
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.getAllPostsByUser = async (req, res, next) => {
+  const perPage = Number(req.query.limit);
+  const currentPage = Number(req.query.offset);
+  const { is_deleted } = req.query;
+  const { poster_id } = req.params;
+
+  const data = is_deleted
+    ? {
+        include: [
+          { model: User, required: true },
+          { model: Category, required: true },
+          { model: SubCategory, required: true },
+        ],
+        order: [["id", "DESC"]],
+        offset: (currentPage - 1) * perPage,
+        limit: perPage,
+        where: { is_deleted, poster_id },
+      }
+    : {
+        include: [
+          { model: User, required: true },
+          { model: Category, required: true },
+          { model: SubCategory, required: true },
+        ],
+        order: [["id", "DESC"]],
+        offset: (currentPage - 1) * perPage,
+        limit: perPage,
+        where: { poster_id },
+      };
+
+  try {
+    const postsData = await Post.findAndCountAll(data);
+    const posts = postsData.rows.map((post) => {
+      return {
+        ...post.dataValues,
+        main_image: `http://localhost:5000/${post.dataValues.main_image}`,
+        user: {
+          ...post.dataValues.user.dataValues,
+          image: `http://localhost:5000/images/${post.dataValues.user.dataValues.image}`,
+        },
+        Category: {
+          ...post.dataValues.Category.dataValues,
+          image: `http://localhost:5000/${post.dataValues.Category.dataValues.image}`,
+        },
+        sub_category: {
+          ...post.dataValues.sub_category.dataValues,
+          image: `http://localhost:5000/${post.dataValues.sub_category.dataValues.image}`,
+        },
+      };
+    });
+
+    res.status(200).json({
+      error: false,
+      posts: {
+        count: postsData.count,
+        rows: posts,
+      },
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 };
 
 // ===================== CREATE NEW POST =====================
 exports.createPost = async (req, res, next) => {
-  const { id } = req.token.user;
-  const { description, images, category_id, sub_category_id } = req.body;
+  const { description, category_id, sub_category_id } = req.body;
 
   if (!req.file) {
     return res.status(400).json({
@@ -168,54 +322,30 @@ exports.createPost = async (req, res, next) => {
 
   const image = req.file.path.replace("\\", "/");
 
-  const data = [id, description, image, category_id, sub_category_id];
-
-  const query = `INSERT INTO posts (poster_id,  description,main_image,
-    category_id,
-    sub_category_id) VALUES ($1, $2, $3, $4, $5)`;
-
-  pool
-    .query(query, data)
-    .then((result) => {
-      if (result.rowCount !== 0) {
-        if (!images) {
-          return Promise.resolve({ status: 201, message: "New post created" });
-        } else {
-          return pool.query(`SELECT id FROM posts ORDER BY id DESC LIMIT 1`);
-        }
-      }
-      return throwError(400, "Something went wrong");
-    })
-    .then(async (result2) => {
-      if (result2.status === 201) {
-        io.getIo().emit("posts", { action: "create" });
-        return res.status(201).json({
-          error: false,
-          message: result2.message,
-        });
-      }
-      try {
-        const newPostId = result2.rows[0].id;
-        for (let i = 0; i < images.length; i++) {
-          await pool.query(
-            `INSERT INTO serverices_images (service_id, image) VALUES ($1, $2)`,
-            [newPostId, images[i]]
-          );
-        }
-        res.json({
-          error: false,
-          message: "New post created",
-        });
-      } catch (err) {
-        throw err;
-      }
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
+  try {
+    const newPost = await Post.create({
+      description,
+      main_image: image,
+      poster_id: req.token.user.id,
+      category_id,
+      sub_category_id,
     });
+
+    if (newPost._options.isNewRecord) {
+      io.getIo().emit("posts", { action: "create" });
+      return res.status(201).json({
+        error: true,
+        message: "Post Created Successfully",
+      });
+    }
+    clearImage(image);
+    return throwError(404, "Something went wrong");
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 };
 
 // ===================== UPDATE POST =====================
@@ -230,63 +360,78 @@ exports.updatePostById = async (req, res, next) => {
     image = req.file.path.replace("\\", "/");
   }
 
-  const data = image
-    ? [
-        description || null,
-        image || null,
-        category_id || null,
-        sub_category_id || null,
-        id,
-      ]
-    : [description || null, category_id || null, sub_category_id || null, id];
+  try {
+    const updatePost = await Post.update(
+      { description, category_id, sub_category_id, image },
+      { where: { id } }
+    );
 
-  const query = image
-    ? `UPDATE posts SET description = COALESCE($1,description), main_image =COALESCE($2,image), category_id =COALESCE($3,category_id), sub_category_id =COALESCE($4,sub_category_id) WHERE id=$5 RETURNING *`
-    : `UPDATE posts SET description =COALESCE($1,description), category_id =COALESCE($2,category_id), sub_category_id = COALESCE($3,sub_category_id) WHERE id=$4 RETURNING *`;
+    if (typeof updatePost[0] === "number") {
+      return res.status(200).json({
+        error: false,
+        message: "Post Updated Successfully",
+      });
+    }
 
-  pool
-    .query(query, data)
-    .then((result) => {
-      if (result.rowCount !== 0) {
-        return res.status(200).json({
-          error: false,
-          message: `Post with id: ${id} updated successfully`,
-        });
-      }
-      return throwError(400, "Something went wrong");
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
-    });
+    return throwError(400, "Something went wrong");
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+
+  // const data = image
+  //   ? [
+  //       description || null,
+  //       image || null,
+  //       category_id || null,
+  //       sub_category_id || null,
+  //       id,
+  //     ]
+  //   : [description || null, category_id || null, sub_category_id || null, id];
+
+  // const query = image
+  //   ? `UPDATE posts SET description = COALESCE($1,description), main_image =COALESCE($2,image), category_id =COALESCE($3,category_id), sub_category_id =COALESCE($4,sub_category_id) WHERE id=$5 RETURNING *`
+  //   : `UPDATE posts SET description =COALESCE($1,description), category_id =COALESCE($2,category_id), sub_category_id = COALESCE($3,sub_category_id) WHERE id=$4 RETURNING *`;
+
+  // pool
+  //   .query(query, data)
+  //   .then((result) => {
+  //     if (result.rowCount !== 0) {
+  //       return res.status(200).json({
+  //         error: false,
+  //         message: `Post with id: ${id} updated successfully`,
+  //       });
+  //     }
+  //     return throwError(400, "Something went wrong");
+  //   })
+  //   .catch((err) => {
+
+  //   });
 };
 
 // ===================== DELETE POST =====================
-exports.activationPostById = (req, res, next) => {
-  const { id } = req.params;
-  const { active } = req.body;
-  const value = [active, id];
-  const query = `UPDATE posts SET is_deleted = $1 WHERE id=$2`;
-  pool
-    .query(query, value)
-    .then((result) => {
-      if (result.rowCount !== 0) {
-        return res.status(200).json({
-          error: false,
-          message:
-            active == 1
-              ? `Post with id: ${id} deleted successfully`
-              : `Post with id: ${id} Activated successfully`,
-        });
-      }
-      return throwError(400, "Something went wrong");
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
-    });
+exports.activationPostById = async (req, res, next) => {
+  const { id, is_deleted } = req.params;
+
+  try {
+    const isDeleted = await Post.update({ is_deleted }, { where: { id } });
+
+    if (typeof isDeleted[0] === "number") {
+      return res.status(200).json({
+        error: false,
+        message:
+          is_deleted == 1
+            ? "Post Deleted Successfully"
+            : "Post Restored Successfully",
+      });
+    }
+    return throwError(404, "Something went wrong");
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 };

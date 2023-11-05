@@ -13,7 +13,7 @@ const MyServices = () => {
   const dispatch = useDispatch();
   const servicesSelector = useSelector((state) => {
     return {
-      services: state.services.services,
+      services: state.services,
     };
   });
 
@@ -21,8 +21,7 @@ const MyServices = () => {
     dispatch(getUserServices({ limit, offset }))
       .then((result) => {})
       .catch((err) => {
-        console.log("ERROR ===> ", err);
-        setError(true);
+        setError(err);
       })
       .finally(() => {
         setIsLoading(false);
@@ -51,7 +50,7 @@ const MyServices = () => {
     setError(false);
   };
 
-  // console.log(servicesSelector.services);
+  // console.log(servicesSelector?.services?.services?.rows);
 
   return (
     <>
@@ -62,10 +61,10 @@ const MyServices = () => {
       ) : (
         <>
           {error ? (
-            <Pop_up message={""} onClose={handleCloseModal} />
+            <Pop_up message={error?.message} onClose={handleCloseModal} />
           ) : (
             <div className="flex flex-col items-center">
-              {servicesSelector.services?.map((service) => (
+              {servicesSelector?.services?.services?.rows.map((service) => (
                 <Post
                   userAndPosterDivClassName={"border-b-[2px] pb-4"}
                   userDivClassName={"flex flex-row"}
@@ -78,10 +77,10 @@ const MyServices = () => {
                     "rounded-full h-20 w-20 md:h-28 md:w-28 border-[6px] border-white bg-white"
                   }
                   key={service?.id}
-                  userName={service?.provider?.full_name}
+                  userName={service?.user?.nick_name}
                   title={service?.title}
                   body={service?.description}
-                  imageSrc={service?.provider?.image}
+                  imageSrc={service?.user?.image}
                   postImage={service?.default_image}
                   isShowButtons={true}
                   buttonsDivClass={"flex justify-center gap-10"}
@@ -89,6 +88,7 @@ const MyServices = () => {
                   offset={offset}
                   dispatch={dispatch}
                   isShowComments={false}
+                  setError={setError}
                 />
               ))}
             </div>

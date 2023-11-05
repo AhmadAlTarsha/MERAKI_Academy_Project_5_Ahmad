@@ -31,14 +31,14 @@ const ServicesTr = ({
           className="mx-auto object-fill w-40"
         />
       </td>
-      <td className="px-6 py-4">{service?.category_name}</td>
-      <td className="px-6 py-4">{service?.sub_categories_name}</td>
-      <td className="px-6 py-4">{service?.provider?.full_name}</td>
+      <td className="px-6 py-4">{service?.Category?.name}</td>
+      <td className="px-6 py-4">{service?.sub_category?.name}</td>
+      <td className="px-6 py-4">{service?.user?.full_name}</td>
       <td className="px-6 py-4">{service?.title}</td>
-      <td className="px-6 py-4">{service?.status_name}</td>
+      <td className="px-6 py-4">{service?.status?.name}</td>
       <td className="px-6 py-4">{service?.is_deleted}</td>
       <td className="px-6 py-4">
-        {service?.status_id === 1 ? (
+        {service?.status?.id === 1 ? (
           <>
             <Button
               buttonName={"Accept"}
@@ -47,10 +47,10 @@ const ServicesTr = ({
               }
               onClick={() => {
                 UpdateServiceStatus(service?.id, 2)
-                  .then((result) => {
-                    return getAllServices(limit, offset);
+                  .then(async (result) => {
+                    return await getAllServices(limit, offset, 1);
                   })
-                  .then((result2) => {
+                  .then(async (result2) => {
                     dispatch(setServices(result2));
                   })
                   .catch((err) => {
@@ -68,8 +68,8 @@ const ServicesTr = ({
               }
               onClick={() => {
                 UpdateServiceStatus(service?.id, 3)
-                  .then((result) => {
-                    return getAllServices(limit, offset);
+                  .then(async (result) => {
+                    return await getAllServices(limit, offset);
                   })
                   .then((result2) => {
                     dispatch(setServices(result2));
@@ -102,17 +102,17 @@ const ServicesTr = ({
               }-900`}
               onClick={() => {
                 DeleteServices(service?.id, service?.is_deleted === 0 ? 1 : 0)
-                  .then((result) => {
-                    return getAllServices(limit, offset);
+                  .then(async (result) => {
+                    return await getAllServices(limit, offset, 1);
                   })
                   .then((result2) => {
                     dispatch(setServices(result2));
                   })
                   .catch((err) => {
-                    console.log(
-                      "ERROR DELETE SERVICE ===> ",
-                      err.response.data
-                    );
+                    setError(true);
+                  })
+                  .finally(() => {
+                    setLoading(false);
                   });
               }}
             />

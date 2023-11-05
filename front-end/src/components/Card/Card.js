@@ -7,9 +7,11 @@ function Card({
   cardName,
   cardNameClass,
   onClick,
+  categoryId,
 }) {
   return (
     <div
+      key={categoryId}
       className={"w-1/4 flex flex-col justify-center items-center"}
       onClick={onClick}
     >

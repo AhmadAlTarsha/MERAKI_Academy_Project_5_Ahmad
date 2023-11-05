@@ -80,7 +80,7 @@ const AdminCategories = () => {
                   dialogPanelClassName={
                     "rounded h-1/2 w-1/2 flex flex-col bg-gray-800 text-white py-8 px-4 text-center"
                   }
-                  title={""}
+                  title={"Category Form"}
                   isCategory={true}
                   limit={limit}
                   offset={offset}
@@ -98,7 +98,7 @@ const AdminCategories = () => {
               />
               <Tables
                 rows={rows}
-                cols={selectCategories.categories}
+                cols={selectCategories}
                 dispatch={dispatch}
                 setCategories={setCategories}
                 limit={limit}
@@ -106,7 +106,8 @@ const AdminCategories = () => {
                 setError={setIsError}
                 setLoading={setIsLoading}
               />
-              {selectCategories.categories.length !== 0 && (
+              {selectCategories?.categories?.rows?.length <
+                selectCategories?.categories?.count && (
                 <Pagination
                   handlePage={handlePage}
                   limit={limit}

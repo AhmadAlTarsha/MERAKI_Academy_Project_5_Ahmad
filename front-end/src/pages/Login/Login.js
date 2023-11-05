@@ -16,6 +16,10 @@ const Login = () => {
     password: "",
   });
 
+  // let [email, setEmail] = useState('')
+
+
+
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -23,10 +27,13 @@ const Login = () => {
       ...credentials,
       [e.target.name]: e.target.value,
     });
+    // email = e.target.value;
+    // setEmail(e.target.value)
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // console.log(email);
     dispatch(loginUser(credentials))
       .then((result) => {
         if (!result.payload.error) {
@@ -35,7 +42,7 @@ const Login = () => {
         throw new Error("Invalid email or Password");
       })
       .then((res2) => {
-        if (res2?.payload?.user?.role_id === 1) {
+        if (res2?.payload?.user?.user_type_id === 1) {
           navigate("/admin");
         } else {
           navigate("/");
@@ -72,6 +79,7 @@ const Login = () => {
                 <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                   Sign in to your account
                 </h2>
+                {/* {email} */}
               </div>
 
               <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">

@@ -4,7 +4,7 @@ export const UpdateUserAPI = async (payload) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
     const result = await axios.put(
-      `http://localhost:5000/users/updateAccount/${payload?.id}`,
+      `http://95.179.236.103:8080/api/users/${payload?.id}`,
       {
         ...payload,
         nick_name: payload.nickName,
@@ -18,7 +18,7 @@ export const UpdateUserAPI = async (payload) => {
 
     if (result?.status === 200) {
       if (!result.data.error) {
-        return result.data;
+        return result?.data?.message;
       }
     }
   } catch (err) {

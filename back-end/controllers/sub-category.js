@@ -1,7 +1,16 @@
-const pool = require("../models/DB");
+// const pool = require("../models/DB");
+const SubCategories = require("../models/Sub_categories");
+const Category = require("../models/Category");
 const { throwError } = require("../middlewares/throwError");
 
-exports.addSubCategory = (req, res, next) => {
+const clearImage = (filePath) => {
+  filePath = path.join(__dirname, "..", filePath);
+  fs.unlink(filePath, (err) => {
+    console.log(err);
+  });
+};
+
+exports.addSubCategory = async (req, res, next) => {
   let { category_id, name } = req.body;
 
   if (!req.file) {
@@ -13,31 +22,33 @@ exports.addSubCategory = (req, res, next) => {
 
   const image = req.file.path.replace("\\", "/");
 
-  const values = [category_id, name, image];
-
-  pool
-    .query(
-      `INSERT INTO sub_categories (category_id, name, image) VALUES ($1, $2, $3)`,
-      values
-    )
-    .then((result) => {
-      if (result.command === "INSERT") {
-        return res.status(200).json({
-          error: false,
-          message: "Sub Category Added succefully",
-        });
-      }
-      return throwError(400, "Something went wrong");
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
+  try {
+    const result = await SubCategories.findOrCreate({
+      where: { name },
+      defaults: { name, image, category_id },
     });
+
+    if (!result[0]._options.isNewRecord) {
+      clearImage(image);
+      return res.status(401).json({
+        error: true,
+        message: "Category Already Exist",
+      });
+    }
+
+    return res.status(200).json({
+      error: false,
+      message: "Sub Category Created Successfully",
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 };
 
-exports.updateSubCategory = (req, res, next) => {
+exports.updateSubCategory = async (req, res, next) => {
   let { category_id, name } = req.body;
   const { id } = req.params;
 
@@ -47,168 +58,169 @@ exports.updateSubCategory = (req, res, next) => {
     image = req.file.path.replace("\\", "/");
   }
 
-  const values = image
-    ? [name, image, category_id, id]
-    : [name, category_id, id];
+  try {
+    const result = await SubCategories.update(
+      { name, image, category_id },
+      { where: { id } }
+    );
 
-  pool
-    .query(
-      image
-        ? `UPDATE sub_categories SET name = $1, image = $2, category_id = $3 WHERE id = $4`
-        : `UPDATE sub_categories SET name = $1, category_id = $2 WHERE id = $3`,
-      values
-    )
-    .then((result) => {
-      if (result.command === "UPDATE") {
-        return res.status(200).json({
-          error: false,
-          message: "Sub Category Updated succefully",
-        });
-      }
-      return throwError(400, "Something went wrong");
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
-    });
+    if (typeof result[0] === "number") {
+      return res.status(200).json({
+        error: false,
+        message: "Sub Category Updated Successfully",
+      });
+    }
+
+    return throwError(400, "Something went wrong");
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 };
 
-exports.getAllSubCategories = (req, res, next) => {
+exports.getAllSubCategories = async (req, res, next) => {
   const perPage = Number(req.query.limit);
   const currentPage = Number(req.query.offset);
   const isDeleted = req.query.is_deleted;
-  let query = `SELECT sub_categories.id, sub_categories.name, sub_categories.image, sub_categories.is_deleted, sub_categories.created_at,
-  categories.name AS categoryName
-  FROM sub_categories
-  INNER JOIN categories ON categories.id = sub_categories.category_id`;
-  let data = [];
 
-  if (isDeleted == 0 && perPage > 0 && currentPage > 0) {
-    query += ` WHERE sub_categories.is_deleted = $1 ORDER BY sub_categories.id ASC LIMIT $2 OFFSET $3`;
-    data = [isDeleted, perPage, (currentPage - 1) * perPage];
-  } else if (isDeleted == 0 && perPage === 0 && currentPage === 0) {
-    query += ` WHERE sub_categories.is_deleted = $1 ORDER BY sub_categories.id ASC`;
-    data = [isDeleted];
-  } else {
-    query += ` ORDER BY sub_categories.id ASC LIMIT $1 OFFSET $2`;
-    data = [perPage, (currentPage - 1) * perPage];
+  try {
+    const data = isDeleted
+      ? {
+          order: [["id", "DESC"]],
+          offset: (currentPage - 1) * perPage,
+          limit: perPage,
+          where: { is_deleted: isDeleted },
+          include: { model: Category, required: true },
+        }
+      : {
+          order: [["id", "DESC"]],
+          offset: (currentPage - 1) * perPage,
+          limit: perPage,
+          include: { model: Category, required: true },
+        };
+
+    const result = await SubCategories.findAndCountAll(data);
+
+    const subCategories = result?.rows?.map((subCategory) => ({
+      id: subCategory.id,
+      name: subCategory.name,
+      category: {
+        id: subCategory.category_id,
+        name: subCategory.Category.name,
+      },
+      image: `http://localhost:5000/${subCategory.image}`,
+      is_deleted: subCategory.is_deleted,
+      created_at: subCategory.created_at,
+    }));
+
+    res.status(200).json({
+      error: false,
+      subCategories: {
+        count: result.count,
+        rows: subCategories,
+      },
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
   }
-
-  pool
-    .query(query, data)
-    .then((result) => {
-      if (result.command === `SELECT`) {
-        const subCategories = result.rows.map((subCategory) => ({
-          id: subCategory?.id,
-          name: subCategory?.name,
-          image: `http://localhost:5000/${subCategory?.image}`,
-          category_id: subCategory?.category_id,
-          category_name: subCategory?.categoryname,
-          is_deleted: subCategory?.is_deleted,
-          created_at: subCategory?.created_at,
-        }));
-        return res.status(200).json({
-          error: false,
-          subCategories,
-        });
-      }
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
-    });
 };
 
-exports.getAllSubCategoriesOnCategory = (req, res, next) => {
-  pool
-    .query(
-      `SELECT * FROM sub_categories WHERE category_id = $1 AND is_deleted = $2`,
-      [req.params.categoryId, 0]
-    )
-    .then((result) => {
-      if (result.command === `SELECT`) {
-        return res.status(200).json({
-          error: false,
-          subCategories: result.rows.map((sub) => ({
-            id: sub.id,
-            name: sub.name,
-            category_id: sub.category_id,
-            category_name: sub.category_name,
-            image: `http://localhost:5000/${sub.image}`,
-            created_at : sub.created_at
-          })),
-        });
-      }
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
+exports.getAllSubCategoriesOnCategory = async (req, res, next) => {
+  const { perPage, currentPage, is_deleted, category_id } = req.query;
+
+  try {
+    const data = is_deleted
+      ? {
+          order: [["id", "DESC"]],
+          offset: (Number(currentPage) - 1) * Number(perPage),
+          limit: Number(perPage),
+          include: { model: Category, required: true },
+          where: { is_deleted, category_id },
+        }
+      : {
+          order: [["id", "DESC"]],
+          offset: (Number(currentPage) - 1) * Number(perPage),
+          limit: Number(perPage),
+          include: { model: Category, required: true },
+          where: { category_id },
+        };
+
+    const result = await SubCategories.findAll(data);
+    const subCategories = result?.map((subCategory) => ({
+      id: subCategory.id,
+      name: subCategory.name,
+      category: {
+        id: subCategory.category_id,
+        name: subCategory.Category.name,
+      },
+      image: `http://localhost:5000/${subCategory.image}`,
+      is_deleted: subCategory.is_deleted,
+      created_at: subCategory.created_at,
+    }));
+
+    res.status(200).json({
+      error: false,
+      subCategories,
     });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 };
 
-exports.getSubCateogoryById = (req, res, next) => {
-  pool
-    .query(
-      `SELECT sub_categories.id, sub_categories.name, sub_categories.image, 
-    categories.name AS categoryName, categories.id AS categoryId
-    FROM sub_categories 
-    INNER JOIN categories ON categories.id = sub_categories.category_id
-    WHERE sub_categories.id = $1`,
-      [req.params.id]
-    )
-    .then((result) => {
-      if (result.command === `SELECT`) {
-        const subCategory = result?.rows?.map((sub) => ({
-          id: sub.id,
-          name: sub.name,
-          category_id: sub.categoryid,
-          category_name: sub.categoryname,
-          image: sub.image,
-        }));
-        return res.status(200).json({
-          error: false,
-          subCategory: subCategory[0],
-        });
-      }
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
-    });
-};
-
-exports.deleteSub_CategoryById = (req, res, next) => {
+exports.getSubCateogoryById = async (req, res, next) => {
   const { id } = req.params;
-  const { active } = req.body;
-
-  const query = `UPDATE sub_categories SET is_deleted= $1 WHERE id = $2;`;
-  const data = [active, id];
-  pool
-    .query(query, data)
-    .then((result) => {
-      if (result.rowCount !== 0) {
-        return res.status(200).json({
-          error: false,
-          message:
-            active == 1
-              ? `sub_categories deleted successfully`
-              : `sub_categories activated successfully`,
-        });
-      }
-      return throwError(400, "something went rowing");
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
+  try {
+    const result = await SubCategories.findByPk(id, {
+      include: { model: Category, required: true },
     });
+
+    if (result?.dataValues?.id) {
+      return res.status(200).json({
+        error: false,
+        Category: result,
+      });
+    }
+
+    return throwError(404, "Something went wrong");
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.activateOrDeActivateSubCategoryById = async (req, res, next) => {
+  const { id, isDeleted } = req.params;
+
+  try {
+    const result = await SubCategories.update(
+      { is_deleted: isDeleted },
+      { where: { id } }
+    );
+
+    if (typeof result[0] === "number") {
+      return res.status(200).json({
+        error: false,
+        message:
+          isDeleted == 1
+            ? "Sub Category Deleted Successfully"
+            : "Sub Category Restored Successfully",
+      });
+    }
+    return throwError(404, "Something went wrong");
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 };

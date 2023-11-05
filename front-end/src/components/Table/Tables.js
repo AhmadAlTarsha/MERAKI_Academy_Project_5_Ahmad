@@ -16,7 +16,8 @@ const Tables = ({
   setServices,
   limit,
   offset,
-  setError, setLoading
+  setError,
+  setLoading,
 }) => {
   return (
     <div className="w-full relative overflow-x-auto">
@@ -34,7 +35,7 @@ const Tables = ({
         <tbody>
           {cols?.categories ? (
             <CategoryTr
-              categoriesArray={cols?.categories}
+              categoriesArray={cols?.categories?.rows}
               dispatch={dispatch}
               setCategories={setCategories}
               limit={limit}
@@ -44,7 +45,7 @@ const Tables = ({
             />
           ) : cols?.posts ? (
             <PostsTs
-              postsArray={cols?.posts}
+              postsArray={cols?.posts.rows}
               dispatch={dispatch}
               limit={limit}
               offset={offset}
@@ -54,7 +55,7 @@ const Tables = ({
             />
           ) : cols?.services ? (
             <ServicesTr
-              servicesArray={cols?.services}
+              servicesArray={cols?.services.rows}
               dispatch={dispatch}
               limit={limit}
               offset={offset}
@@ -64,7 +65,7 @@ const Tables = ({
             />
           ) : cols?.subCategories ? (
             <Sub_CategoryTr
-              subCategoriesArray={cols?.subCategories}
+              subCategoriesArray={cols?.subCategories?.rows}
               dispatch={dispatch}
               setSubCategories={setSubCategories}
               limit={limit}
@@ -72,12 +73,12 @@ const Tables = ({
               setError={setError}
               setLoading={setLoading}
             />
-          ) : cols?.regions ? (
+          ) : cols?.rows ? (
             <RegionsTr
               dispatch={dispatch}
               limit={limit}
               offset={offset}
-              regionsArray={cols?.regions}
+              regionsArray={cols?.rows}
               setRegions={setRegions}
               setError={setError}
               setLoading={setLoading}

@@ -3,7 +3,7 @@ export const CreateNewComment = async (id, payload) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
     const result = await axios.post(
-      `http://localhost:5000/comment/${id}`,
+      `http://95.179.236.103:8080/api/comment/${id}`,
       payload,
       {
         headers: {

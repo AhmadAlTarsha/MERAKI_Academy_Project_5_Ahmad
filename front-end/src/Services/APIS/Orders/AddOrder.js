@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const addOrderAPI = async (payload) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
-  let url = `http://localhost:5000/orders`;
+  let url = `http://95.179.236.103:8080/api/orders`;
 
   try {
     const result = await axios.post(

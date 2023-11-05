@@ -1,12 +1,11 @@
 import axios from "axios";
 
-export const UpdatePost = async (id, paylpde) => {
+export const UpdatePost = async (id, paylode) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
-    console.log("from Api", paylpde);
     const result = await axios.put(
-      `http://localhost:5000/posts/${id}/?limit=3&offset=1&is_deleted=0`,
-      paylpde,
+      `http://95.179.236.103:8080/api/posts/${id}`,
+      paylode,
       {
         headers: {
           Authorization: `Bearer ${token?.token}`,

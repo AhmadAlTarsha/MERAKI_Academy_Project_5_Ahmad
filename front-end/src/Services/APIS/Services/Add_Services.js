@@ -4,7 +4,7 @@ export const addNewServices = async (payload) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
     const result = await axios.post(
-      `http://localhost:5000/services`,
+      `http://95.179.236.103:8080/api/services`,
       {
         category_id: payload.category_id,
         sub_category_id: payload.sub_category_id,

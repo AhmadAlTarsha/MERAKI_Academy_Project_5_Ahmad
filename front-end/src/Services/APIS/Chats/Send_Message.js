@@ -1,13 +1,13 @@
 import axios from "axios";
 
-export const sendMessage = async (reciverId, message, conversationId) => {
+export const sendMessage = async (reciver_id, message, conversationId) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
 
   try {
     const result = await axios.post(
-      `http://localhost:5000/chats/${conversationId}`,
+      `http://95.179.236.103:8080/api/chats/${conversationId}`,
       {
-        reciverId,
+        reciver_id,
         message,
       },
       {
@@ -18,7 +18,7 @@ export const sendMessage = async (reciverId, message, conversationId) => {
     );
 
     if (!result?.data?.error) {
-      return result?.data;
+      return result?.data?.message;
     }
   } catch (err) {
     throw err;
