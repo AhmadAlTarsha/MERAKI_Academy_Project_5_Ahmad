@@ -39,7 +39,7 @@ const AdminRegions = () => {
   };
 
   useEffect(() => {
-    return () => {
+    if (selectRgions.regions.length === 0)
       GetAllRegions(limit, offset)
         .then((result) => {
           if (!result.error) {
@@ -52,7 +52,7 @@ const AdminRegions = () => {
         .finally(() => {
           setIsLoading(false);
         });
-    };
+    return () => {};
   }, []);
 
   const handleCloseModal = () => {
