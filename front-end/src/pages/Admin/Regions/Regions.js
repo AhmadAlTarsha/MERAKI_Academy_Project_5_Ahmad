@@ -39,7 +39,7 @@ const AdminRegions = () => {
   };
 
   useEffect(() => {
-    if (selectRgions.regions.length === 0) {
+    (() => {
       GetAllRegions(limit, offset)
         .then((result) => {
           if (!result.error) {
@@ -52,10 +52,24 @@ const AdminRegions = () => {
         .finally(() => {
           setIsLoading(false);
         });
-    } else {
-      setIsLoading(false);
-    }
-    return () => {};
+    })();
+    // if (selectRgions.regions.length === 0) {
+    //   GetAllRegions(limit, offset)
+    //     .then((result) => {
+    //       if (!result.error) {
+    //         dispatch(setRegions(result));
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       setIsError(true);
+    //     })
+    //     .finally(() => {
+    //       setIsLoading(false);
+    //     });
+    // } else {
+    //   setIsLoading(false);
+    // }
+    // return () => {};
   }, []);
 
   const handleCloseModal = () => {
