@@ -40,7 +40,7 @@ const AdminSub_Categories = () => {
   console.log(selectSubCategories?.subCategories?.subCategories);
 
   useEffect(() => {
-    return () => {
+    (() => {
       GetSubCategories(limit, offset, 1)
         .then((result) => {
           dispatch(setSubCategories(result));
@@ -49,7 +49,7 @@ const AdminSub_Categories = () => {
         .catch((err) => {
           console.log("SUB CATEGORIES ERROR ===> ", err);
         });
-    };
+      })();
   }, []);
 
   const handleCloseModal = () => {

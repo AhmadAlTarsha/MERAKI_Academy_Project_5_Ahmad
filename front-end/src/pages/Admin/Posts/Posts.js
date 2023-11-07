@@ -36,7 +36,7 @@ const AdminPosts = () => {
   };
 
   useEffect(() => {
-    return () => {
+    (() => {
       GetAllPosts(limit, offset, 1)
         .then((result) => {
           dispatch(setPosts(result));
@@ -47,7 +47,7 @@ const AdminPosts = () => {
         .finally(() => {
           setIsLoading(false);
         });
-    };
+      })();
   }, []);
 
   const handleCloseModal = () => {
