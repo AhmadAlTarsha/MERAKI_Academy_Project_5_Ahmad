@@ -49,7 +49,7 @@ const AdminSub_Category = () => {
   }, []);
 
   useEffect(() => {
-    return () => {
+    (() => {
       GetCategories(15, 1, 0)
         .then((result) => {
           dispatch(setCategories(result));
@@ -60,7 +60,7 @@ const AdminSub_Category = () => {
         .finally(() => {
           setIsLoading(false);
         });
-    };
+      })();
   }, []);
 
   const handleChange = (e) => {

@@ -13,6 +13,7 @@ import Pop_up from "../../components/Dialog_Modal/Pop-up";
 import { useNavigate } from "react-router";
 
 export const Register = () => {
+  const roles = [{id: 2, role: 'PROVIDER'}, {id: 3, role: 'CUSTOMER'}];
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
@@ -28,7 +29,7 @@ export const Register = () => {
   });
 
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const select = useSelector((state) => {
     return {
       register: state.auth,
@@ -38,9 +39,9 @@ export const Register = () => {
   });
 
   useEffect(() => {
-    GetAllRegions()
+    GetAllRegions(15, 1)
       .then((res) => {
-        dispatch(setRegions(res.regions));
+        dispatch(setRegions(res.rows));
       })
       .catch((err) => {
         setIsError(true);
@@ -51,16 +52,16 @@ export const Register = () => {
   }, []);
 
   useEffect(() => {
-    GetAllRoles()
-      .then((res) => {
-        dispatch(setroles(res.roles));
-      })
-      .catch((err) => {
-        setIsError(true);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    // GetAllRoles()
+    //   .then((res) => {
+    //     dispatch(setroles(res.roles));
+    //   })
+    //   .catch((err) => {
+    //     setIsError(true);
+    //   })
+    //   .finally(() => {
+    //     setIsLoading(false);
+    //   });
   }, []);
 
   const className =
@@ -81,7 +82,7 @@ export const Register = () => {
       .then((result) => {
         if (!result?.payload?.error) {
           // setIsRegisterOk(true);
-          navigate('/login')
+          navigate("/login");
         }
       })
       .catch((err) => {
@@ -96,6 +97,7 @@ export const Register = () => {
     setIsError(false);
   };
 
+  console.log(select.regions);
   return (
     <>
       {isLoading ? (
@@ -175,9 +177,9 @@ export const Register = () => {
                           <option value="" disabled selected>
                             Select Region
                           </option>
-                          {select?.regions.map((regin, i) => {
+                          {select?.regions?.map((regin, i) => {
                             return (
-                              <option value={regin.id}>{regin.region}</option>
+                              <option value={regin.id}>{regin.name}</option>
                             );
                           })}
                         </select>
@@ -225,7 +227,7 @@ export const Register = () => {
                       </div>
 
                       <div>
-                        <label>user or service provider ?</label>
+                        <label>User or Service provider ?</label>
                         <select
                           onChange={(e) => handleChange(e)}
                           name="role_id"
@@ -236,7 +238,7 @@ export const Register = () => {
                           <option value="" disabled selected>
                             Select role
                           </option>
-                          {select?.roles.map((role, i) => {
+                          {roles?.map((role, i) => {
                             return <option value={role.id}>{role.role}</option>;
                           })}
                         </select>

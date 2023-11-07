@@ -53,23 +53,6 @@ const AdminRegions = () => {
           setIsLoading(false);
         });
     })();
-    // if (selectRgions.regions.length === 0) {
-    //   GetAllRegions(limit, offset)
-    //     .then((result) => {
-    //       if (!result.error) {
-    //         dispatch(setRegions(result));
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       setIsError(true);
-    //     })
-    //     .finally(() => {
-    //       setIsLoading(false);
-    //     });
-    // } else {
-    //   setIsLoading(false);
-    // }
-    // return () => {};
   }, []);
 
   const handleCloseModal = () => {

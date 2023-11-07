@@ -1,4 +1,5 @@
 // const pool = require("../models/DB");
+const UserTypes = require("../models/user_type");
 
 exports.createRoles = (req, res, next) => {
   const { role } = req.body;
@@ -20,20 +21,18 @@ exports.createRoles = (req, res, next) => {
     });
 };
 
-exports.getAllRole=async(req,res,next)=>{
-  const query=`SELECT * FROM roles`
+exports.getAllRole = async (req, res, next) => {
   try {
-    const response= await pool.query(query)
-    res.status(201).json({
-      error: false,
-      message: "all roles",
-      roles:response.rows
-    });
+    const types = await UserTypes.findAll();
 
+    res.status(200).json({
+      error: false,
+      roles: types,
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
     next(err);
   }
-}
+};

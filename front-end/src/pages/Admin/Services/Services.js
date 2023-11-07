@@ -45,7 +45,7 @@ const AdminServices = () => {
   ];
 
   useEffect(() => {
-    return () => {
+    (() => {
       getAllServices(limit, offset, 1)
         .then((services) => {
           dispatch(setServices(services));
@@ -56,7 +56,7 @@ const AdminServices = () => {
         .finally(() => {
           setIsLoading(false);
         });
-    };
+      })();
   }, []);
 
   const handleCloseModal = () => {

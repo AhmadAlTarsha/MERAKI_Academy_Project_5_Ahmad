@@ -39,7 +39,7 @@ const AdminCategories = () => {
   };
 
   useEffect(() => {
-    return () => {
+    (() => {
       GetCategories(limit, offset, 1)
         .then((result) => {
           if (!result.error) {
@@ -52,7 +52,7 @@ const AdminCategories = () => {
         .finally(() => {
           setIsLoading(false);
         });
-    };
+      })();
   }, []);
 
   const handleCloseModal = () => {
