@@ -4,7 +4,7 @@ export const addNewServices = async (payload) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
     const result = await axios.post(
-      `https://tintin-bqtw.onrender.com/services`,
+      `http://18.189.43.98:5000/services`,
       {
         category_id: payload.category_id,
         sub_category_id: payload.sub_category_id,

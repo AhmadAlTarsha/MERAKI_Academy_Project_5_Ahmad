@@ -4,9 +4,9 @@ export const GetAllPosts = async (limit, offset, isDeleted) => {
 
   let url = ``;
   if (isDeleted === 0) {
-    url = `https://tintin-bqtw.onrender.com/posts?limit=${limit}&offset=${offset}&is_deleted=0`;
+    url = `http://18.189.43.98:5000/posts?limit=${limit}&offset=${offset}&is_deleted=0`;
   } else {
-    url = `https://tintin-bqtw.onrender.com/posts?limit=${limit}&offset=${offset}`;
+    url = `http://18.189.43.98:5000/posts?limit=${limit}&offset=${offset}`;
   }
 
   try {
@@ -27,7 +27,7 @@ export const GetAllPostsOnCategory = async (
 ) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
 
-  let url = `https://tintin-bqtw.onrender.com/posts/category/${category_id}?limit=${limit}0&offset=${offset}&is_deleted=0`;
+  let url = `http://18.189.43.98:5000/posts/category/${category_id}?limit=${limit}0&offset=${offset}&is_deleted=0`;
 
   try {
     const result = await axios.get(url, {
@@ -51,7 +51,7 @@ export const GetAllPostsOnSubCategory = async (
 ) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
 
-  let url = `https://tintin-bqtw.onrender.com/posts/sub_category/${category_id}?limit=${limit}0&offset=${offset}&is_deleted=0`;
+  let url = `http://18.189.43.98:5000/posts/sub_category/${category_id}?limit=${limit}0&offset=${offset}&is_deleted=0`;
 
   try {
     const result = await axios.get(url, {
@@ -70,7 +70,7 @@ export const GetAllPostsOnSubCategory = async (
 export const GetCommentsByPost = async (postId, limit, offset) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
 
-  let url = `https://tintin-bqtw.onrender.com/comment/${postId}?limit=${limit}&offset=${offset}&is_deleted=0`;
+  let url = `http://18.189.43.98:5000/comment/${postId}?limit=${limit}&offset=${offset}&is_deleted=0`;
 
   try {
     const result = await axios.get(url, {
@@ -89,7 +89,7 @@ export const GetCommentsByPost = async (postId, limit, offset) => {
 export const GetPostsByUserId = async (limit, offset) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
 
-  let url = `https://tintin-bqtw.onrender.com/posts/user/${token.id}?limit=${limit}&offset=${offset}&is_deleted=0`;
+  let url = `http://18.189.43.98:5000/posts/user/${token.id}?limit=${limit}&offset=${offset}&is_deleted=0`;
 
   try {
     const result = await axios.get(url, {
@@ -111,7 +111,7 @@ export const GetPost = async (id) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
 
   //Admin
-  let url = `https://tintin-bqtw.onrender.com/posts/${id}`;
+  let url = `http://18.189.43.98:5000/posts/${id}`;
 
   try {
     const result = await axios.get(url);

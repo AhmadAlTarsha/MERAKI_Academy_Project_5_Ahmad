@@ -5,7 +5,7 @@ export const getAllServices = async (limit, offset, isDeleted) => {
   let url = "";
 
   if (isDeleted === 0) {
-    url = `https://tintin-bqtw.onrender.com/services?limit=${limit}&offset=${offset}&is_deleted=0`;
+    url = `http://18.189.43.98:5000/services?limit=${limit}&offset=${offset}&is_deleted=0`;
   } else {
     url = `https://tintin-bqtw.onrender.com/services?limit=${limit}&offset=${offset}`;
   }

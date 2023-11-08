@@ -4,7 +4,7 @@ export const getConversations = async () => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
 
   try {
-    const result = await axios.get(`https://tintin-bqtw.onrender.com/m/chats`, {
+    const result = await axios.get(`http://18.189.43.98:5000/m/chats`, {
       headers: {
         Authorization: `Bearer ${token?.token}`,
       },
