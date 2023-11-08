@@ -3,7 +3,7 @@ import axios from "axios";
 export const UpdateOrderStatus = async (id, status) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
 
-  let url = `https://tintin-bqtw.onrender.com/m/m/orders/${id}/${status}`;
+  let url = `http://18.189.43.98:5000/m/m/orders/${id}/${status}`;
 
   try {
     const result = await axios.put(

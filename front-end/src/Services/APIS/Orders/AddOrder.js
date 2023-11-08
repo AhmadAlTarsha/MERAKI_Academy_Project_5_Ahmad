@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const addOrderAPI = async (payload) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
-  let url = `https://tintin-bqtw.onrender.com/orders`;
+  let url = `http://18.189.43.98:5000/orders`;
 
   try {
     const result = await axios.post(

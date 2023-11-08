@@ -4,7 +4,7 @@ export const UpdatePost = async (id, paylode) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
     const result = await axios.put(
-      `https://tintin-bqtw.onrender.com/m/posts/${id}`,
+      `http://18.189.43.98:5000/m/posts/${id}`,
       paylode,
       {
         headers: {

@@ -99,8 +99,8 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    // const socket = openSocket.connect('https://tintin-bqtw.onrender.com/')
-    // const socket = openSocket("https://tintin-bqtw.onrender.com/");
+    // const socket = openSocket.connect('http://18.189.43.98:5000/')
+    // const socket = openSocket("http://18.189.43.98:5000/");
     // socket.on("posts", (data) => {
     //   if (data.action === "create") {
     //     GetAllPosts(limit, offset, 0)

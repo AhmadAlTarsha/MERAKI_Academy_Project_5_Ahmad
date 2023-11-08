@@ -4,7 +4,7 @@ export const AddCategory = async (payload) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
     const result = await axios.post(
-      `https://tintin-bqtw.onrender.com/categories`,
+      `http://18.189.43.98:5000/categories`,
       payload,
       {
         headers: {
@@ -27,7 +27,7 @@ export const AddSubCategory = async (payload) => {
 
   try {
     const result = await axios.post(
-      `https://tintin-bqtw.onrender.com/subcategories`,
+      `http://18.189.43.98:5000/subcategories`,
       payload,
       {
         headers: {
