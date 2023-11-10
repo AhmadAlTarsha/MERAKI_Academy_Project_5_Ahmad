@@ -55,19 +55,19 @@ const Chats = () => {
   }, []);
 
   useEffect(() => {
-    // const socket = openSocket("http://localhost:5000");
-    // socket.on("message", (data) => {
-    //   if (data?.action === "send") {
-    //     dispatch(GetChatsByConversationId({ id }))
-    //       .then((result) => {})
-    //       .catch((err) => {
-    //         console.log("res ===> ", err);
-    //       })
-    //       .finally(() => {
-    //         setIsLoading(false);
-    //       });
-    //   }
-    // });
+    const socket = openSocket("http://3.134.111.211:5000");
+    socket.on("message", (data) => {
+      if (data?.action === "send") {
+        dispatch(GetChatsByConversationId({ id }))
+          .then((result) => {})
+          .catch((err) => {
+            console.log("res ===> ", err);
+          })
+          .finally(() => {
+            setIsLoading(false);
+          });
+      }
+    });
   }, []);
 
   return (

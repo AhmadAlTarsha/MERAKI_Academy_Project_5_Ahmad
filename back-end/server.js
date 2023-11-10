@@ -108,7 +108,7 @@ sequelize
     const server = app.listen(PORT);
     const io = require("./socket").init(server, {
       cors: {
-        origin: "http://localhost:5000",
+        origin: "*",
         methods: ["GET", "POST", "PUT", "DELETE"],
       },
     });

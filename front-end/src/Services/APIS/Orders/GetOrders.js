@@ -4,11 +4,11 @@ export const GetOrders = async (limit, offset, status) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   let url = ``;
   if (limit === 0 && offset === 0 && status === 0) {
-    url = `http://18.189.43.98:5000/orders`;
+    url = `http://3.134.111.211:5000/orders`;
   } else if (limit !== 0 && offset !== 0 && status === 0) {
-    url = `http://18.189.43.98:5000/orders?limit=${limit}&offset=${offset}`;
+    url = `http://3.134.111.211:5000/orders?limit=${limit}&offset=${offset}`;
   } else if (limit !== 0 && offset !== 0 && status !== 0) {
-    url = `http://18.189.43.98:5000/orders?limit=${limit}&offset=${offset}&stauts=${status}`;
+    url = `http://3.134.111.211:5000/orders?limit=${limit}&offset=${offset}&stauts=${status}`;
   }
   try {
     const result = await axios.get(url, {
@@ -28,7 +28,7 @@ export const GetOrders = async (limit, offset, status) => {
 export const GetOrdersByUserId = async (limit, offset, status) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
 
-  let url = `http://18.189.43.98:5000/orders/customer/${token?.id}?limit=${limit}&offset=${offset}`;
+  let url = `http://3.134.111.211:5000/orders/customer/${token?.id}?limit=${limit}&offset=${offset}`;
 
   try {
     const result = await axios.get(url, {

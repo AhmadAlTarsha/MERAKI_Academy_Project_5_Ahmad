@@ -194,19 +194,19 @@ exports.getAllServices = async (req, res, next) => {
     const services = result.rows.map((service) => {
       return {
         ...service.dataValues,
-        default_image: `http://localhost:5000/${service.dataValues.default_image}`,
+        default_image: `http://3.134.111.211:5000/${service.dataValues.default_image}`,
         user: {
           full_name: `${service.dataValues.user.dataValues.first_name} ${service.dataValues.user.dataValues.last_name}`,
           nick_name: service.dataValues.user.dataValues.nick_name,
-          image: `http://localhost:5000/images/${service.dataValues.user.dataValues.image}`,
+          image: `${service.dataValues.user.dataValues.image}`,
         },
         Category: {
           ...service.dataValues.Category.dataValues,
-          image: `http://localhost:5000/${service.dataValues.Category.dataValues.image}`,
+          image: `http://3.134.111.211:5000/${service.dataValues.Category.dataValues.image}`,
         },
         sub_category: {
           ...service.dataValues.sub_category.dataValues,
-          image: `http://localhost:5000/${service.dataValues.sub_category.dataValues.image}`,
+          image: `http://3.134.111.211:5000/${service.dataValues.sub_category.dataValues.image}`,
         },
       };
     });
@@ -292,18 +292,18 @@ exports.getAllServicesByUser = async (req, res, next) => {
     const services = result.rows.map((service) => {
       return {
         ...service.dataValues,
-        default_image: `http://localhost:5000/${service.dataValues.default_image}`,
+        default_image: `http://3.134.111.211:5000/${service.dataValues.default_image}`,
         user: {
           ...service.dataValues.user.dataValues,
-          image: `http://localhost:5000/images/${service.dataValues.user.dataValues.image}`,
+          image: `${service.dataValues.user.dataValues.image}`,
         },
         Category: {
           ...service.dataValues.Category.dataValues,
-          image: `http://localhost:5000/${service.dataValues.Category.dataValues.image}`,
+          image: `http://3.134.111.211:5000/${service.dataValues.Category.dataValues.image}`,
         },
         sub_category: {
           ...service.dataValues.sub_category.dataValues,
-          image: `http://localhost:5000/${service.dataValues.sub_category.dataValues.image}`,
+          image: `http://3.134.111.211:5000/${service.dataValues.sub_category.dataValues.image}`,
         },
       };
     });
@@ -361,18 +361,18 @@ exports.getAllServicesOnCategory = async (req, res, next) => {
     const services = result.rows.map((service) => {
       return {
         ...service.dataValues,
-        default_image: `http://localhost:5000/${service.dataValues.default_image}`,
+        default_image: `http://3.134.111.211:5000/${service.dataValues.default_image}`,
         user: {
           ...service.dataValues.user.dataValues,
-          image: `http://localhost:5000/images/${service.dataValues.user.dataValues.image}`,
+          image: `${service.dataValues.user.dataValues.image}`,
         },
         Category: {
           ...service.dataValues.Category.dataValues,
-          image: `http://localhost:5000/${service.dataValues.Category.dataValues.image}`,
+          image: `http://3.134.111.211:5000/${service.dataValues.Category.dataValues.image}`,
         },
         sub_category: {
           ...service.dataValues.sub_category.dataValues,
-          image: `http://localhost:5000/${service.dataValues.sub_category.dataValues.image}`,
+          image: `http://3.134.111.211:5000/${service.dataValues.sub_category.dataValues.image}`,
         },
       };
     });
@@ -431,18 +431,18 @@ exports.getAllServicesOnSubCategory = async (req, res, next) => {
     const services = result.rows.map((service) => {
       return {
         ...service.dataValues,
-        default_image: `http://localhost:5000/${service.dataValues.default_image}`,
+        default_image: `http://3.134.111.211:5000/${service.dataValues.default_image}`,
         user: {
           ...service.dataValues.user.dataValues,
-          image: `http://localhost:5000/images/${service.dataValues.user.dataValues.image}`,
+          image: `${service.dataValues.user.dataValues.image}`,
         },
         Category: {
           ...service.dataValues.Category.dataValues,
-          image: `http://localhost:5000/${service.dataValues.Category.dataValues.image}`,
+          image: `http://3.134.111.211:5000/${service.dataValues.Category.dataValues.image}`,
         },
         sub_category: {
           ...service.dataValues.sub_category.dataValues,
-          image: `http://localhost:5000/${service.dataValues.sub_category.dataValues.image}`,
+          image: `http://3.134.111.211:5000/${service.dataValues.sub_category.dataValues.image}`,
         },
       };
     });
@@ -481,18 +481,18 @@ exports.getServiceOnId = async (req, res, next) => {
         error: false,
         service: {
           ...result.dataValues,
-          default_image: `http://localhost:5000/${result.dataValues.default_image}`,
+          default_image: `http://3.134.111.211:5000/${result.dataValues.default_image}`,
           user: {
             ...result.dataValues.user.dataValues,
-            image: `http://localhost:5000/images/${result.dataValues.user.dataValues.image}`,
+            image: `${result.dataValues.user.dataValues.image}`,
           },
           Category: {
             ...result.dataValues.Category.dataValues,
-            image: `http://localhost:5000/${result.dataValues.Category.dataValues.image}`,
+            image: `http://3.134.111.211:5000/${result.dataValues.Category.dataValues.image}`,
           },
           sub_category: {
             ...result.dataValues.sub_category.dataValues,
-            image: `http://localhost:5000/${result.dataValues.sub_category.dataValues.image}`,
+            image: `http://3.134.111.211:5000/${result.dataValues.sub_category.dataValues.image}`,
           },
         },
       });

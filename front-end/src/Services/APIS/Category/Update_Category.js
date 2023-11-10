@@ -4,7 +4,7 @@ const token = JSON.parse(localStorage.getItem("token")) ?? {};
 
   try {
     const result = await axios.put(
-      `http://18.189.43.98:5000/categories/${id}`,
+      `http://3.134.111.211:5000/categories/${id}`,
       payload,
       {
         headers: {
@@ -27,7 +27,7 @@ const token = JSON.parse(localStorage.getItem("token")) ?? {};
 
   try {
     const result = await axios.put(
-      `http://18.189.43.98:5000/subcategories/${id}`,
+      `http://3.134.111.211:5000/subcategories/${id}`,
       payload,
       {
         headers: {

@@ -3,7 +3,7 @@ import axios from "axios";
 export const newConversation = async (provider_id, customer_id) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
-    const result = await axios.post(`http://18.189.43.98:5000/m/m/m/chats`, {
+    const result = await axios.post(`http://3.134.111.211:5000/chats`, {
       provider_id,
       customer_id,
     }, {

@@ -4,7 +4,7 @@ export const UpdateUserAPI = async (payload) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
     const result = await axios.put(
-      `https://tintin-bqtw.onrender.com/users/${payload?.id}`,
+      `http://3.134.111.211:5000/users/${payload?.id}`,
       {
         ...payload,
         nick_name: payload.nickName,

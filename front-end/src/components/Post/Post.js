@@ -73,8 +73,8 @@ function Post({
       });
   };
 
-  const handleAddingOrder = async (sub_category_id, provider_id) => {
-    dispatch(addOrder({ provider_id, sub_category_id }))
+  const handleAddingOrder = async (service_id, provider_id) => {
+    dispatch(addOrder({ provider_id, service_id }))
       .then((res) => {
         if (!res?.payload?.err) {
           setIsOpen(!isOpen);
@@ -166,7 +166,7 @@ function Post({
             buttonClassName={`mt-3 focus:outline-none text-white bg-blue-700 hover:bg-primary-5 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800
             `}
             buttonName={"Set Order"}
-            onClick={() => handleAddingOrder(subCategoryId, providerId)}
+            onClick={() => handleAddingOrder(post?.id, post.provider_id)}
           />
         )}
         <div className={bodyDivClassName}>

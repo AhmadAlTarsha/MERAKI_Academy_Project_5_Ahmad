@@ -40,18 +40,18 @@ exports.getAllPosts = async (req, res, next) => {
     const posts = postsData.rows.map((post) => {
       return {
         ...post.dataValues,
-        main_image: `http://localhost:5000/${post.dataValues.main_image}`,
+        main_image: `http://3.134.111.211:5000/${post.dataValues.main_image}`,
         user: {
           ...post.dataValues.user.dataValues,
-          image: `http://localhost:5000/images/${post.dataValues.user.dataValues.image}`,
+          image: `${post.dataValues.user.dataValues.image}`,
         },
         Category: {
           ...post.dataValues.Category.dataValues,
-          image: `http://localhost:5000/${post.dataValues.Category.dataValues.image}`,
+          image: `http://3.134.111.211:5000/${post.dataValues.Category.dataValues.image}`,
         },
         sub_category: {
           ...post.dataValues.sub_category.dataValues,
-          image: `http://localhost:5000/${post.dataValues.sub_category.dataValues.image}`,
+          image: `http://3.134.111.211:5000/${post.dataValues.sub_category.dataValues.image}`,
         },
       };
     });
@@ -106,18 +106,18 @@ exports.getAllPostsByCategory = async (req, res, next) => {
     const posts = postsData.rows.map((post) => {
       return {
         ...post.dataValues,
-        main_image: `http://localhost:5000/${post.dataValues.main_image}`,
+        main_image: `http://3.134.111.211:5000/${post.dataValues.main_image}`,
         user: {
           ...post.dataValues.user.dataValues,
-          image: `http://localhost:5000/images/${post.dataValues.user.dataValues.image}`,
+          image: `${post.dataValues.user.dataValues.image}`,
         },
         Category: {
           ...post.dataValues.Category.dataValues,
-          image: `http://localhost:5000/${post.dataValues.Category.dataValues.image}`,
+          image: `http://3.134.111.211:5000/${post.dataValues.Category.dataValues.image}`,
         },
         sub_category: {
           ...post.dataValues.sub_category.dataValues,
-          image: `http://localhost:5000/${post.dataValues.sub_category.dataValues.image}`,
+          image: `http://3.134.111.211:5000/${post.dataValues.sub_category.dataValues.image}`,
         },
       };
     });
@@ -172,18 +172,18 @@ exports.getAllPostsBySubCategory = async (req, res, next) => {
     const posts = postsData.rows.map((post) => {
       return {
         ...post.dataValues,
-        main_image: `http://localhost:5000/${post.dataValues.main_image}`,
+        main_image: `http://3.134.111.211:5000/${post.dataValues.main_image}`,
         user: {
           ...post.dataValues.user.dataValues,
-          image: `http://localhost:5000/images/${post.dataValues.user.dataValues.image}`,
+          image: `${post.dataValues.user.dataValues.image}`,
         },
         Category: {
           ...post.dataValues.Category.dataValues,
-          image: `http://localhost:5000/${post.dataValues.Category.dataValues.image}`,
+          image: `http://3.134.111.211:5000/${post.dataValues.Category.dataValues.image}`,
         },
         sub_category: {
           ...post.dataValues.sub_category.dataValues,
-          image: `http://localhost:5000/${post.dataValues.sub_category.dataValues.image}`,
+          image: `http://3.134.111.211:5000/${post.dataValues.sub_category.dataValues.image}`,
         },
       };
     });
@@ -219,18 +219,18 @@ exports.getPostById = async (req, res, next) => {
         error: false,
         post: {
           ...post.dataValues,
-          main_image: `http://localhost:5000/${post.dataValues.main_image}`,
+          main_image: `http://3.134.111.211:5000/${post.dataValues.main_image}`,
           user: {
             ...post.dataValues.user.dataValues,
-            image: `http://localhost:5000/images/${post.dataValues.user.dataValues.image}`,
+            image: `${post.dataValues.user.dataValues.image}`,
           },
           Category: {
             ...post.dataValues.Category.dataValues,
-            image: `http://localhost:5000/${post.dataValues.Category.dataValues.image}`,
+            image: `http://3.134.111.211:5000/${post.dataValues.Category.dataValues.image}`,
           },
           sub_category: {
             ...post.dataValues.sub_category.dataValues,
-            image: `http://localhost:5000/${post.dataValues.sub_category.dataValues.image}`,
+            image: `http://3.134.111.211:5000/${post.dataValues.sub_category.dataValues.image}`,
           },
         },
       });
@@ -278,18 +278,18 @@ exports.getAllPostsByUser = async (req, res, next) => {
     const posts = postsData.rows.map((post) => {
       return {
         ...post.dataValues,
-        main_image: `http://localhost:5000/${post.dataValues.main_image}`,
+        main_image: `http://3.134.111.211:5000/${post.dataValues.main_image}`,
         user: {
           ...post.dataValues.user.dataValues,
-          image: `http://localhost:5000/images/${post.dataValues.user.dataValues.image}`,
+          image: `${post.dataValues.user.dataValues.image}`,
         },
         Category: {
           ...post.dataValues.Category.dataValues,
-          image: `http://localhost:5000/${post.dataValues.Category.dataValues.image}`,
+          image: `http://3.134.111.211:5000/${post.dataValues.Category.dataValues.image}`,
         },
         sub_category: {
           ...post.dataValues.sub_category.dataValues,
-          image: `http://localhost:5000/${post.dataValues.sub_category.dataValues.image}`,
+          image: `http://3.134.111.211:5000/${post.dataValues.sub_category.dataValues.image}`,
         },
       };
     });

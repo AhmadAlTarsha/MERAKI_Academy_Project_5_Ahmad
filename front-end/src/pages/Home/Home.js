@@ -99,45 +99,44 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    // const socket = openSocket.connect('http://18.189.43.98:5000/')
-    // const socket = openSocket("http://18.189.43.98:5000/");
-    // socket.on("posts", (data) => {
-    //   if (data.action === "create") {
-    //     GetAllPosts(limit, offset, 0)
-    //       .then((res) => {
-    //         dispatch(setPosts(res));
-    //         res?.rows?.forEach((el) => {
-    //           GetCommentsByPost(el.id, 15, 1)
-    //             .then((comments) => {
-    //               postComments[`post_${el?.id}`] = comments;
-    //               dispatch(setComments(postComments));
-    //             })
-    //             .catch((err) => {});
-    //         });
-    //       })
-    //       .catch((err) => {
-    //         setError(true);
-    //       })
-    //       .finally(() => {
-    //         setLoading(false);
-    //       });
-    //   }
-    // });
+    const socket = openSocket.connect('http://3.134.111.211:5000')
+    socket.on("posts", (data) => {
+      if (data.action === "create") {
+        GetAllPosts(limit, offset, 0)
+          .then((res) => {
+            dispatch(setPosts(res));
+            res?.rows?.forEach((el) => {
+              GetCommentsByPost(el.id, 15, 1)
+                .then((comments) => {
+                  postComments[`post_${el?.id}`] = comments;
+                  dispatch(setComments(postComments));
+                })
+                .catch((err) => {});
+            });
+          })
+          .catch((err) => {
+            setError(true);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
+    });
 
-    // socket.on("services", (data) => {
-    //   if (data.action === "create") {
-    //     getAllServices(limit, offset, 0)
-    //       .then((res) => {
-    //         dispatch(setServices(res));
-    //       })
-    //       .catch((err) => {
-    //         setError(true);
-    //       })
-    //       .finally(() => {
-    //         setLoading(false);
-    //       });
-    //   }
-    // });
+    socket.on("services", (data) => {
+      if (data.action === "create") {
+        getAllServices(limit, offset, 0)
+          .then((res) => {
+            dispatch(setServices(res));
+          })
+          .catch((err) => {
+            setError(true);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
+    });
   }, []);
 
   const handlePage = (li, off) => {

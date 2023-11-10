@@ -5,7 +5,7 @@ export const sendMessage = async (reciver_id, message, conversationId) => {
 
   try {
     const result = await axios.post(
-      `http://18.189.43.98:5000/chats/${conversationId}`,
+      `http://3.134.111.211:5000/chats/${conversationId}`,
       {
         reciver_id,
         message,
