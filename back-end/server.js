@@ -78,6 +78,11 @@ app.use("/regions", regionsRoure);
 app.use("/orders", ordersRouter);
 app.use("/chats", chatRouter);
 
+app.use(express.static("build"));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
 app.use("*", (req, res) => res.status(404).json("NO content at this path"));
 
 app.use((err, req, res, next) => {
