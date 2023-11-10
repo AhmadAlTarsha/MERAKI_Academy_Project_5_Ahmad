@@ -3,7 +3,7 @@ import axios from "axios";
 export const AddRegion = async (payload) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
-    const result = await axios.post(`http://18.189.43.98:5000/regions`, payload, {
+    const result = await axios.post(`http://3.134.111.211:5000/regions`, payload, {
       headers: {
         Authorization: `Bearer ${token?.token}`,
       },

@@ -4,7 +4,7 @@ export const DeleteCategories = async (id, is_deleted) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
     const result = await axios.delete(
-      `http://18.189.43.98:5000/categories/${id}/${is_deleted}`,
+      `http://3.134.111.211:5000/categories/${id}/${is_deleted}`,
       {
         headers: {
           Authorization: `Bearer ${token?.token}`,
@@ -24,7 +24,7 @@ export const DeleteSubCategories = async (id, is_deleted) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
     const result = await axios.delete(
-      `http://18.189.43.98:5000/subcategories/${id}/${is_deleted}`,
+      `http://3.134.111.211:5000/subcategories/${id}/${is_deleted}`,
       {
         headers: {
           Authorization: `Bearer ${token?.token}`,

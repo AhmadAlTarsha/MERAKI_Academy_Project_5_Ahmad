@@ -110,7 +110,7 @@ exports.getAllSubCategories = async (req, res, next) => {
         id: subCategory.category_id,
         name: subCategory.Category.name,
       },
-      image: `http://localhost:5000/${subCategory.image}`,
+      image: `http://3.134.111.211:5000/${subCategory.image}`,
       is_deleted: subCategory.is_deleted,
       created_at: subCategory.created_at,
     }));
@@ -158,7 +158,7 @@ exports.getAllSubCategoriesOnCategory = async (req, res, next) => {
         id: subCategory.category_id,
         name: subCategory.Category.name,
       },
-      image: `http://localhost:5000/${subCategory.image}`,
+      image: `http://3.134.111.211:5000/${subCategory.image}`,
       is_deleted: subCategory.is_deleted,
       created_at: subCategory.created_at,
     }));

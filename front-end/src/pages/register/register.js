@@ -13,7 +13,10 @@ import Pop_up from "../../components/Dialog_Modal/Pop-up";
 import { useNavigate } from "react-router";
 
 export const Register = () => {
-  const roles = [{id: 2, role: 'PROVIDER'}, {id: 3, role: 'CUSTOMER'}];
+  const roles = [
+    { id: 2, role: "PROVIDER" },
+    { id: 3, role: "CUSTOMER" },
+  ];
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
@@ -49,19 +52,6 @@ export const Register = () => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
-
-  useEffect(() => {
-    // GetAllRoles()
-    //   .then((res) => {
-    //     dispatch(setroles(res.roles));
-    //   })
-    //   .catch((err) => {
-    //     setIsError(true);
-    //   })
-    //   .finally(() => {
-    //     setIsLoading(false);
-    //   });
   }, []);
 
   const className =
@@ -195,6 +185,20 @@ export const Register = () => {
                           type={"email"}
                           inputClassName={className}
                           placeHolder={"name@company.com"}
+                          onChange={(e) => handleChange(e)}
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          labelName={"Your Phone"}
+                          labelClassName={
+                            "block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                          }
+                          divClassName={""}
+                          name={"phone"}
+                          type={"test"}
+                          inputClassName={className}
+                          placeHolder={"07888"}
                           onChange={(e) => handleChange(e)}
                         />
                       </div>

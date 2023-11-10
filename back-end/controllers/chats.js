@@ -51,12 +51,12 @@ exports.getConversations = (req, res, next) => {
         customer: {
           id: conversation.customerChat.id,
           full_name: `${conversation.customerChat.first_name} ${conversation.customerChat.last_name}`,
-          image: `http://localhost:5000/images/${conversation.customerChat.image}`,
+          image: `${conversation.customerChat.image}`,
         },
         provider: {
           id: conversation.providerChat.id,
           full_name: `${conversation.providerChat.first_name} ${conversation.providerChat.last_name}`,
-          image: `http://localhost:5000/images/${conversation.providerChat.image}`,
+          image: `${conversation.providerChat.image}`,
         },
       }));
 
@@ -123,12 +123,12 @@ exports.getConversationChat = async (req, res, next) => {
       sender: {
         id: message.senderMsg.id,
         nick_name: message.senderMsg.nick_name,
-        image: `http://localhost:5000/images/${message.senderMsg.image}`,
+        image: `${message.senderMsg.image}`,
       },
       reciver: {
         id: message.resiverMsg.id,
         nick_name: message.resiverMsg.nick_name,
-        image: `http://localhost:5000/images/${message.resiverMsg.image}`,
+        image: `${message.resiverMsg.image}`,
       },
     }));
 

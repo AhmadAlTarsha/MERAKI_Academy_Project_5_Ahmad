@@ -4,7 +4,7 @@ export const UpdateServiceStatus = async (id, status) => {
   const token = JSON.parse(localStorage.getItem("token")) ?? {};
   try {
     const result = await axios.put(
-      `https://tintin-bqtw.onrender.com/services/${id}/${status}`,
+      `http://3.134.111.211/services/${id}/${status}`,
       {},
       {
         headers: {

@@ -100,7 +100,7 @@ exports.getAllCategories = async (req, res, next) => {
     const categories = result?.rows.map((category) => ({
       id: category.id,
       name: category.name,
-      image: `http://localhost:5000/${category.image}`,
+      image: `http://3.134.111.211:5000/${category.image}`,
       is_deleted: category.is_deleted,
       created_at: category.created_at,
     }));

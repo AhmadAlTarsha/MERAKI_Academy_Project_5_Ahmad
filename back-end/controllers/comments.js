@@ -76,7 +76,7 @@ exports.getCommentsByPostId = async (req, res, next) => {
           id: comment.dataValues.user.id,
           full_name: `${comment.dataValues.user.first_name} ${comment.dataValues.user.last_name}`,
           email: comment.dataValues.user.email,
-          image: `http://localhost:5000/images/${comment.dataValues.user.image}`,
+          image: `${comment.dataValues.user.image}`,
         },
         post: {
           ...comment.dataValues.post.dataValues,

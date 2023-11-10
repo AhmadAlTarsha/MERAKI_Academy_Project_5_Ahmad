@@ -14,6 +14,7 @@ const CategoryTr = ({
   setLoading,
 }) => {
   const navigate = useNavigate();
+  console.log(categoriesArray);
   return categoriesArray?.map((category) => (
     <tr
       key={category.id}
