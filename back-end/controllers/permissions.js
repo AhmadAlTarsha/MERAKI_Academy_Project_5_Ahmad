@@ -1,19 +1,21 @@
 const pool = require("../models/DB");
+const Permissions = require("../models/permission");
 
 exports.createPermssions = (req, res, next) => {
-  const { roleId, permisson } = req.body;
-  pool
-    .query(`INSERT INTO permissions (role_id, permission) VALUES ($1, $2)`, [
-      roleId,
-      permisson,
-    ])
+  Permissions.bulkCreate([
+    { name: "get_region", user_type_id: 3 },
+    { name: "get_category", user_type_id: 3 },
+    { name: "get_post", user_type_id: 3 },
+    { name: "add_post", user_type_id: 3 },
+    { name: "edit_post", user_type_id: 3 },
+    { name: "delete_post", user_type_id: 3 },
+    { name: "get_orders", user_type_id: 3 },
+    { name: "add_orders", user_type_id: 3 },
+    { name: "cancel_orders", user_type_id: 3 },
+    { name: "get_service", user_type_id: 3 },
+  ])
     .then((result) => {
-      if (result.command === "INSERT") {
-        res.status(201).json({
-          error: false,
-          message: "Added Success",
-        });
-      }
+      console.log(result);
     })
     .catch((err) => {
       if (!err.statusCode) {

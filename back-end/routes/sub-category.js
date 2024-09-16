@@ -5,6 +5,8 @@ const {
   updateSubCategory,
   getAllSubCategoriesOnCategory,
   getSubCateogoryById,
+  getAllSubCategories,
+  activateOrDeActivateSubCategoryById,
 } = require("../controllers/sub-category");
 
 const { authentication } = require("../middlewares/authentication");
@@ -13,29 +15,32 @@ const { authorization } = require("../middlewares/authorization");
 subCategoryRouter.post(
   "/",
   authentication,
-  authorization("CATEGORY-CONTROL"),
+  authorization("add_category"),
   addSubCategory
 );
 
 subCategoryRouter.put(
   "/:id",
   authentication,
-  authorization("CATEGORY-CONTROL"),
+  authorization("edit_category"),
   updateSubCategory
 );
 
-subCategoryRouter.get(
-  "/:categoryId",
-  authentication,
-  authorization("CATEGORY-CONTROL"),
-  getAllSubCategoriesOnCategory
-);
+subCategoryRouter.get("/", getAllSubCategories);
+
+subCategoryRouter.get("/category/", getAllSubCategoriesOnCategory);
 
 subCategoryRouter.get(
-  "/category/:id",
+  "/:id",
   authentication,
-  authorization("CATEGORY-CONTROL"),
+  authorization("get_category"),
   getSubCateogoryById
 );
 
+subCategoryRouter.delete(
+  "/:id/:isDeleted",
+  authentication,
+  authorization("delete_category"),
+  activateOrDeActivateSubCategoryById
+);
 module.exports = subCategoryRouter;

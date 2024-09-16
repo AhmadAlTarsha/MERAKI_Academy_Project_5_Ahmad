@@ -1,307 +1,221 @@
+// const pool = require("../models/DB");
 const { throwError } = require("../middlewares/throwError");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const pool = require("../models/DB");
+const User = require("../models/user");
+const UserTypes = require("../models/user_type");
+const Permissions = require("../models/permission");
 // const salt = parseInt(process.env.SALT);
+
 exports.register = async (req, res, next) => {
   let {
     region_id,
-    role_id,
-    firt_name,
+    user_type_id,
+    first_name,
     last_name,
     nick_name,
     email,
     password,
-    image,
+    phone,
   } = req.body;
+
+  let image;
+
+  if (req.file) {
+    image = req.file.path.replace("\\", "/");
+  }
 
   try {
     password = await bcrypt.hash(password, 10);
-  } catch (error) {
-    throw error;
-  }
-
-  const query = `INSERT INTO users (region_id, role_id, firt_name, last_name, nick_name, email, password, image ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`;
-  const data = [
-    region_id,
-    role_id,
-    firt_name,
-    last_name,
-    nick_name,
-    email.toLowerCase(),
-    password,
-    image,
-  ];
-  pool
-    .query(query, data)
-    .then((result) => {
-      if (result.command === "INSERT") {
-        return res.status(200).json({
-          error: true,
-          message: "Account created successfully",
-        });
-      }
-      return throwError(400, "Something went wrong");
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
+    const result = await User.findOrCreate({
+      where: { email: email.toLowerCase() },
+      defaults: {
+        email: email.toLowerCase(),
+        region_id,
+        user_type_id,
+        first_name,
+        last_name,
+        nick_name,
+        password,
+        image,
+        phone,
+      },
     });
-};
 
-exports.login = (req, res, next) => {
-  let { email, password } = req.body;
-
-  const query1 = `SELECT users.id, users.region_id, users.role_id, users.firt_name, users.last_name, users.nick_name, users.email, users.password,
-   users.active, users.is_deleted, users.longtitude, users.langtitude, users.image, users.created_at,
-
-  regions.region
-  FROM users
-  
-  INNER JOIN regions ON regions.id = users.region_id
-
-  WHERE email = $1`;
-
-  const data = [email.toLowerCase()];
-  let user = {};
-  let token = "";
-  pool
-    .query(query1, data)
-    .then(async (result) => {
-      if (result.rows.length !== 0) {
-        try {
-          const isValid = await bcrypt.compare(
-            password,
-            result.rows[0].password
-          );
-          if (!isValid) {
-            return throwError(404, "Email or Password is incorrect");
-          }
-        } catch (error) {
-          throw error;
-        }
-        user = result.rows[0];
-        return pool.query(
-          `SELECT permission FROM permissions WHERE role_id = $1`,
-          [result.rows[0].role_id]
-        );
-      }
-      return throwError(404, "Email or Password is incorrect");
-    })
-    .then((result2) => {
-      if (result2.command === "SELECT") {
-        user.permissions = result2.rows.map(
-          (permission) => permission.permission
-        );
-
-        const payLoad = {
-          user,
-        };
-
-        const options = {
-          expiresIn: "7d",
-        };
-        // const secret = process.env.SECRET;
-        token = jwt.sign(payLoad, "tintin", options);
-
-        console.log("TOKEN ====> ", token);
-
-        return res.status(200).json({
-          error: false,
-          token,
-          user,
-        });
-      }
-      return throwError(404, "Something went wrong");
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
-    });
-};
-
-// ------------our team this is the function to get all info for all users to shared with website Admin
-// if you wanna to remove some info lets discuss about it
-exports.getAllUsers = async (req, res, next) => {
-  const query = `SELECT
-  users.id AS user_id,
-  regions.region AS user_region,
-  roles.role AS user_role,
-  users.firt_name,
-  users.last_name,
-  users.nick_name,
-  users.email,
-  users.active,
-  users.is_deleted,
-  users.longtitude,
-  users.langtitude,
-  users.image,
-  users.created_at
-FROM
-  users
-INNER JOIN
-  regions ON users.region_id = regions.id
-INNER JOIN
-  roles ON users.role_id = roles.id;
-`;
-  try {
-    const response = await pool.query(query);
-    console.log(response.rows);
-    res.status(200).json({
-      error: false,
-      message: "All Users",
-      Users: response.rows,
-    });
-  } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
-  }
-};
-
-//--------------------------------------------- This Function To Get User By Id
-exports.getUserById = async (req, res, next) => {
-  const { id } = req.params;
-  console.log(id);
-  const value = [id];
-  const query = `SELECT
-  users.id AS user_id,
-  regions.region AS user_region,
-  users.firt_name,
-  users.last_name,
-  users.nick_name,
-  users.email,
-  users.active,
-  users.image,
-  users.created_at
-FROM
-  users
-INNER JOIN
-  regions ON users.region_id = regions.id
-INNER JOIN
-  roles ON users.role_id = roles.id
-WHERE
-  users.id =$1;
-`;
-  try {
-    const response = await pool.query(query, value);
-    if (response.command === "SELECT") {
-      if (response.rows[0]) {
-        return res.status(200).json({
-          error: false,
-          user: response.rows[0],
-        });
-      }
-      return throwError(404, "No user found with this ID");
-    }
-  } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
-  }
-};
-
-// this fun allow the user delete his account from website
-// note admin cant delete the user account in my opinion this is wrong option in our project
-// instead of this the admin can ban or block the user  if he breaks the laws
-// as you can see in the next function
-// i think we need to discuss this !
-exports.deleteUserById = (req, res, next) => {
-  const { id } = req.token.user;
-  const query = `UPDATE users SET is_deleted= 1 WHERE id = $1;`;
-  const data = [id];
-  pool
-    .query(query, data)
-    .then((result) => {
-      if (result.rowCount !== 0) {
-        return res.status(200).json({
-          error: false,
-          message: `your account deleted successfully`,
-        });
-      }
-      return throwError(404, "Not found");
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
-    });
-};
-
-// This function allows Admin to ban the account
-exports.BanUserById = (req, res, next) => {
-  const { id } = req.params;
-  const { active } = req.body;
-  const query = `UPDATE users
-  SET active = $1
-  WHERE id=$2;`;
-  const data = [active, id];
-  pool
-    .query(query, data)
-    .then((result) => {
-      if (result.rowCount !== 0) {
-        return res.status(200).json({
-          error: false,
-          message:
-            active === 0
-              ? `Account Blocked successfully`
-              : `Account Un-Blocked successfully`,
-        });
-      }
-      return throwError(404, "Not found");
-    })
-    .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
-      }
-      next(err);
-    });
-};
-// this function allow user to update his account
-exports.updateUserById = async (req, res, next) => {
-  try {
-    const { first_name, last_name, nick_name, email, image } = req.body;
-    const { id } = req.params;
-
-    const values = [
-      first_name || null,
-      last_name || null,
-      nick_name || null,
-      email || null,
-      image || null,
-      id,
-    ];
-
-    const query = `UPDATE users
-    SET
-    
-    first_name = COALESCE($1,first_name),
-    last_name = COALESCE($2,last_name),
-    nick_name = COALESCE($3,nick_name),
-    email = COALESCE( $4,email),
-    image = COALESCE($5,image)
-    WHERE
-        id =$6;
-     RETURNING *;`;
-
-    const response = await pool.query(query, values);
-
-    if (response.rowCount) {
-      res.status(200).json({
-        success: true,
-        message: "your Account updated successfully",
-        response: response.rows,
+    if (!result[0]._options.isNewRecord) {
+      return res.status(401).json({
+        error: true,
+        message: "Account Already Exist",
       });
     }
-    return throwError(404, "Not found");
+    return res.status(200).json({
+      error: false,
+      user: result[0],
+      message: "Account Created Successfully",
+    });
   } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.login = async (req, res, next) => {
+  let token = "";
+  let user = {};
+
+  let { email, password } = req.body;
+
+  try {
+    const result = await User.findOne({
+      where: { email: email.toLowerCase() },
+      include: UserTypes,
+    });
+
+    if (result?.dataValues?.id) {
+      const isValid = await bcrypt.compare(
+        password,
+        result?.dataValues?.password
+      );
+      if (!isValid) {
+        return throwError(404, "Email or Password is incorrect");
+      }
+
+      user = result.dataValues;
+      const permissionsResult = await Permissions.findAll({
+        where: { user_type_id: result?.user_type_id },
+      });
+      user.permissions = permissionsResult.map((permisson) => permisson?.name);
+
+      const payLoad = {
+        user,
+      };
+      const options = {
+        expiresIn: "7d",
+      };
+
+      token = jwt.sign(payLoad, "tintin", options);
+
+      return res.status(200).json({
+        error: false,
+        message: "Login Successfully",
+        id: user.id,
+        token,
+      });
+    }
+    return throwError(404, "Email or Password is incorrect");
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.getAllUsers = async (req, res, next) => {
+  const currentPage = Number(req.query.offset);
+  const perPage = Number(req.query.limit);
+  const isDeleted = req.query.is_deleted;
+
+  try {
+    const data = isDeleted
+      ? {
+          include: { model: UserTypes, required: true },
+          order: [["id", "DESC"]],
+          offset: (currentPage - 1) * perPage,
+          limit: perPage,
+          where: { is_deleted: isDeleted },
+        }
+      : {
+          include: { model: UserTypes, required: true },
+          order: [["id", "DESC"]],
+          offset: (currentPage - 1) * perPage,
+          limit: perPage,
+        };
+
+    const result = await User.findAndCountAll(data);
+    res.status(200).json({
+      error: false,
+      users: result,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.getUserById = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const result = await User.findByPk(id);
+    res.status(200).json({
+      error: false,
+      user: result,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.deleteOrNotDeleteUserById = async (req, res, next) => {
+  const { id, isDelete } = req.params;
+
+  try {
+    const result = await User.update(
+      { is_deleted: isDelete },
+      { where: { id } }
+    );
+
+    if (result[0] === 0) {
+      return res.status(200).json({
+        error: false,
+        message:
+          isDelete == 1
+            ? "Account Deleted Successfully"
+            : "Account Restored Successfully",
+      });
+    }
+
+    return throwError(404, "Something went wrong");
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.updateUserById = async (req, res, next) => {
+  try {
+    const { first_name, last_name, nick_name, email } = req.body;
+    const { id } = req.params;
+
+    let image;
+
+    if (req.file) {
+      image = req.file.path.replace("\\", "/");
+    }
+
+    const result = await User.update(
+      { first_name, last_name, nick_name, email, image },
+      { where: { id } }
+    );
+
+    if (result[0]) {
+      return res.status(200).json({
+        error: false,
+        message: "Account updated successfully",
+      });
+    }
+    return throwError(400, "something went wrong");
+  } catch (err) {
+    console.log(err);
     if (!err.statusCode) {
       err.statusCode = 500;
     }

@@ -5,9 +5,8 @@ const {
   login,
   getAllUsers,
   getUserById,
-  deleteUserById,
-  BanUserById,
-  updateUserById
+  updateUserById,
+  deleteOrNotDeleteUserById,
 } = require("../controllers/users");
 const { authentication } = require("../middlewares/authentication");
 const { authorization } = require("../middlewares/authorization");
@@ -17,34 +16,26 @@ const usersRouter = express.Router();
 usersRouter.post("/register", register);
 usersRouter.post("/login", login);
 
-usersRouter.get(
-  "/",
-  authentication,
-  authorization("USER-CONTROL"),
-  getAllUsers
-);
+usersRouter.get("/", authentication, authorization("get_users"), getAllUsers);
+
 usersRouter.get(
   "/:id",
   authentication,
-  authorization("USER-CONTROL"),
+  authorization("get_users"),
   getUserById
 );
+
 usersRouter.delete(
-  "/:id",
+  "/:id/:isDelete",
   authentication,
-  authorization("USER-CONTROL"),
-  deleteUserById
+  authorization("delete_user"),
+  deleteOrNotDeleteUserById
 );
+
 usersRouter.put(
   "/:id",
   authentication,
-  authorization("USER-CONTROL"),
-  BanUserById
-);
-usersRouter.put(
-  "/updateAccount/:id",
-  authentication,
-  authorization("USER-CONTROL"),
+  authorization("update_user"),
   updateUserById
 );
 
